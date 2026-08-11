@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title data-i18n="landing.title">悲劇輪迴 本地助手</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="landing">
+    <div class="landing-box">
+      <img class="logo" src="assets/logo/logo.png" alt="Tragedy Looper">
+      <h1 data-i18n="landing.title">悲劇輪迴 本地助手</h1>
+      <p>
+        <span data-i18n="landing.desc1">支援 FS 與 BTX 兩個模組的輪迴推理桌遊助手。</span><br>
+        <span data-i18n="landing.desc2">先使用劇本編輯器製作劇本（含全部 37 名角色），再開始遊戲進行對局。</span>
+      </p>
+      <div class="landing-btns">
+        <a class="tl-btn tl-btn-primary" href="editor.html" data-i18n="landing.editor">劇本編輯器</a>
+        <a class="tl-btn tl-btn-primary" href="presets.html" data-i18n="landing.presets">選擇預設</a>
+        <a class="tl-btn" href="multiplayer.html" data-i18n="landing.multiplayer">多人聯機</a>
+      </div>
+      <div class="landing-lang">
+        <label for="lang-select" data-i18n="common.language">語言 / Language</label>
+        <select id="lang-select" class="tl-lang"></select>
+      </div>
+      <p style="margin-top:24px;font-size:14px;">
+        <span data-i18n="landing.howTo">玩法說明：</span><a href="https://tragedyrooper.fandom.com/zh/wiki/%E6%83%A8%E5%89%A7%E8%BD%AE%E5%9B%9E_Wiki" target="_blank" rel="noopener" data-i18n="landing.wiki">悲劇輪迴 Wiki（Fandom）</a>
+      </p>
+    </div>
+  </div>
+  <script src="js/data/i18n.js"></script>
+  <script>
+    TL.I18N.bindSelect(document.getElementById("lang-select"));
+  </script>
+</body>
+</html>

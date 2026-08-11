@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title data-i18n="preset.title">選擇預設劇本 - Tragedy Looper</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="tl-header">
+    <div class="brand"><img src="assets/logo/logo.png" alt="Tragedy Looper"><span data-i18n="preset.title">選擇預設劇本</span></div>
+    <span class="hint" data-i18n="preset.hint">搜尋與篩選官方劇本，開始遊戲或查看詳情</span>
+    <div class="spacer"></div>
+    <select id="lang-select" class="tl-lang" title="Language"></select>
+    <button class="tl-btn" id="btn-back" data-i18n="lobby.back">返回首頁</button>
+  </div>
+
+  <div class="preset-wrap">
+    <div class="preset-filter">
+      <input type="text" id="preset-search" data-i18n-ph="preset.searchPh" placeholder="搜尋劇本名稱 / 關鍵字…">
+      <select id="preset-module">
+        <option value="" data-i18n="preset.allModules">全部模組</option>
+        <option value="FS">FS</option>
+        <option value="BTX">BTX</option>
+      </select>
+    </div>
+    <div id="preset-list" class="preset-list"></div>
+  </div>
+
+  <script src="js/data/characters.js"></script>
+  <script src="js/data/roles.js"></script>
+  <script src="js/data/plots.js"></script>
+  <script src="js/data/incidents.js"></script>
+  <script src="js/data/cards.js"></script>
+  <script src="js/data/modules.js"></script>
+  <script src="js/data/presets.js"></script>
+  <script src="js/data/i18n.js"></script>
+  <script src="js/core/util.js"></script>
+  <script src="js/ui/common.js"></script>
+  <script src="js/ui/presets.js"></script>
+  <script>
+    TL.I18N.bindSelect(document.getElementById("lang-select"), function () { window.__tlPresetRefresh && window.__tlPresetRefresh(); });
+  </script>
+</body>
+</html>

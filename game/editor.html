@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title data-i18n="editor.brand">劇本編輯器 - Tragedy Looper</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="tl-header">
+    <div class="brand"><img src="assets/logo/logo.png" alt="Tragedy Looper"><span data-i18n="editor.brand">劇本編輯器</span></div>
+    <span class="hint" data-i18n="editor.hint">FS + BTX 模組 · 可視化劇本製作</span>
+    <div class="spacer"></div>
+    <select id="lang-select" class="tl-lang" title="Language"></select>
+    <button class="tl-btn" id="btn-import-preset" data-i18n="editor.importPreset">📥 導入預設</button>
+    <button class="tl-btn" id="btn-ref" data-i18n="editor.ref">📖 模組紙 / 規則參考</button>
+    <button class="tl-btn" id="btn-load" data-i18n="editor.load">載入劇本</button>
+    <button class="tl-btn" id="btn-export" data-i18n="editor.export">匯出 JSON</button>
+    <button class="tl-btn tl-btn-primary" id="btn-play" data-i18n="editor.play">開始遊戲</button>
+  </div>
+
+  <div class="editor-wrap">
+    <div class="tl-panel">
+      <h3 data-i18n="editor.info">劇本基本信息</h3>
+      <div class="tl-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+        <div class="tl-field">
+          <label data-i18n="editor.module">模組（Tragedy Set）</label>
+          <select id="f-module">
+            <option value="FS" data-i18n="editor.moduleFs">FS 模組（第一步）</option>
+            <option value="BTX" data-i18n="editor.moduleBtx">BTX 模組（基礎悲劇）</option>
+            <option value="MC" data-i18n="editor.moduleMc">MC 模組（神秘圈）</option>
+            <option value="MZ" data-i18n="editor.moduleMz">MZ 模組（午夜地帶）</option>
+            <option value="WM" data-i18n="editor.moduleWm">WM 模組（怪異神話）</option>
+          </select>
+        </div>
+        <div class="tl-field">
+          <label data-i18n="editor.title">劇本名稱</label>
+          <input type="text" id="f-title" value="未命名劇本">
+        </div>
+        <div class="tl-field">
+          <label data-i18n="editor.creator">作者</label>
+          <input type="text" id="f-creator" value="劇作家">
+        </div>
+        <div class="tl-field">
+          <label data-i18n="editor.loops">輪迴次數</label>
+          <input type="number" id="f-loops" min="1" max="5" value="3">
+        </div>
+        <div class="tl-field">
+          <label data-i18n="editor.days">每輪輪迴的天數</label>
+          <input type="number" id="f-days" min="1" max="10" value="4">
+        </div>
+        <div class="tl-field">
+          <label data-i18n="editor.talk">討論（Table Talk）</label>
+          <select id="f-talk">
+            <option value="true" data-i18n="editor.yes">可</option>
+            <option value="false" data-i18n="editor.no">不可</option>
+          </select>
+        </div>
+        <div class="tl-field" id="f-turf-row" style="display:none;">
+          <label data-i18n="editor.turf">領地（大人物）</label>
+          <select id="f-turf"></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="editor-main">
+      <div class="tl-panel pool-panel">
+        <h3><button class="tl-btn pool-toggle" id="pool-toggle" title="收起">⏴</button> <span data-i18n="editor.pool">角色池</span> <small style="color:var(--text-dim);font-weight:normal;" data-i18n="editor.poolHint">（點選查看 / 拖曳到地圖加入）</small></h3>
+        <div class="pool-filter">
+          <input type="text" id="pool-search" data-i18n-ph="editor.poolSearch" placeholder="搜尋角色 / 屬性 / 能力…">
+          <div class="pool-filter-grid">
+            <select id="f-pool-paranoia" title=""></select>
+            <select id="f-pool-trait" title=""></select>
+            <select id="f-pool-ability" title=""></select>
+            <select id="f-pool-loc" title=""></select>
+          </div>
+          <button class="tl-btn" id="pool-filter-reset" data-i18n="editor.filterReset">重置</button>
+        </div>
+        <div id="character-pool"></div>
+      </div>
+      <button class="tl-btn pool-expand" id="pool-expand" title="展開角色池">⏵ 角色池</button>
+
+      <div class="tl-panel">
+        <h3><span data-i18n="editor.boardPreview">開始盤面預覽</span> <small style="color:var(--text-dim);font-weight:normal;" data-i18n="editor.boardHint">（拖曳角色到版圖設定初始區域）</small></h3>
+        <div id="board-preview" class="board-grid"></div>
+      </div>
+
+      <div class="tl-panel detail-panel">
+        <h3 data-i18n="editor.detail">角色詳情 / 編輯</h3>
+        <div id="char-detail"></div>
+      </div>
+    </div>
+
+    <div class="editor-sections">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="tl-panel">
+          <h3 data-i18n="editor.mainPlot">規則 Y（主規則）</h3>
+          <div class="plot-cards" id="main-plot-list"></div>
+        </div>
+        <div class="tl-panel">
+          <h3 data-i18n="editor.subPlot">規則 X（副規則，可多選）</h3>
+          <div class="plot-cards" id="sub-plot-list"></div>
+        </div>
+        <div class="tl-panel">
+          <h3 data-i18n="editor.roleReq">需要的身份</h3>
+          <div id="role-req" style="font-size:15px;line-height:1.9;"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="tl-panel">
+          <h3><span data-i18n="editor.incidents">預定事件</span> <small style="color:var(--text-dim);font-weight:normal;" data-i18n="editor.incidentHint">（每天最多1個，每名角色只能擔任1次當事人）</small></h3>
+          <table class="incident-table">
+            <thead><tr><th data-i18n="editor.day">日期</th><th data-i18n="editor.event">事件</th><th data-i18n="editor.effect">效果</th><th data-i18n="editor.culprit">當事人</th><th></th></tr></thead>
+            <tbody id="incident-body"></tbody>
+          </table>
+          <div style="margin-top:8px;">
+            <button class="tl-btn" id="btn-add-incident" data-i18n="editor.addIncident">＋ 添加事件</button>
+          </div>
+        </div>
+        <div class="tl-panel">
+          <h3 data-i18n="editor.special">特殊規則</h3>
+          <label style="display:block;font-size:13px;color:var(--text-dim);margin-bottom:4px;" data-i18n="editor.specialSecret">特殊規則（僅劇作家）</label>
+          <textarea id="f-special" rows="3" style="width:100%;background:var(--bg3);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:10px;"></textarea>
+          <label style="display:block;font-size:13px;color:var(--text-dim);margin-bottom:4px;" data-i18n="editor.specialPublic">特殊規則（主人公可見）</label>
+          <textarea id="f-public-special" rows="2" style="width:100%;background:var(--bg3);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px;" placeholder="寫給主人公看的特殊規則…"></textarea>
+          <div style="margin-top:8px;" class="errors" id="validate-out"></div>
+        </div>
+        <div class="tl-panel">
+          <h3 data-i18n="editor.cards">劇本卡預覽</h3>
+          <div class="script-cards">
+            <div class="script-card" id="open-card"></div>
+            <div class="script-card" id="secret-card"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data/characters.js"></script>
+  <script src="js/data/roles.js"></script>
+  <script src="js/data/plots.js"></script>
+  <script src="js/data/incidents.js"></script>
+  <script src="js/data/cards.js"></script>
+  <script src="js/data/modules.js"></script>
+  <script src="js/data/presets.js"></script>
+  <script src="js/data/i18n.js"></script>
+  <script src="js/core/util.js"></script>
+  <script src="js/ui/common.js"></script>
+  <script src="js/ui/editor.js"></script>
+  <script>
+    TL.I18N.bindSelect(document.getElementById("lang-select"), function () {
+      try { window.__tlEditorRefresh && window.__tlEditorRefresh(); } catch (e) {}
+    });
+  </script>
+</body>
+</html>

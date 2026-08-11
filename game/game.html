@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title data-i18n="game.title">遊戲 - Tragedy Looper</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="tl-header">
+    <div class="brand"><img src="assets/logo/logo.png" alt="Tragedy Looper"><span id="hd-title" data-i18n="game.title">遊戲</span></div>
+    <span class="hint" id="hd-meta"></span>
+    <div class="spacer"></div>
+    <label class="toggle-row" id="tgl-secret-row"><input type="checkbox" id="tgl-secret"> <span data-i18n="game.showSecret">顯示劇作家秘密</span></label>
+    <div id="net-bar" style="display:none;align-items:center;gap:8px;">
+      <span class="net-dot"></span><span id="net-status" style="font-size:14px;color:var(--text-dim);" data-i18n="game.online">聯機中</span>
+      <button class="tl-btn" id="btn-leave" data-i18n="game.leave">離開房間</button>
+    </div>
+    <select id="lang-select" class="tl-lang" title="Language"></select>
+    <button class="tl-btn" id="btn-notes" data-i18n="game.notes">💭 思考輔助</button>
+    <button class="tl-btn" id="btn-settings" data-i18n="game.settings">⚙ 設定</button>
+    <button class="tl-btn" id="btn-editor" data-i18n="game.editor">劇本編輯器</button>
+    <button class="tl-btn" id="btn-restart" data-i18n="game.restart">重新開始</button>
+  </div>
+
+  <div class="game-wrap">
+    <div id="persp-bar-wrap" style="display:none;">
+      <div class="persp-title" data-i18n="game.perspTitle">我的英雄（點擊切換視角）</div>
+      <div id="persp-bar" class="persp-bar"></div>
+    </div>
+    <div class="phase-bar">
+      <div class="phase-name" id="phase-name">—</div>
+      <div class="phase-hint" id="phase-hint"></div>
+      <button class="tl-btn tl-btn-primary" id="phase-btn" style="display:none;"></button>
+    </div>
+
+    <div class="game-main">
+      <div class="game-left">
+        <div id="notes-strip" class="notes-strip" style="display:none;"></div>
+        <div class="board-grid" id="board"></div>
+        <div class="bottom-bar">
+          <div class="tl-panel plays-panel">
+            <h3 data-i18n="game.plays">已打出的牌</h3>
+            <div class="plays-list" id="plays-list"></div>
+          </div>
+          <div class="tl-panel hand-panel">
+            <h3 data-i18n="game.hand">手牌</h3>
+            <div class="hand-area" id="hand-area"></div>
+          </div>
+        </div>
+      </div>
+      <div class="side-col">
+        <div class="tl-panel">
+          <h3 data-i18n="game.dataBoard">資料板</h3>
+          <div class="data-board" id="data-board"></div>
+        </div>
+        <div class="tl-panel">
+          <h3 data-i18n="game.abilities">可用能力</h3>
+          <div id="ability-panel" style="font-size:14px;line-height:1.7;"></div>
+        </div>
+        <div class="tl-panel">
+          <h3 data-i18n="game.log">事件紀錄</h3>
+          <div class="log-panel" id="log-panel"></div>
+        </div>
+        <div class="tl-panel" id="chat-panel" style="display:none;">
+          <h3><span data-i18n="game.chat">對話</span> <small id="chat-players" style="display:inline;"></small></h3>
+          <div class="chat-log" id="chat-log"></div>
+          <div class="chat-input-row">
+            <input type="text" id="chat-input" maxlength="300" data-i18n-ph="game.chatInput" placeholder="輸入訊息…">
+            <button class="tl-btn" id="chat-send" data-i18n="game.send">送出</button>
+          </div>
+        </div>
+        <div class="tl-panel secret-box" id="secret-panel" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="setup-overlay" class="tl-modal-wrap">
+    <div class="tl-modal" id="setup-modal"></div>
+  </div>
+
+  <script src="js/data/characters.js"></script>
+  <script src="js/data/roles.js"></script>
+  <script src="js/data/plots.js"></script>
+  <script src="js/data/incidents.js"></script>
+  <script src="js/data/cards.js"></script>
+  <script src="js/data/modules.js"></script>
+  <script src="js/data/i18n.js"></script>
+  <script src="js/core/util.js"></script>
+  <script src="js/core/engine.js"></script>
+  <script src="js/core/state.js"></script>
+  <script src="js/core/helpers.js"></script>
+  <script src="js/core/cards.js"></script>
+  <script src="js/core/incidents.js"></script>
+  <script src="js/core/abilities.js"></script>
+  <script src="js/core/abilities-goodwill.js"></script>
+  <script src="js/core/phases.js"></script>
+  <script src="js/core/death.js"></script>
+  <script src="js/core/final.js"></script>
+  <script src="js/ai/ai.js"></script>
+  <script src="js/ui/common.js"></script>
+  <script src="js/ui/net.js"></script>
+  <script src="js/ui/state.js"></script>
+  <script src="js/ui/board.js"></script>
+  <script src="js/ui/panels.js"></script>
+  <script src="js/ui/log.js"></script>
+  <script src="js/ui/anim.js"></script>
+  <script src="js/ui/notes.js"></script>
+  <script src="js/ui/game.js"></script>
+  <script>
+    TL.I18N.bindSelect(document.getElementById("lang-select"), function () {
+      try { window.__tlGameRefresh && window.__tlGameRefresh(); } catch (e) {}
+    });
+  </script>
+</body>
+</html>
