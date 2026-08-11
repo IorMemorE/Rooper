@@ -452,8 +452,10 @@ TL.Game.prototype._loopEndPhase = async function () {
       }
       return;
     }
+    // 有剩餘輪迴：停在「輪迴結束」階段，由玩家點「下一輪輪迴」再繼續
     st.loop += 1;
-    await this._beginLoop();
+    st.nextLoopPending = true;
+    this._log(TL.L("nextLoopReady") || "主人公失敗。準備進入下一輪輪迴（點擊「下一輪輪迴」開始）。");
   } else {
     st.ended = "win";
     st.phase = "game_over";

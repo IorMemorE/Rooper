@@ -28,7 +28,8 @@ const files = [
   "js/core/phases.js",
   "js/core/death.js",
   "js/core/final.js",
-  "js/ai/ai.js"
+  "js/ai/ai.js",
+  "js/ai/strategies.js"
 ];
 for (const f of files) {
   eval(fs.readFileSync(path.join(root, f), "utf8"));
@@ -89,6 +90,8 @@ async function run() {
     g.state.loop = 1;
     g.script.loops = 2;
     await g._loopEndPhase();
+    assert(g.state.nextLoopPending === true, "失敗且有剩餘輪迴時停在輪迴結束等待下一輪");
+    await g.nextStep();
     assert(g.state.loop === 2, "進入第2輪");
     assert(g.state.exGauge === 2, "Ex槽跨輪迴保留");
     assert(g._exCardChars().length === 0, "Ex牌每輪清空");

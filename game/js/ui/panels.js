@@ -15,7 +15,8 @@ TL.UI.Panels = (function () {
       var inc = incidentDays[d];
       dayCells += '<div class="day-cell' + (d === st.day ? " current" : "") + '"' +
         (inc ? ' title="' + TL.t("editor.dayX", { n: d }) + "：" + TL.escapeHtml(TL.iname(inc.incidentId)) + '"' : "") + ">" +
-        d + (inc ? '<div class="inc-mark"></div>' : "") + "</div>";
+        d + (inc ? '<div class="inc-mark"></div>' : "") +
+        (d === st.day ? '<img class="day-nopin" src="assets/extra/nopin_1.png" alt="">' : "") + "</div>";
     }
     var incidentList = S.game.script.incidents.map(function (inc, idx) {
       var def = INCIDENT_INDEX[inc.incidentId];

@@ -57,6 +57,7 @@ TL.Game.prototype._init = function () {
     closedCircles: [],    // { loc, untilDay }：封鎖
     cannotMoveNextDay: {},// charId -> true（可疑信件：次日無法移動）
     houndDogActive: false, // 廷達羅斯之嗅：本輪輪迴剩餘時間已生效
+    nextLoopPending: false, // 輪迴失敗且有剩餘輪迴：等待「下一輪輪迴」確認
     plotFlags: {
       unsettledRumorUsed: false,
       butterflyHappened: false,
@@ -111,6 +112,7 @@ TL.Game.prototype._beginLoop = async function () {
   st.closedCircles = [];
   st.cannotMoveNextDay = {};
   st.houndDogActive = false;
+  st.nextLoopPending = false;
   st.plotFlags.unsettledRumorUsed = false;
   st.plotFlags.butterflyHappened = false;
   st.plotFlags.patientOpen = false;

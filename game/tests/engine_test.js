@@ -28,7 +28,8 @@ const files = [
   "js/core/phases.js",
   "js/core/death.js",
   "js/core/final.js",
-  "js/ai/ai.js"
+  "js/ai/ai.js",
+  "js/ai/strategies.js"
 ];
 
 for (const f of files) {
@@ -274,6 +275,8 @@ async function mechTests() {
   await g5b._applyDeath(kpb);
   assert(g5b.state.ended === "lose" && g5b.state.phase === "loop_end", "死亡後應為失敗狀態");
   await g5b.nextStep();
+  assert(g5b.state.phase === "loop_end" && g5b.state.nextLoopPending === true, "失敗且有剩餘輪迴時應停在輪迴結束等待下一輪");
+  await g5b.nextStep();
   assert(g5b.state.loop === 2 && g5b.state.phase === "day_start" && g5b.state.ended === null, "死亡後進入第2輪且ended重置");
 
   // 最終決戰正確 → 勝利
@@ -517,6 +520,66 @@ async function runAITest() {
   console.log("AI 劇作家自動對局測試完成 ✓（" + steps + " 步，" + g.state.loop + " 輪）");
 }
 
+// 劇本定制 AI 策略測試：最基礎劇本（THE FIRST SCRIPT）＋主人公全打禁止密謀（跳過）
+async function runStrategyTest() {
+  TL.AI.setDifficulty("normal");
+  const script = TL.clone(PRESET_INDEX.the_first_script);
+  const logs = [];
+  const g = new TL.Game(script, { protagonists: 3, io: TL.AI.io(makeIO(logs)) });
+  g.uiManaged = true;
+  TL.AI.ctx.game = g;
+  await g.startGame();
+  let steps = 0;
+  while (g.state.phase !== "game_over" && g.state.phase !== "final_guess" && steps < 600) {
+    steps++;
+    const st = g.state;
+    if (st.phase === "mm_play") {
+      const plays = TL.AI.mmPlays(st, g);
+      assert(plays.length === 3, "策略 AI 每次打出3張牌（實際 " + plays.length + "）");
+      plays.forEach(function (p) { g.mmPlayCard(p.card, p.targetType, p.targetId); });
+      g.confirmMMPlays();
+    } else if (st.phase === "p_play") {
+      // 主人公跳過：全打禁止密謀（不產生任何有助於防禦的結果）
+      const targets = [];
+      Object.keys(st.chars).forEach(function (id) {
+        if (st.chars[id].alive && st.chars[id].onStage !== false) targets.push({ type: "char", id: id });
+      });
+      LOCATIONS.forEach(function (l) { if (!l.offBoard) targets.push({ type: "location", id: l.id }); });
+      const usedPos = {};
+      st.pPlays.forEach(function (p) { usedPos[p.targetType + "|" + p.targetId] = true; });
+      for (let i = 0; i < g.protagonistCount; i++) {
+        const need = g._playsPerProtagonist(i);
+        const have = st.pPlays.filter(function (p) { return p.player === i; }).length;
+        const decks = g.decksForPlayer(i);
+        const deckUsed = {};
+        st.pPlays.filter(function (p) { return p.player === i; }).forEach(function (p) { deckUsed[p.deck] = true; });
+        for (let k = 0; k < need - have; k++) {
+          const deck = decks.find(function (d) { return !deckUsed[d]; });
+          if (deck == null) break;
+          const t = targets.find(function (x) { return !usedPos[x.type + "|" + x.id]; });
+          if (!t) break;
+          const r = g.pPlayCard(i, deck, "p_forbid_intrigue", t.type, t.id);
+          assert(r.ok, "跳過打牌合法：" + (r.msg || ""));
+          usedPos[t.type + "|" + t.id] = true;
+          deckUsed[deck] = true;
+        }
+      }
+      g.confirmPPlays();
+    } else if (st.phase === "mm_abilities") {
+      const acts = TL.AI.mmAbilities(st, g);
+      for (const a of acts) await g.execMMAbility(a.entry, a.target || null);
+      await g.nextStep();
+    } else {
+      await g.nextStep();
+    }
+  }
+  assert(steps < 600, "策略對局在步數內完成（" + steps + " 步）");
+  assert(g.state.ended === "lose" || g.state.phase === "final_guess",
+    "主人公全跳過時，定制 AI 仍能阻止主人公（phase=" + g.state.phase + " ended=" + g.state.ended + " loop=" + g.state.loop + "）");
+  TL.AI.ctx.game = null;
+  console.log("劇本定制 AI 策略測試完成 ✓（" + steps + " 步，" + g.state.loop + " 輪）");
+}
+
 // 從者（跟隨/代死）與大人物領地
 async function servantAndTurfTest() {
   const script = TL.defaultScript("BTX");
@@ -639,6 +702,7 @@ async function refusalAndCopycatTest() {
   await extensionCharTest();
   await sectAndServantTest();
   await runAITest();
+  await runStrategyTest();
   await servantAndTurfTest();
   await specialCastTest();
   await refusalAndCopycatTest();

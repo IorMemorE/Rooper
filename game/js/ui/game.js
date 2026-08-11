@@ -89,6 +89,7 @@
     });
     TL.UI.$("btn-settings").addEventListener("click", openSettings);
     TL.UI.$("btn-notes").addEventListener("click", TL.UI.Notes.openNotes);
+    TL.UI.$("skip-btn").addEventListener("click", doSkipPPlays);
     TL.UI.$("phase-btn").addEventListener("click", async function () {
       var st = S.game.state;
       if (S.waitingAction) return;
@@ -141,6 +142,49 @@
       render();
       maybeRunAI();
     });
+  }
+
+  // 主人公跳過：全部打「禁止密謀」（測試用；禁止密謀對不安/能力無效，因此並非真正無敵）
+  function doSkipPPlays() {
+    var st = S.game.state;
+    if (st.phase !== "p_play" || S.online) return;
+    var targets = [];
+    Object.keys(st.chars).forEach(function (id) {
+      if (st.chars[id].alive && st.chars[id].onStage !== false) targets.push({ type: "char", id: id });
+    });
+    LOCATIONS.forEach(function (l) { if (!l.offBoard) targets.push({ type: "location", id: l.id }); });
+    var usedPos = {};
+    st.pPlays.forEach(function (p) { usedPos[p.targetType + "|" + p.targetId] = true; });
+    var ti = 0;
+    var filled = 0;
+    for (var i = 0; i < S.game.protagonistCount; i++) {
+      var need = S.game._playsPerProtagonist(i);
+      var have = st.pPlays.filter(function (p) { return p.player === i; }).length;
+      var decks = S.game.decksForPlayer(i);
+      var deckUsed = {};
+      st.pPlays.filter(function (p) { return p.player === i; }).forEach(function (p) { deckUsed[p.deck] = true; });
+      while (have < need) {
+        var deck = null;
+        for (var d = 0; d < decks.length; d++) { if (!deckUsed[decks[d]]) { deck = decks[d]; break; } }
+        if (deck == null) break;
+        var t = null;
+        while (ti < targets.length) {
+          var cand = targets[ti++];
+          if (!usedPos[cand.type + "|" + cand.id]) { t = cand; break; }
+        }
+        if (!t) break;
+        var r = S.game.pPlayCard(i, deck, "p_forbid_intrigue", t.type, t.id);
+        if (r.ok) { have++; filled++; usedPos[t.type + "|" + t.id] = true; deckUsed[deck] = true; }
+        else break;
+      }
+    }
+    if (filled) {
+      var cr = S.game.confirmPPlays();
+      if (!cr.ok) TL.UI.toast(cr.msg, "error");
+      render();
+    } else {
+      TL.UI.toast(TL.t("game.skipFail"), "error");
+    }
   }
 
   // AI 劇作家自動行動（打牌 / 能力階段）
@@ -474,8 +518,14 @@
       day_end: "game.btn.day_end",
       loop_end: "game.btn.loop_end"
     };
-    if (st.ended) {
+    var waitingNext = st.phase === "loop_end" && !!st.nextLoopPending;
+    // 死亡導致的輪迴結束也會帶 ended（lose），此時仍在「輪迴結束」階段：先給「結算輪迴」按鈕
+    if (st.ended && st.phase !== "loop_end" && !waitingNext) {
       btn.style.display = "none";
+    } else if (waitingNext) {
+      // 主人公失敗且有剩餘輪迴：顯示「下一輪輪迴」按鈕
+      btn.style.display = "";
+      btn.textContent = TL.t("game.btn.nextLoop");
     } else if (labels[st.phase]) {
       btn.style.display = "";
       btn.textContent = TL.t(labels[st.phase]);
@@ -488,6 +538,14 @@
     if (st.phase === "mm_play" || st.phase === "p_play") {
       btn.style.display = "";
       btn.textContent = TL.t("game.btn.confirm");
+    }
+    // 跳過按鈕：僅本地模式（熱座 / AI 對戰）主人公打牌階段可用
+    var skipBtn = TL.UI.$("skip-btn");
+    if (st.phase === "p_play" && !S.online) {
+      skipBtn.style.display = "";
+      skipBtn.textContent = TL.t("game.skip");
+    } else {
+      skipBtn.style.display = "none";
     }
     if (st.phase === "setup" || st.phase === "game_over") btn.style.display = "none";
     if (S.aiMode && (st.phase === "mm_play" || st.phase === "mm_abilities")) {

@@ -964,6 +964,15 @@ a:hover { text-decoration: underline; color: var(--accent2); }
   width: 12px; height: 3px; border-radius: 2px;
   background: var(--accent);
 }
+.data-board .day-cell .day-nopin {
+  position: absolute; top: 100%; left: 50%;
+  width: 22px; height: auto;
+  transform: translateX(-50%) translateY(-3px) rotate(180deg);
+  pointer-events: none; opacity: .92;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.45));
+  z-index: 2;
+}
+.data-board .day-row { padding-bottom: 14px; }
 .data-board .incident-list { font-size: 13px; color: var(--text-dim); line-height: 1.7; }
 .data-board .incident-list b { color: var(--text); }
 
@@ -1111,6 +1120,13 @@ a:hover { text-decoration: underline; color: var(--accent2); }
   font-weight: 600; color: var(--text); font-size: 20px;
 }
 .phase-bar .phase-hint { color: var(--text-dim); font-size: 13.5px; flex: 1; min-width: 220px; line-height: 1.6; }
+.phase-bar .phase-nopin {
+  width: 30px; height: auto;
+  transform: rotate(-14deg);
+  opacity: .95;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.4));
+  flex-shrink: 0;
+}
 
 .log-panel { max-height: 420px; overflow-y: auto; }
 .log-panel .log-entry {

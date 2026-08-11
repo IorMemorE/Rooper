@@ -90,7 +90,13 @@ TL.Game.prototype.nextStep = async function () {
       }
       break;
     case "loop_end":
-      await this._loopEndPhase();
+      if (st.nextLoopPending) {
+        // 主人公失敗且還有剩餘輪迴：玩家點「下一輪輪迴」後開始下一輪
+        st.nextLoopPending = false;
+        await this._beginLoop();
+      } else {
+        await this._loopEndPhase();
+      }
       break;
     case "final_guess":
       break;

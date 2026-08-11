@@ -11,6 +11,16 @@ TL.AI = (function () {
   var ctx = { game: null, memory: null };
   var difficultyLevel = "normal";
   var NOISE = { easy: 0.42, normal: 0.16, hard: 0.05 };
+  // 劇本定制 AI 策略註冊表（可拆卸；日後用戶自定義劇本可註冊自己的策略）
+  var strategies = {};
+  function strategyFor(script) {
+    if (!script) return null;
+    var s = strategies[script.id] || null;
+    if (!s && script.mainPlot && PLOT_INDEX[script.mainPlot]) {
+      s = strategies[PLOT_INDEX[script.mainPlot].id] || null;
+    }
+    return s;
+  }
 
   function freshMemory() {
     return { loop: 0, refusals: 0, kills: 0, pathCounts: {}, lastPrimary: null };
@@ -100,6 +110,9 @@ TL.AI = (function () {
     // 玩家行為變化：第2輪起關鍵人物密謀一直被壓制 → 轉向低暴露/次級路徑
     p.shift = state.loop >= 2 && p.kp && state.chars[p.kp] && state.chars[p.kp].alive && state.chars[p.kp].intrigue < 2;
     choosePaths(state, p, m);
+    // 劇本定制策略補充資訊
+    var st = strategyFor(script);
+    if (st && st.planExtra) st.planExtra(state, p, script);
     return p;
   }
 
@@ -190,6 +203,7 @@ TL.AI = (function () {
   // ---------- 劇作家打牌（3張） ----------
   function mmPlays(state, game) {
     var p = plan(state, game.script);
+    var st = strategyFor(game.script);
     var used = state.used.mm || {};
     var deckCount = {};
     MASTERMIND_DECK.forEach(function (c) { deckCount[c] = (deckCount[c] || 0) + 1; });
@@ -204,6 +218,26 @@ TL.AI = (function () {
     }
     var alive = aliveChars(state).filter(function (id) { return !game._noMMCards(id); });
     var kpId = p.kp;
+
+    // 劇本定制策略候選（優先於通用候選）
+    if (st && st.candidates) st.candidates(state, game, p, add);
+
+    // 通用：當天事件觸發——把當天事件當事人的判定值推到門檻（不安牌不受禁止密謀影響）
+    (game.script.incidents || []).forEach(function (inc) {
+      if (inc.day !== state.day) return;
+      var def = INCIDENT_INDEX[inc.incidentId];
+      if (!def) return;
+      var c = state.chars[inc.culpritId];
+      if (!c || !c.alive) return;
+      var limit = game._incidentLimit(def, inc.culpritId);
+      var count = game._incidentCount(def, inc.culpritId);
+      if (count >= limit) return;
+      if (inc.incidentId === "conspiracies" || inc.incidentId === "hound_dog_scent") {
+        add("m_intrigue_plus1", "char", inc.culpritId, 82);
+      } else {
+        add("m_paranoia_plus", "char", inc.culpritId, 85 + (limit - count) * 3);
+      }
+    });
 
     // 主路徑
     if (p.primary === "kp" && kpId && state.chars[kpId].alive) {
@@ -311,33 +345,41 @@ TL.AI = (function () {
   // ---------- 劇作家能力階段 ----------
   function mmAbilities(state, game) {
     var p = plan(state, game.script);
+    var st = strategyFor(game.script);
     var usable = game.usableMMAbilities();
     var acts = [];
     usable.forEach(function (entry) {
       var eff = entry.ability.effect;
       var target = null;
+      var targets = game.mmAbilityTargets(entry);
+      var scoreFn = null;
       if (eff === "brain_intrigue" || eff === "faceless_deep_one") {
-        target = pickBest(game.mmAbilityTargets(entry), function (t) {
+        scoreFn = function (t) {
           return t.type === "char" ? charScore(state, p, t.id) : locScore(state, p, t.id);
-        });
+        };
       } else if (eff === "ct_paranoia" || eff === "faceless_ct") {
-        target = pickBest(game.mmAbilityTargets(entry), function (t) {
+        scoreFn = function (t) {
           return charScore(state, p, t.id);
-        });
+        };
       } else if (eff === "unsettling_rumor" || eff === "unsafe_trigger") {
-        target = pickBest(game.mmAbilityTargets(entry), function (t) {
+        scoreFn = function (t) {
           return locScore(state, p, t.id);
-        });
+        };
       } else if (eff === "therapist_remove_paranoia") {
         // 心理醫生（強制）：被迫移除不安 → 選不安最少、影響最小的目標
-        target = pickBest(game.mmAbilityTargets(entry), function (t) {
+        scoreFn = function (t) {
           return -state.chars[t.id].paranoia * 3 + charScore(state, p, t.id) * 0.2;
-        });
+        };
       } else if (eff === "magician_move") {
-        target = pickBest(game.mmAbilityTargets(entry), function (t) {
+        scoreFn = function (t) {
           return charScore(state, p, t.id) + state.chars[t.id].paranoia * 2;
-        });
+        };
       }
+      // 劇本定制策略可覆寫能力目標評分
+      if (st && st.abilityScore) {
+        scoreFn = function (t) { return st.abilityScore(state, game, entry, t, p); };
+      }
+      if (scoreFn) target = pickBest(targets, scoreFn);
       if (eff === "paranoiac_self_marker") {
         acts.push({ entry: entry, target: null });
         return;
@@ -462,6 +504,9 @@ TL.AI = (function () {
     moveDir: moveDir,
     confirm: aiConfirm,
     io: io,
-    ctx: ctx
+    ctx: ctx,
+    strategies: strategies,
+    strategyFor: strategyFor,
+    registerStrategy: function (key, impl) { strategies[key] = impl; }
   };
 })();
