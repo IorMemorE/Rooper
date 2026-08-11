@@ -32,6 +32,11 @@ TL.registerSubplotFail = function (plotId, fn) {
   TL.SUBPLOT_FAIL[plotId] = fn;
 };
 
+// 失敗條件描述（i18n）
+function failDesc(plot) {
+  return plot ? TL.desc("plot." + plot.id, plot.desc) : "";
+}
+
 // ---------- 回合結束階段 ----------
 TL.Game.prototype._dayEndPhase = async function () {
   var st = this.state;
@@ -234,7 +239,7 @@ TL.Game.prototype._mainFailLosses = function () {
 };
 
 TL.registerRuleChecker("intrigue_on_location", function (g, rule) {
-  if (g.state.locations[rule.location].intrigue >= rule.count) return PLOT_INDEX[g.state.plotFlags.activeFailPlotId || g.script.mainPlot].desc;
+  if (g.state.locations[rule.location].intrigue >= rule.count) return failDesc(PLOT_INDEX[g.state.plotFlags.activeFailPlotId || g.script.mainPlot]);
   return null;
 });
 TL.registerRuleChecker("intrigue_on_start_location", function (g, rule) {
@@ -242,7 +247,7 @@ TL.registerRuleChecker("intrigue_on_start_location", function (g, rule) {
   var holders = Object.keys(st.chars).filter(function (id) { return st.chars[id].role === rule.role; });
   for (var i = 0; i < holders.length; i++) {
     if (st.locations[st.chars[holders[i]].startingLoc].intrigue >= rule.count) {
-      return PLOT_INDEX[st.plotFlags.activeFailPlotId || g.script.mainPlot].desc;
+      return failDesc(PLOT_INDEX[st.plotFlags.activeFailPlotId || g.script.mainPlot]);
     }
   }
   return null;
@@ -252,18 +257,18 @@ TL.registerRuleChecker("intrigue_on_role", function (g, rule) {
   var holders = Object.keys(st.chars).filter(function (id) { return st.chars[id].role === rule.role; });
   for (var i = 0; i < holders.length; i++) {
     if ((st.chars[holders[i]].intrigue || 0) >= rule.count) {
-      return PLOT_INDEX[st.plotFlags.activeFailPlotId || g.script.mainPlot].desc;
+      return failDesc(PLOT_INDEX[st.plotFlags.activeFailPlotId || g.script.mainPlot]);
     }
   }
   return null;
 });
 TL.registerRuleChecker("butterfly_happened", function (g) {
-  if (g.state.plotFlags.butterflyHappened) return PLOT_INDEX[g.state.plotFlags.activeFailPlotId || g.script.mainPlot].desc;
+  if (g.state.plotFlags.butterflyHappened) return failDesc(PLOT_INDEX[g.state.plotFlags.activeFailPlotId || g.script.mainPlot]);
   return null;
 });
 TL.registerRuleChecker("ex_gauge", function (g, rule) {
   var ok = (rule.op === "gte" && g.state.exGauge >= rule.count) || (rule.op === "lte" && g.state.exGauge <= rule.count);
-  return ok ? PLOT_INDEX[g.state.plotFlags.activeFailPlotId || g.script.mainPlot].desc : null;
+  return ok ? failDesc(PLOT_INDEX[g.state.plotFlags.activeFailPlotId || g.script.mainPlot]) : null;
 });
 TL.registerRuleChecker("revealed_role_names", function (g, rule) {
   var st = g.state;
@@ -272,39 +277,39 @@ TL.registerRuleChecker("revealed_role_names", function (g, rule) {
     if (st.chars[id].roleRevealed) revealed[st.chars[id].role] = true;
   });
   var hit = (rule.roles || []).some(function (rid) { return revealed[rid]; });
-  return hit ? PLOT_INDEX[st.plotFlags.activeFailPlotId || g.script.mainPlot].desc : null;
+  return hit ? failDesc(PLOT_INDEX[st.plotFlags.activeFailPlotId || g.script.mainPlot]) : null;
 });
 
 TL.registerPlotFail("the_black_school", function (g) {
   var x = g.state.loop - 1;
-  if (g.state.locations.school.intrigue >= x) return PLOT_INDEX.the_black_school.desc;
+  if (g.state.locations.school.intrigue >= x) return failDesc(PLOT_INDEX.the_black_school);
   return null;
 });
 TL.registerPlotFail("sacred_words_of_dagon", function (g) {
-  if (g.state.locations.shrine.intrigue >= g.state.exGauge) return PLOT_INDEX.sacred_words_of_dagon.desc;
+  if (g.state.locations.shrine.intrigue >= g.state.exGauge) return failDesc(PLOT_INDEX.sacred_words_of_dagon);
   return null;
 });
 TL.registerPlotFail("king_in_yellow", function (g) {
-  if (g.state.exGaugeIncreased) return PLOT_INDEX.king_in_yellow.desc;
+  if (g.state.exGaugeIncreased) return failDesc(PLOT_INDEX.king_in_yellow);
   return null;
 });
 TL.registerPlotFail("choir_to_the_outside_god", function (g) {
   var marked = g._aliveChars().filter(function (id) { return g.state.chars[id].intrigue >= 1; }).length;
-  if (marked >= 5) return PLOT_INDEX.choir_to_the_outside_god.desc;
+  if (marked >= 5) return failDesc(PLOT_INDEX.choir_to_the_outside_god);
   return null;
 });
 TL.registerPlotFail("bloody_rites", function (g) {
   var corpses = Object.keys(g.state.chars).filter(function (id) { return !g.state.chars[id].alive; }).length;
-  if (corpses >= g.state.exGauge) return PLOT_INDEX.bloody_rites.desc;
+  if (corpses >= g.state.exGauge) return failDesc(PLOT_INDEX.bloody_rites);
   return null;
 });
 
 TL.registerSubplotFail("smell_of_gunpowder", function (g) {
   var totalPa = g._aliveChars().reduce(function (s, id) { return s + g.state.chars[id].paranoia; }, 0);
-  return totalPa >= 12 ? PLOT_INDEX.smell_of_gunpowder.desc : null;
+  return totalPa >= 12 ? failDesc(PLOT_INDEX.smell_of_gunpowder) : null;
 });
 TL.registerSubplotFail("showtime_of_death", function (g) {
-  return g._aliveChars().length <= 6 ? PLOT_INDEX.showtime_of_death.desc : null;
+  return g._aliveChars().length <= 6 ? failDesc(PLOT_INDEX.showtime_of_death) : null;
 });
 
 // ---------- 輪迴開始效果註冊 ----------

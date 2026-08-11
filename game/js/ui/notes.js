@@ -151,7 +151,7 @@ TL.UI.Notes = (function () {
       var m = markOf(pid);
       var block = document.createElement("div");
       block.className = "notes-rule";
-      var extra = (p.desc || "").replace(/\n/g, " ");
+      var extra = (TL.desc("plot." + pid, p.desc) || "").replace(/\n/g, " ");
       block.innerHTML =
         '<button class="tri ' + m + '" data-pid="' + pid + '">' + (m === "check" ? "✓" : m === "cross" ? "✗" : "？") + "</button>" +
         '<div class="nr-main">' +

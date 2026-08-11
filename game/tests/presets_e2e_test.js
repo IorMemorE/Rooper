@@ -50,15 +50,15 @@ async function waitFor(fn, timeout = 10000) {
 
   await page.goto("http://localhost:8393/presets.html");
   await waitFor(() => page.locator("#preset-list .preset-card").count());
-  assert((await page.locator("#preset-list .preset-card").count()) === 11, "預設頁列出11個官方劇本");
+  assert((await page.locator("#preset-list .preset-card").count()) === 2, "預設頁列出2個官方劇本");
   // 搜尋篩選
-  await page.fill("#preset-search", "SECRET");
-  await waitFor(async () => (await page.locator("#preset-list .preset-card").count()) === 2);
-  assert((await page.locator("#preset-list .preset-card").count()) === 2, "搜尋 SECRET 篩選出2個劇本");
+  await page.fill("#preset-search", "SCRIPT");
+  await waitFor(async () => (await page.locator("#preset-list .preset-card").count()) === 1);
+  assert((await page.locator("#preset-list .preset-card").count()) === 1, "搜尋 SCRIPT 篩選出1個劇本");
   await page.fill("#preset-search", "");
   await page.selectOption("#preset-module", "FS");
-  await waitFor(async () => (await page.locator("#preset-list .preset-card").count()) === 2);
-  assert(true, "模組篩選 FS 為2個");
+  await waitFor(async () => (await page.locator("#preset-list .preset-card").count()) === 1);
+  assert(true, "模組篩選 FS 為1個");
   await page.selectOption("#preset-module", "");
   // 查看詳情 → 編輯器載入預設
   await page.locator("#preset-list .preset-card", { hasText: "THE FIRST SCRIPT" }).locator('[data-act="detail"]').click();

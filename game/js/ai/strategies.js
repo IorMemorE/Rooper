@@ -1,5 +1,5 @@
-// 劇本定制 AI 策略（可拆卸：用戶自定義劇本可 TL.AI.registerStrategy(id, impl)）
-// impl: { planExtra(state, p, script), candidates(state, game, p, add), abilityScore(state, game, entry, t, p) }
+// 劇本定制 AI 策略解釋器：讀取 js/data/ai-strategies.js 的 JSON 資料並生成策略
+// 用戶自定義劇本可自行往 AI_SCRIPT_STRATEGIES 加入條目（或 TL.AI.registerStrategy 直接註冊函式策略）
 window.TL = window.TL || {};
 
 // 工具：與某版圖相鄰的所有版圖
@@ -19,131 +19,148 @@ function stAlive(state) {
   });
 }
 
-// 讓角色朝目標版圖移動的候選（回傳 {card, targetType, targetId, score} 陣列）
+// BFS 距離（版圖之間的最短步數）
+function aiDist(from, to) {
+  if (from === to) return 0;
+  var seen = {};
+  seen[from] = true;
+  var frontier = [from];
+  var d = 0;
+  while (frontier.length) {
+    d++;
+    var next = [];
+    for (var i = 0; i < frontier.length; i++) {
+      var locs = aiAdjacentOf(frontier[i]);
+      for (var j = 0; j < locs.length; j++) {
+        var lid = locs[j];
+        if (lid === to) return d;
+        if (!seen[lid]) { seen[lid] = true; next.push(lid); }
+      }
+    }
+    frontier = next;
+  }
+  return 999;
+}
+
+// 讓角色朝目標版圖移動的候選
 function aiMoveToward(state, add, cid, targetLoc, base) {
   var loc = state.chars[cid] && state.chars[cid].loc;
   if (!loc || loc === targetLoc) return;
-  var targetAdj = aiAdjacentOf(targetLoc);
+  var d0 = aiDist(loc, targetLoc);
+  var found = false;
   ["h", "v", "d"].forEach(function (mt) {
     (ADJ[loc] && ADJ[loc][mt] || []).forEach(function (lid) {
-      if (targetAdj.indexOf(lid) >= 0) add("m_move_" + mt, "char", cid, base + 8);
+      var d1 = aiDist(lid, targetLoc);
+      if (d1 < d0) {
+        found = true;
+        add("m_move_" + mt, "char", cid, base + 8 + (d0 - d1) * 12);
+      }
     });
   });
-  // 無法一步到達時，先往目標方向任意移動（低分兜底）
-  if (state.chars[cid]) {
+  if (!found && state.chars[cid]) {
     add("m_move_h", "char", cid, base - 30);
     add("m_move_v", "char", cid, base - 30);
     add("m_move_d", "char", cid, base - 30);
   }
 }
 
-// ================= 謀殺計劃（FS 基礎劇本）=================
-// 主人公失敗的原因分析：
-// 1) 關鍵人物死亡 → 立即失敗。主要途徑：
-//    a. 自殺事件：把關鍵人物（或自殺當事人）的不安推到門檻，事件階段當事人死亡。
-//    b. 殺手夜殺：關鍵人物密謀2+ 且與殺手同區，回合結束階段殺手殺害關鍵人物。
-//    c. 謀殺事件：關鍵人物作為被害人。
-// 2) 主人公「全打禁止密謀」＝跳過：禁止密謀只擋密謀牌，擋不住「不安+1」牌與能力，
-//    因此以不安/能力為主的加壓路徑可以穿透跳過策略。
-var murderPlanStrategy = {
-  planExtra: function (state, p, script) {
-    p.suicide = null;
-    (script.incidents || []).forEach(function (inc) {
-      if (inc.incidentId === "suicide" && (!p.suicide || inc.day < p.suicide.day)) {
-        p.suicide = { day: inc.day, culprit: inc.culpritId };
-      }
-    });
-    p.suicideTarget = null;
-    p.suicideNeed = 0;
-    p.suicideIsKp = false;
-    if (p.suicide && state.chars[p.suicide.culprit] && state.chars[p.suicide.culprit].alive) {
-      var data = CHAR_INDEX[p.suicide.culprit];
-      p.suicideTarget = p.suicide.culprit;
-      p.suicideNeed = Math.max(0, data.paranoiaLimit - (state.chars[p.suicide.culprit].paranoia || 0));
-      p.suicideIsKp = p.suicideTarget === p.kp;
-    }
-  },
-  candidates: function (state, game, p, add) {
-    var st = state;
-    var kpId = p.kp;
-    var killer = p.killer;
-    var ct = p.ct;
-
-    // 1) 自殺路徑：不安牌穿透禁止密謀；已達門檻後用禁止不安鎖住，防止主人公移除
-    if (p.suicideTarget && st.chars[p.suicideTarget].alive && st.day <= p.suicide.day) {
-      var tData = CHAR_INDEX[p.suicideTarget];
-      var cur = st.chars[p.suicideTarget].paranoia || 0;
-      if (cur < tData.paranoiaLimit) {
-        add("m_paranoia_plus", "char", p.suicideTarget, 130);
-      } else {
-        add("m_forbid_paranoia", "char", p.suicideTarget, 125);
-      }
-      // 傳謠人靠近自殺當事人，用能力補不安
-      if (ct && st.chars[ct].alive && st.chars[ct].loc !== st.chars[p.suicideTarget].loc) {
-        aiMoveToward(st, add, ct, st.chars[p.suicideTarget].loc, 95);
-      }
-    }
-
-    // 2) 殺手夜殺路徑：關鍵人物密謀2+ 且殺手同區
-    if (kpId && st.chars[kpId].alive && killer && st.chars[killer].alive) {
-      var kpInt = st.chars[kpId].intrigue || 0;
-      if (kpInt < 2) {
-        add("m_intrigue_plus1", "char", kpId, 108);
-        add("m_intrigue_plus2", "char", kpId, 120);
-      }
-      if (st.chars[killer].loc !== st.chars[kpId].loc) {
-        aiMoveToward(st, add, killer, st.chars[kpId].loc, 100);
-      } else if (kpInt >= 2) {
-        // 已就位且密謀足夠 → 當晚就能殺，轉為繼續加壓
-        if (p.suicideTarget) add("m_paranoia_plus", "char", p.suicideTarget, 60);
-        else add("m_paranoia_plus", "char", kpId, 60);
-      }
-    }
-
-    // 3) 殺人狂路徑：移動到只有 1 名其他角色的版圖，夜間強制殺人
-    if (p.serial && st.chars[p.serial] && st.chars[p.serial].alive) {
-      var serialLoc = st.chars[p.serial].loc;
-      var bestLoc = null, bestN = 99;
-      aiAdjacentOf(serialLoc).forEach(function (lid) {
-        var n = stAlive(state).filter(function (id) {
-          return id !== p.serial && st.chars[id].loc === lid;
-        }).length;
-        if (n < bestN) { bestN = n; bestLoc = lid; }
-      });
-      if (bestLoc && bestN < 3) aiMoveToward(st, add, p.serial, bestLoc, 88);
-    }
-
-    // 4) 保險：不安分散（讓跳過無法一次擋完）
-    var press = [p.suicideTarget, kpId].filter(Boolean);
-    stAlive(state).slice(0, 4).forEach(function (id) {
-      if (id === p.serial || id === killer) return;
-      if (press.indexOf(id) >= 0) return;
-      add("m_paranoia_plus", "char", id, 35);
-    });
-  },
-  abilityScore: function (state, game, entry, t, p) {
-    var eff = entry.ability.effect;
-    if (eff === "ct_paranoia" || eff === "faceless_ct") {
-      if (t.id === p.suicideTarget) return 120;
-      if (t.id === p.kp) return 80;
-      return 30;
-    }
-    if (eff === "brain_intrigue" || eff === "faceless_deep_one") {
-      if (t.type === "char" && t.id === p.kp) return 110;
-      if (t.type === "char" && t.id === p.suicideTarget) return 75;
-      return t.type === "char" ? 35 : 20;
-    }
-    if (eff === "therapist_remove_paranoia") {
-      // 被迫移除不安：選不安最少、影響最小的目標
-      return -state.chars[t.id].paranoia * 3;
-    }
-    if (eff === "magician_move") {
-      return (state.chars[t.id].paranoia || 0) * 2;
-    }
-    return 10;
+// 解析 JSON 目標描述 → 角色 id（不存在/死亡時回傳 null）
+function resolveTarget(state, script, t) {
+  if (!t) return null;
+  if (t.kind === "char") return state.chars[t.id] ? t.id : null;
+  if (t.kind === "role") {
+    var found = Object.keys(state.chars).filter(function (id) {
+      return state.chars[id].role === t.role && state.chars[id].alive;
+    })[0];
+    return found || null;
   }
-};
+  if (t.kind === "incident") {
+    var inc = (script.incidents || []).filter(function (x) { return x.incidentId === t.incident; })
+      .sort(function (a, b) { return a.day - b.day; })[0];
+    return (inc && state.chars[inc.culpritId] && state.chars[inc.culpritId].alive) ? inc.culpritId : null;
+  }
+  return null;
+}
 
-// 註冊：泛用「謀殺計劃」規則Y + 最基礎劇本「THE FIRST SCRIPT」
-TL.AI.registerStrategy("murder_plan", murderPlanStrategy);
-TL.AI.registerStrategy("the_first_script", murderPlanStrategy);
+// 由 JSON 設定生成策略
+function makeJsonStrategy(cfg) {
+  return {
+    planExtra: function (state, p, script) {
+      p.ai = {
+        press: [],
+        moves: cfg.moves || [],
+        abilities: cfg.abilities || {},
+        fallbackParanoia: !!cfg.fallbackParanoia
+      };
+      (cfg.pressure || []).forEach(function (e) {
+        var id = resolveTarget(state, script, e.target);
+        if (id) p.ai.press.push({
+          id: id, cards: e.cards || [], weight: e.weight || 50,
+          lockCard: e.lockCard || null, lockAt: (e.lockAt != null ? e.lockAt : null)
+        });
+      });
+      p.ai.kp = resolveTarget(state, script, { kind: "role", role: "key_person" });
+      p.ai.suicideCulprit = resolveTarget(state, script, { kind: "incident", incident: "suicide" });
+    },
+    candidates: function (state, game, p, add) {
+      var st = state;
+      if (!p.ai) return;
+      // 1) 壓力牌（不安穿透禁止密謀；達標後用鎖牌防移除）
+      p.ai.press.forEach(function (e) {
+        var c = st.chars[e.id];
+        if (!c || !c.alive) return;
+        var threshold = (e.lockAt != null) ? e.lockAt : (CHAR_INDEX[e.id].paranoiaLimit || 0);
+        var atLimit = c.paranoia >= threshold;
+        if (e.lockCard && atLimit) {
+          add(e.lockCard, "char", e.id, e.weight + 10);
+        } else {
+          (e.cards || []).forEach(function (card, i) {
+            add(card, "char", e.id, e.weight - i * 2);
+          });
+        }
+      });
+      // 2) 移動
+      p.ai.moves.forEach(function (m) {
+        var cid = resolveTarget(state, game.script, { kind: "role", role: m.role });
+        if (!cid || !st.chars[cid] || !st.chars[cid].alive) return;
+        if (m.to === "isolate") {
+          var sl = st.chars[cid].loc;
+          var best = null, bestN = 99;
+          aiAdjacentOf(sl).forEach(function (lid) {
+            var n = stAlive(state).filter(function (id) { return id !== cid && st.chars[id].loc === lid; }).length;
+            if (n < bestN) { bestN = n; best = lid; }
+          });
+          if (best && bestN < 3) aiMoveToward(st, add, cid, best, m.weight);
+        } else {
+          var toId = resolveTarget(state, game.script, m.to);
+          if (toId && st.chars[cid].loc !== st.chars[toId].loc) {
+            aiMoveToward(st, add, cid, st.chars[toId].loc, m.weight);
+          }
+        }
+      });
+      // 3) 不安分散（讓「全打禁止密謀」無法一次擋完）
+      if (p.ai.fallbackParanoia) {
+        var pressIds = p.ai.press.map(function (e) { return e.id; });
+        stAlive(state).slice(0, 4).forEach(function (id) {
+          if (pressIds.indexOf(id) >= 0) return;
+          add("m_paranoia_plus", "char", id, 32);
+        });
+      }
+    },
+    abilityScore: function (state, game, entry, t, p) {
+      if (!p.ai) return 10;
+      var pri = p.ai.abilities[entry.ability.effect] || [];
+      for (var i = 0; i < pri.length; i++) {
+        if (resolveTarget(state, game.script, pri[i]) === t.id) return 110 - i * 15;
+      }
+      if (t.id === p.ai.kp) return 60;
+      if (t.id === p.ai.suicideCulprit) return 55;
+      return 20;
+    }
+  };
+}
+
+// 註冊 JSON 資料中的每個劇本策略
+Object.keys(AI_SCRIPT_STRATEGIES || {}).forEach(function (sid) {
+  TL.AI.registerStrategy(sid, makeJsonStrategy(AI_SCRIPT_STRATEGIES[sid]));
+});

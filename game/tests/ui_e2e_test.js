@@ -319,7 +319,7 @@ async function clickModalBtn(page, text) {
   await waitFor(async () => (await page.locator("#character-pool .pool-card").count()) === 37);
   await page.click("#btn-ref");
   await waitFor(() => page.locator(".ref-tab").count());
-  assert((await page.locator(".ref-tab").count()) === 6, "規則參考有6個分頁");
+  assert((await page.locator(".ref-tab").count()) === 7, "規則參考有7個分頁（含原版模組紙）");
   await page.locator(".ref-tab", { hasText: "角色卡" }).click();
   await waitFor(async () => (await page.locator(".ref-item").count()) > 0);
   assert((await page.locator(".ref-item").count()) >= 17, "角色卡分頁顯示角色（≥17）");

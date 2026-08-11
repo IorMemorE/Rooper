@@ -5,10 +5,10 @@
     "chibi_W.png", "chibi_A1.png", "chibi_A2.png", "chibi_B1.png", "chibi_B2.png", "chibi_C1.png", "chibi_C2.png"
   ];
   var HEROES = [
-    { slot: "mm", name: function () { return TL.t("lobby.hero.mm"); }, logo: "assets/extra/clock.png" },
-    { slot: "a", name: function () { return TL.t("lobby.hero.a"); }, logo: "assets/extra/diary.png" },
-    { slot: "b", name: function () { return TL.t("lobby.hero.b"); }, logo: "assets/extra/icon.png" },
-    { slot: "c", name: function () { return TL.t("lobby.hero.c"); }, logo: "assets/extra/heros.png" }
+    { slot: "mm", name: function () { return TL.t("lobby.hero.mm"); }, logo: "assets/player_stand/writer_1.png" },
+    { slot: "a", name: function () { return TL.t("lobby.hero.a"); }, logo: "assets/extra/clock.png" },
+    { slot: "b", name: function () { return TL.t("lobby.hero.b"); }, logo: "assets/extra/diary.png" },
+    { slot: "c", name: function () { return TL.t("lobby.hero.c"); }, logo: "assets/extra/icon.png" }
   ];
   var room = null;
   var myId = null;
@@ -39,6 +39,79 @@
   }
   function toast(msg) {
     TL.UI.toast(msg, "error");
+  }
+
+  function loadEditorScript() {
+    try {
+      var raw = localStorage.getItem("tl_preset_script") || localStorage.getItem("tl_current_script");
+      var obj = raw ? JSON.parse(raw) : null;
+      return (obj && obj.cast) ? obj : null;
+    } catch (e) { return null; }
+  }
+
+  function selectScript(presetId, script) {
+    selectedScript = { presetId: presetId, script: script || null };
+    TL.Net.selectScript(presetId === "__import__" || presetId === "__editor__" ? null : presetId, script || null);
+    renderRoom();
+  }
+
+  function renderScriptCards(q, cards, moduleId) {
+    var list = PRESETS.filter(function (p) {
+      if (moduleId && p.moduleId !== moduleId) return false;
+      if (!q) return true;
+      return (p.title + " " + p.moduleId + " " + TL.pname(p.mainPlot)).toLowerCase().indexOf(q) >= 0;
+    });
+    cards.innerHTML = list.map(function (p) {
+      var sel = selectedScript && selectedScript.presetId === p.id;
+      return '<div class="script-card' + (sel ? " selected" : "") + '" data-id="' + p.id + '">' +
+        '<div class="sc-title">' + esc(p.title) + "</div>" +
+        '<div class="sc-meta">' + TL.modname(p.moduleId) + " · " + TL.pname(p.mainPlot) + "</div>" +
+        "</div>";
+    }).join("") || '<div style="color:var(--text-dim);font-size:13px;">' + TL.t("lobby.scriptNone") + "</div>";
+    cards.querySelectorAll(".script-card").forEach(function (c) {
+      c.addEventListener("click", function () {
+        var preset = PRESETS.find(function (x) { return x.id === c.dataset.id; });
+        if (preset) {
+          selectScript(preset.id, null);
+          var wrap = c.closest(".tl-modal-wrap");
+          if (wrap && wrap.parentNode) wrap.parentNode.removeChild(wrap);
+        }
+      });
+    });
+  }
+
+  // 「使用預設」彈窗：搜尋 + 卡片選擇
+  function openPresetPicker() {
+    TL.UI.modal({
+      title: TL.t("lobby.presetTitle"),
+      text: TL.t("lobby.presetHint"),
+      body: function (el) {
+        el.innerHTML =
+          '<div class="ref-toolbar"><label>' + TL.t("lobby.moduleFilter") + '</label>' +
+          '<select id="lb-preset-module">' +
+          '<option value="">' + TL.t("lobby.moduleAll") + "</option>" +
+          Object.keys(MODULES).map(function (mid) {
+            return '<option value="' + mid + '">' + TL.modname(mid) + "</option>";
+          }).join("") +
+          "</select></div>" +
+          '<input type="text" id="lb-preset-search" placeholder="' + TL.t("lobby.scriptSearch") + '">' +
+          '<div class="script-cards" id="lb-preset-cards"></div>';
+        var cards = el.querySelector("#lb-preset-cards");
+        var moduleId = "";
+        var q = "";
+        function refresh() { renderScriptCards(q, cards, moduleId); }
+        refresh();
+        el.querySelector("#lb-preset-search").addEventListener("input", function () {
+          q = this.value.trim().toLowerCase();
+          refresh();
+        });
+        el.querySelector("#lb-preset-module").addEventListener("change", function () {
+          moduleId = this.value;
+          refresh();
+        });
+      },
+      buttons: [{ label: TL.t("common.close"), value: "close" }]
+    });
   }
 
   function setEntryVisible(show) {
@@ -88,29 +161,38 @@
 
     // 劇本選擇（房主）
     if (isHost) {
-      var saved = null;
-      try { saved = JSON.parse(localStorage.getItem("tl_current_script") || "null"); } catch (e) {}
-      var opts = PRESETS.map(function (p) {
-        return '<option value="' + p.id + '"' + (selectedScript && selectedScript.presetId === p.id ? " selected" : "") + ">" +
-          (p.moduleId === "FS" ? "[FS] " : "[BTX] ") + esc(p.title) + "</option>";
-      }).join("");
-      if (saved && saved.cast) {
-        opts += '<option value="__editor__"' + (selectedScript && selectedScript.presetId === "__editor__" ? " selected" : "") + ">" + TL.t("lobby.editorScript", { title: esc(saved.title || TL.t("editor.title")) }) + "</option>";
-      }
+      var saved = loadEditorScript();
       $("lb-script").innerHTML =
         '<h4 class="lobby-sec">' + TL.t("lobby.script") + "</h4>" +
-        '<select id="lb-script-sel">' + opts + "</select>" +
+        '<div class="script-pick">' +
+        '<div class="script-pick-row">' +
+        '<button class="tl-btn tl-btn-primary" id="lb-use-preset">' + TL.t("lobby.usePreset") + "</button>" +
+        '<button class="tl-btn" id="lb-import">' + TL.t("lobby.importScript") + "</button>" +
+        '<input type="file" id="lb-import-file" accept=".json,application/json" style="display:none;">' +
+        "</div>" +
+        (saved && saved.cast
+          ? '<button class="tl-btn lb-editor-btn' + (selectedScript && selectedScript.presetId === "__editor__" ? " selected" : "") + '" id="lb-use-editor">' +
+            TL.t("lobby.editorScript", { title: esc(saved.title || "") }) + "</button>"
+          : "") +
+        "</div>" +
         (room.script ? '<div class="script-picked">' + TL.t("lobby.picked", { title: esc(room.script.title) }) + "</div>" : "");
-      $("lb-script-sel").addEventListener("change", function () {
-        var v = this.value;
-        if (v === "__editor__") {
-          selectedScript = { presetId: v, script: saved };
-          TL.Net.selectScript(null, saved);
-        } else {
-          selectedScript = { presetId: v, script: null };
-          TL.Net.selectScript(v, null);
-        }
+      $("lb-use-preset").addEventListener("click", openPresetPicker);
+      $("lb-import").addEventListener("click", function () { $("lb-import-file").click(); });
+      $("lb-import-file").addEventListener("change", function () {
+        var f = this.files && this.files[0];
+        if (!f) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          try {
+            var obj = JSON.parse(reader.result);
+            if (obj && obj.cast) selectScript("__import__", obj);
+            else toast(TL.t("lobby.importBad"));
+          } catch (e) { toast(TL.t("lobby.importBad")); }
+        };
+        reader.readAsText(f);
       });
+      var edBtn = $("lb-use-editor");
+      if (edBtn) edBtn.addEventListener("click", function () { selectScript("__editor__", saved); });
     } else {
       $("lb-script").innerHTML = room.script
         ? '<h4 class="lobby-sec">' + TL.t("lobby.script") + '</h4><div class="script-picked">' + TL.t("lobby.hostPicked", { title: esc(room.script.title) }) + "</div>"
@@ -121,9 +203,15 @@
   function appendChat(m) {
     var box = $("lb-chat");
     var div = document.createElement("div");
-    div.className = "chat-msg";
-    div.innerHTML = '<img class="avatar-sm" src="' + avatarUrl(m.avatar) + '" alt=""><span class="chat-from">' +
-      esc(m.from) + "：</span><span class='chat-text'>" + esc(m.text) + "</span>";
+    div.className = "chat-msg" + (m.senderId != null && m.senderId === myId ? " me" : "");
+    var time = m.ts ? new Date(m.ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
+    div.innerHTML =
+      '<img class="chat-avatar" src="' + avatarUrl(m.avatar || "writer_1.png") + '" alt="">' +
+      '<div class="chat-main">' +
+      '<div class="chat-meta"><span class="chat-from">' + esc(m.from) + "</span>" +
+      (time ? '<span class="chat-time">' + time + "</span>" : "") + "</div>" +
+      '<div class="chat-bubble">' + esc(m.text) + "</div>" +
+      "</div>";
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
   }
@@ -176,6 +264,7 @@
     renderRoom();
     if (r.hostId === myId && preselect && !window.__preselectDone) {
       window.__preselectDone = true;
+      selectedScript = { presetId: "__editor__", script: preselect };
       TL.Net.selectScript(null, preselect);
     }
     if (r.started) {

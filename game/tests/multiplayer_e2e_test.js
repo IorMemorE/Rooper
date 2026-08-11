@@ -75,7 +75,10 @@ async function startServer() {
     assert((await p2.locator('.slot-badge').count()) === 4, "英雄分配完成（房主：劇作家，玩家2：A+B+C）");
 
     // 選劇本並開始
-    await p1.locator("#lb-script-sel").selectOption("the_first_script");
+    await p1.locator("#lb-use-preset").click();
+    await waitFor(() => p1.locator("#lb-preset-cards .script-card").count());
+    await p1.locator('#lb-preset-cards .script-card[data-id="the_first_script"]').click();
+    await waitFor(async () => (await p1.locator(".script-picked").innerText()).indexOf("THE FIRST SCRIPT") >= 0);
     await p1.click("#lb-start");
     await waitFor(() => p1.locator("#phase-name").count());
     await waitFor(() => p2.locator("#phase-name").count());

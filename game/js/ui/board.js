@@ -72,7 +72,12 @@ TL.UI.Board = (function () {
       });
       var targetable = isTargetable("location", loc.id);
       if (targetable) panel.classList.add("targetable");
-      panel.addEventListener("click", function () { onTargetClick("location", loc.id); });
+      if (S.online && TL.Net.perspective === "mm" && S.game.state.mmManual) {
+        panel.classList.add("mm-editable");
+        panel.addEventListener("click", function () { TL.UI.Panels.openMMLocEditor(loc.id); });
+      } else {
+        panel.addEventListener("click", function () { onTargetClick("location", loc.id); });
+      }
       board.appendChild(panel);
     });
   }
@@ -160,6 +165,11 @@ TL.UI.Board = (function () {
     token.addEventListener("click", function (e) {
       e.stopPropagation(); // 避免冒泡到版圖面板重複觸發目標選擇
       if (S.suppressClick) { S.suppressClick = false; return; }
+      // 聯機劇作家手動模式：點擊角色直接開啟編輯面板
+      if (S.online && TL.Net.perspective === "mm" && S.game.state.mmManual) {
+        TL.UI.Panels.openMMCharEditor(cid);
+        return;
+      }
       onTargetClick("char", cid);
     });
     return token;
@@ -237,12 +247,12 @@ TL.UI.Board = (function () {
       '<div class="hc-name">' + TL.escapeHtml(TL.cname(cid)) +
       (c.alive ? "" : TL.t("game.died")) + "</div>" +
       '<div class="hc-meta">' + TL.t("game.paranoiaLimit") + " " + data.paranoiaLimit +
-      (data.traits.length ? "　" + TL.t("game.traits") + " " + TL.escapeHtml(data.traits.join("、")) : "") + "</div>" +
+      (data.traits.length ? "　" + TL.t("game.traits") + " " + TL.escapeHtml(TL.traitsName(data.traits).join("、")) : "") + "</div>" +
       (role && (c.roleRevealed || S.secretOn) ?
         '<div class="hc-role">' + TL.t("game.role") + "：" +
         TL.rname((!S.secretOn && c.revealedRole && ROLE_INDEX[c.revealedRole]) ? c.revealedRole : role.id) + "</div>" : "") +
       (markers ? '<div class="hc-mks">' + markers + "</div>" : "") +
-      (data.desc ? '<div class="hc-desc">' + TL.escapeHtml(data.desc) + "</div>" : "") +
+      (data.desc ? '<div class="hc-desc">' + TL.escapeHtml(TL.desc("chardesc." + cid, data.desc)) + "</div>" : "") +
       "</div>";
     document.body.appendChild(card);
     S.hoverCard = card;
@@ -262,14 +272,16 @@ TL.UI.Board = (function () {
     if (!c) return;
     var data = CHAR_INDEX[cid];
     var role = c.role ? ROLE_INDEX[c.role] : null;
-    var abHtml = (data.goodwill || []).map(function (ab) {
+    var abHtml = (data.goodwill || []).map(function (ab, gi) {
       return '<div class="ab">' + TL.t("editor.gwCost", { n: ab.cost }) + (ab.oncePerLoop ? TL.t("editor.perLoopOnce") : "") +
         (ab.cannotBeRefused ? TL.t("editor.cannotRefuse") : "") +
         (ab.locRestriction ? TL.t("editor.restriction", { list: ab.locRestriction.map(function (l) { return TL.lname(l); }).join("、") }) : "") +
-        " " + TL.escapeHtml(ab.desc) + "</div>";
+        " " + TL.escapeHtml(TL.desc("char." + cid + "." + gi, ab.desc)) + "</div>";
     }).join("");
     if (!abHtml) abHtml = '<div class="ab" style="color:#c9b56a;">' + TL.t("game.noGw") + "</div>";
-    var spHtml = (data.specials || []).map(function (s) { return '<div class="ab">' + TL.escapeHtml(s) + "</div>"; }).join("");
+    var spHtml = (data.specials || []).map(function (s, si) {
+      return '<div class="ab">' + TL.escapeHtml(TL.desc("char." + cid + ".special." + si, s)) + "</div>";
+    }).join("");
     var mk = function (img, label, count, cls) {
       return '<span class="mk ' + cls + '"><img src="assets/token/' + img + '.png" alt=""><b>' + count + "</b> " + label + "</span>";
     };
@@ -300,10 +312,10 @@ TL.UI.Board = (function () {
           '<img src="assets/chara_live/' + encodeURIComponent(cid) + '.png" alt="">' +
           '<div class="info">' +
           '<div>' + TL.t("game.paranoiaLimit") + " <b>" + data.paranoiaLimit + "</b>" +
-          (data.traits.length ? "　" + TL.t("game.traits") + " " + TL.escapeHtml(data.traits.join("、")) : "") +
+          (data.traits.length ? "　" + TL.t("game.traits") + " " + TL.escapeHtml(TL.traitsName(data.traits).join("、")) : "") +
           (data.forbidden.length ? '　<small style="color:#ff9ba3;">' + TL.t("game.forbidden") + data.forbidden.map(function (l) { return TL.lname(l); }).join("、") + "</small>" : "") +
           "</div>" +
-          '<div style="color:var(--text-dim);font-size:14px;margin-top:4px;">' + TL.escapeHtml(data.desc) + "</div>" +
+          '<div style="color:var(--text-dim);font-size:14px;margin-top:4px;">' + TL.escapeHtml(TL.desc("chardesc." + cid, data.desc)) + "</div>" +
           (spHtml ? '<div style="margin-top:6px;color:var(--accent);">' + TL.t("game.specials") + "</div>" + spHtml : "") +
           '<div style="margin-top:6px;color:var(--accent);">' + TL.t("game.goodwillAb") + "</div>" + abHtml +
           '<div style="margin-top:10px;color:var(--accent);">' + TL.t("game.now") + "</div>" + status +

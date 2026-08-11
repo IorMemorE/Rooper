@@ -252,6 +252,11 @@
     TL.Net.on("view", onNetView);
     TL.Net.on("prompt", onNetPrompt);
     TL.Net.on("chat", onNetChat);
+    TL.Net.on("chat_history", function (m) {
+      (m.messages || []).forEach(renderChatMsg);
+      var box = TL.UI.$("chat-log");
+      if (box) box.scrollTop = box.scrollHeight;
+    });
     TL.Net.on("room", function (r) { S.roomInfo = r; renderChatPlayers(); });
     TL.Net.on("error", function (m) {
       TL.UI.toast(m, "error");
@@ -266,6 +271,10 @@
     TL.UI.$("btn-leave").addEventListener("click", function () {
       TL.Net.leave();
       location.href = "index.html";
+    });
+    TL.UI.$("btn-mm-manual").addEventListener("click", function () {
+      if (!S.game) return;
+      TL.UI.core.netAction("mmManualEnable", { enabled: !S.game.state.mmManual });
     });
     TL.UI.$("chat-send").addEventListener("click", sendChat);
     TL.UI.$("chat-input").addEventListener("keydown", function (e) {
@@ -313,6 +322,7 @@
       loop: view.loop,
       leader: view.leader,
       ended: view.ended,
+      mmManual: !!view.mmManual,
       chars: chars,
       locations: locations,
       mmPlays: (view.mmPlays || []).map(function (p) {
@@ -384,13 +394,26 @@
   }
 
   function onNetChat(m) {
+    renderChatMsg(m);
     var box = TL.UI.$("chat-log");
+    if (box) box.scrollTop = box.scrollHeight;
+  }
+
+  function renderChatMsg(m) {
+    var box = TL.UI.$("chat-log");
+    if (!box) return;
+    var me = m.senderId != null && m.senderId === TL.Net.playerId;
+    var time = m.ts ? new Date(m.ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
     var div = document.createElement("div");
-    div.className = "chat-msg";
-    div.innerHTML = '<img class="avatar-sm" src="assets/player_stand/' + encodeURIComponent(m.avatar) + '" alt="">' +
-      '<span class="chat-from">' + TL.escapeHtml(m.from) + "：</span><span class='chat-text'>" + TL.escapeHtml(m.text) + "</span>";
+    div.className = "chat-msg" + (me ? " me" : "");
+    div.innerHTML =
+      '<img class="chat-avatar" src="assets/player_stand/' + encodeURIComponent(m.avatar || "writer_1.png") + '" alt="">' +
+      '<div class="chat-main">' +
+      '<div class="chat-meta"><span class="chat-from">' + TL.escapeHtml(m.from) + "</span>" +
+      (time ? '<span class="chat-time">' + time + "</span>" : "") + "</div>" +
+      '<div class="chat-bubble">' + TL.escapeHtml(m.text) + "</div>" +
+      "</div>";
     box.appendChild(div);
-    box.scrollTop = box.scrollHeight;
   }
 
   function renderChatPlayers() {
@@ -411,10 +434,10 @@
     if (!wrap) return;
     var slots = TL.Net.slots || [];
     var HEROES = [
-      { slot: "mm", name: TL.t("game.mastermind"), logo: "assets/extra/clock.png" },
-      { slot: "a", name: "A", logo: "assets/extra/diary.png" },
-      { slot: "b", name: "B", logo: "assets/extra/icon.png" },
-      { slot: "c", name: "C", logo: "assets/extra/heros.png" }
+      { slot: "mm", name: TL.t("game.mastermind"), logo: "assets/player_stand/writer_1.png" },
+      { slot: "a", name: "A", logo: "assets/extra/clock.png" },
+      { slot: "b", name: "B", logo: "assets/extra/diary.png" },
+      { slot: "c", name: "C", logo: "assets/extra/icon.png" }
     ];
     wrap.innerHTML = slots.map(function (s) {
       var h = HEROES.find(function (x) { return x.slot === s; }) || { name: s, logo: "" };
@@ -570,6 +593,14 @@
       renderPerspectiveBar();
       TL.UI.$("tgl-secret-row").style.display = TL.Net.perspective === "mm" ? "" : "none";
       TL.UI.$("tgl-secret").checked = S.secretOn && TL.Net.perspective === "mm";
+      var mmBtn = TL.UI.$("btn-mm-manual");
+      if (TL.Net.perspective === "mm") {
+        mmBtn.style.display = "";
+        mmBtn.textContent = (st.mmManual ? "✋ " : "") + TL.t("game.mmManual");
+        mmBtn.classList.toggle("active", !!st.mmManual);
+      } else {
+        mmBtn.style.display = "none";
+      }
     }
     if (st.phase === "final_guess" && !S.finalGuessShown && !st.ended) {
       S.finalGuessShown = true;

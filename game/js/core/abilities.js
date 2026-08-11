@@ -44,7 +44,8 @@ TL.Game.prototype._mmAbilityPhase = async function () {
     if (!usable.length) break;
     var opts = usable.map(function (a, i) {
       var who = a.charId ? self._charName(a.charId) + "（" + (ROLE_INDEX[st.chars[a.charId].role] ? ROLE_INDEX[st.chars[a.charId].role].name : "") + "）" : "副規則";
-      return who + "：" + a.ability.desc;
+      var roleId = a.charId ? st.chars[a.charId].role : null;
+      return who + "：" + TL.desc("role." + roleId + "." + a.ability.effect, a.ability.desc);
     });
     opts.push("結束能力階段");
     var idx = await this.io.askChoice({
@@ -342,16 +343,16 @@ TL.registerMMSource(function (game) {
     if (st.chars[id].role === "factor" && st.locations.school.intrigue >= 2) found = id;
   });
   if (!found) return null;
-  return { charId: found, ability: { timing: "mm_phase", mandatory: false, desc: "【因子】獲得傳謠人的能力：往同一區域中任意1名角色身上放置1枚[不安]。", effect: "ct_paranoia" } };
+  return { charId: found, ability: { timing: "mm_phase", mandatory: false, desc: TL.desc("role.factor.factor_ct_ability", "【因子】獲得傳謠人的能力：往同一區域中任意1名角色身上放置1枚[不安]。"), effect: "ct_paranoia" } };
 });
 // 額外來源：流言四起（副規則）
 TL.registerMMSource(function (game) {
   if (!game.script.subplots.some(function (id) { return PLOT_INDEX[id] && PLOT_INDEX[id].rule && PLOT_INDEX[id].rule.type === "mm_intrigue_any_location"; })) return null;
-  return { charId: null, ability: { timing: "mm_phase", mandatory: false, desc: "【流言四起】往任意1塊版圖上放置1枚[密謀]。(每輪限1次)", effect: "unsettling_rumor" } };
+  return { charId: null, ability: { timing: "mm_phase", mandatory: false, desc: TL.desc("ability.unsettling_rumor", "【流言四起】往任意1塊版圖上放置1枚[密謀]。(每輪限1次)"), effect: "unsettling_rumor" } };
 });
 // 額外來源：χ異因子（副規則）
 TL.registerMMSource(function (game) {
   if (!game._hasSubplot("unsafe_trigger")) return null;
-  return { charId: null, ability: { timing: "mm_phase", mandatory: false, desc: "【χ異因子】往存活的不安定因子所在版圖放置1枚[密謀]。(每輪限1次)", effect: "unsafe_trigger" } };
+  return { charId: null, ability: { timing: "mm_phase", mandatory: false, desc: TL.desc("ability.unsafe_trigger", "【χ異因子】往存活的不安定因子所在版圖放置1枚[密謀]。(每輪限1次)"), effect: "unsafe_trigger" } };
 });
 

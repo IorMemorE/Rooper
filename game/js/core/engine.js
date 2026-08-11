@@ -106,11 +106,11 @@ TL.Game.prototype.nextStep = async function () {
 // ---------- 劇作家打牌 ----------
 TL.Game.prototype.mmPlayCard = function (cardId, targetType, targetId) {
   var st = this.state;
-  if (st.phase !== "mm_play") return { ok: false, msg: "當前不是劇作家打牌階段" };
-  if (st.mmPlays.length >= 3) return { ok: false, msg: "劇作家已打出3張牌" };
-  if (this._usedCard("mm", cardId)) return { ok: false, msg: "該牌本輪輪迴已使用" };
+  if (st.phase !== "mm_play") return { ok: false, msg: TL.t("game.err.notMmPlay") };
+  if (st.mmPlays.length >= 3) return { ok: false, msg: TL.t("game.err.mmMax3") };
+  if (this._usedCard("mm", cardId)) return { ok: false, msg: TL.t("game.err.cardUsed") };
   if (st.mmPlays.some(function (p) { return p.targetType === targetType && p.targetId === targetId; })) {
-    return { ok: false, msg: "劇作家不能在相同位置打兩張牌" };
+    return { ok: false, msg: TL.t("game.err.mmSamePos") };
   }
   // 永生者等：劇作家不可以往該角色身上設置任何行動牌
   if (targetType === "char" && this._noMMCards(targetId)) {
@@ -128,8 +128,8 @@ TL.Game.prototype.mmRemovePlay = function (idx) {
 
 TL.Game.prototype.confirmMMPlays = function () {
   var st = this.state;
-  if (st.phase !== "mm_play") return { ok: false, msg: "當前不是劇作家打牌階段" };
-  if (st.mmPlays.length !== 3) return { ok: false, msg: "劇作家需要打出3張牌" };
+  if (st.phase !== "mm_play") return { ok: false, msg: TL.t("game.err.notMmPlay") };
+  if (st.mmPlays.length !== 3) return { ok: false, msg: TL.t("game.err.mmNeed3") };
   st.phase = "p_play";
   return { ok: true };
 };
@@ -143,15 +143,15 @@ TL.Game.prototype._usedCard = function (deck, cardId) {
 
 TL.Game.prototype.pPlayCard = function (playerIndex, deckIndex, cardId, targetType, targetId) {
   var st = this.state;
-  if (st.phase !== "p_play") return { ok: false, msg: "當前不是主人公打牌階段" };
+  if (st.phase !== "p_play") return { ok: false, msg: TL.t("game.err.notPPlay") };
   var deck = "p" + deckIndex;
-  if (this._usedCard(deck, cardId)) return { ok: false, msg: "該牌本輪輪迴已使用" };
+  if (this._usedCard(deck, cardId)) return { ok: false, msg: TL.t("game.err.cardUsed") };
   var existing = st.pPlays.filter(function (p) { return p.player === playerIndex; });
   var maxPlays = this._playsPerProtagonist(playerIndex);
-  if (existing.length >= maxPlays) return { ok: false, msg: "該主人公已打完本回合的牌" };
-  if (st.pPlays.some(function (p) { return p.deck === deckIndex; })) return { ok: false, msg: "該牌組本回合已打出1張" };
+  if (existing.length >= maxPlays) return { ok: false, msg: TL.t("game.err.pMaxPlays") };
+  if (st.pPlays.some(function (p) { return p.deck === deckIndex; })) return { ok: false, msg: TL.t("game.err.deckUsed") };
   if (st.pPlays.some(function (p) { return p.targetType === targetType && p.targetId === targetId; })) {
-    return { ok: false, msg: "主人公不能在另一位主人公打牌的位置打牌" };
+    return { ok: false, msg: TL.t("game.err.pSamePos") };
   }
   // 偽裝自殺：放置了Ex牌的角色身上，本輪輪迴剩餘時間主人公無法放置行動牌
   if (targetType === "char" && st.exCards[targetId]) {
@@ -183,12 +183,12 @@ TL.Game.prototype.decksForPlayer = function (playerIndex) {
 
 TL.Game.prototype.confirmPPlays = function () {
   var st = this.state;
-  if (st.phase !== "p_play") return { ok: false, msg: "當前不是主人公打牌階段" };
+  if (st.phase !== "p_play") return { ok: false, msg: TL.t("game.err.notPPlay") };
   var self = this;
   for (var i = 0; i < this.protagonistCount; i++) {
     var need = this._playsPerProtagonist(i);
     var have = st.pPlays.filter(function (p) { return p.player === i; }).length;
-    if (have < need) return { ok: false, msg: "主人公" + (i + 1) + "還需要打出" + (need - have) + "張牌" };
+    if (have < need) return { ok: false, msg: TL.t("game.err.pNeedPlays", { n: i + 1, k: need - have }) };
   }
   st.phase = "resolve";
   return { ok: true };

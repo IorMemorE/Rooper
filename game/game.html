@@ -15,6 +15,7 @@
     <label class="toggle-row" id="tgl-secret-row"><input type="checkbox" id="tgl-secret"> <span data-i18n="game.showSecret">顯示劇作家秘密</span></label>
     <div id="net-bar" style="display:none;align-items:center;gap:8px;">
       <span class="net-dot"></span><span id="net-status" style="font-size:14px;color:var(--text-dim);" data-i18n="game.online">聯機中</span>
+      <button class="tl-btn" id="btn-mm-manual" style="display:none;"></button>
       <button class="tl-btn" id="btn-leave" data-i18n="game.leave">離開房間</button>
     </div>
     <select id="lang-select" class="tl-lang" title="Language"></select>
@@ -100,6 +101,7 @@
   <script src="js/core/phases.js"></script>
   <script src="js/core/death.js"></script>
   <script src="js/core/final.js"></script>
+  <script src="js/data/ai-strategies.js"></script>
   <script src="js/ai/ai.js"></script>
   <script src="js/ai/strategies.js"></script>
   <script src="js/ui/common.js"></script>

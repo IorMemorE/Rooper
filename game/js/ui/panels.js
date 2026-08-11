@@ -257,7 +257,8 @@ TL.UI.Panels = (function () {
         var isSel = S.pendingAbility && S.pendingAbility.kind === "mm" && S.pendingAbility.entry === a;
         var btn = document.createElement("button");
         btn.className = "ability-btn" + (usable[abilityKey(a)] ? " usable" : " dim") + (isSel ? " selected" : "");
-        btn.textContent = who + "：" + a.ability.desc;
+        var roleId = a.charId ? st.chars[a.charId].role : null;
+        btn.textContent = who + "：" + TL.desc("role." + roleId + "." + a.ability.effect, a.ability.desc);
         if (usable[abilityKey(a)]) {
           btn.addEventListener("click", function () { beginAbility("mm", a); });
         } else {
@@ -280,7 +281,8 @@ TL.UI.Panels = (function () {
           S.pendingAbility.entry.charId === g.charId && S.pendingAbility.entry.abilityIdx === g.abilityIdx;
         var btn = document.createElement("button");
         btn.className = "ability-btn" + (g.usable ? " usable" : " dim") + (isSel ? " selected" : "");
-        btn.textContent = TL.t("editor.gwCost", { n: g.ability.cost }) + " " + TL.cname(g.charId) + "：" + g.ability.desc;
+        btn.textContent = TL.t("editor.gwCost", { n: g.ability.cost }) + " " + TL.cname(g.charId) + "：" +
+          TL.desc("char." + g.charId + "." + g.abilityIdx, g.ability.desc);
         if (g.usable) {
           btn.addEventListener("click", function () {
             beginAbility("gw", { charId: g.charId, abilityIdx: g.abilityIdx, ability: g.ability });
@@ -334,7 +336,9 @@ TL.UI.Panels = (function () {
     }
     var text = TL.t("game.confirmAbilityText", {
       who: who,
-      desc: pa.entry.ability.desc,
+      desc: pa.kind === "gw"
+        ? TL.desc("char." + pa.entry.charId + "." + pa.entry.abilityIdx, pa.entry.ability.desc)
+        : TL.desc("role." + (st.chars[pa.entry.charId] ? st.chars[pa.entry.charId].role : null) + "." + pa.entry.ability.effect, pa.entry.ability.desc),
       target: target ? TL.t("game.targetRow", { label: target.label }) : ""
     });
     TL.UI.confirm({ title: TL.t("game.confirmAbility"), text: text, okText: TL.t("game.confirmUse"), cancelText: TL.t("common.cancel") }).then(async function (yes) {
@@ -385,6 +389,79 @@ TL.UI.Panels = (function () {
     return true;
   }
 
+  // 聯機劇作家手動模式：編輯角色位置 / 屬性 / 死活
+  function openMMCharEditor(cid) {
+    var c = S.game.state.chars[cid];
+    if (!c) return;
+    var vals = { loc: c.loc, paranoia: c.paranoia, goodwill: c.goodwill, intrigue: c.intrigue, guard: c.guard, alive: c.alive };
+    var locOpts = LOCATIONS.map(function (l) {
+      return '<option value="' + l.id + '"' + (c.loc === l.id ? " selected" : "") + ">" + TL.lname(l.id) + "</option>";
+    }).join("");
+    TL.UI.modal({
+      title: TL.t("game.mmManualEdit") + "：" + TL.cname(cid),
+      body: function (el) {
+        el.innerHTML =
+          '<div class="set-row"><label class="set-label">' + TL.t("game.atLoc") + "</label>" +
+          '<select id="mm-loc">' + locOpts + "</select></div>" +
+          '<div class="set-row"><label class="set-label">' + TL.t("game.counter.paranoia") + "</label>" +
+          '<input type="number" id="mm-paranoia" min="0" max="99" value="' + c.paranoia + '"></div>' +
+          '<div class="set-row"><label class="set-label">' + TL.t("game.counter.goodwill") + "</label>" +
+          '<input type="number" id="mm-goodwill" min="0" max="99" value="' + c.goodwill + '"></div>' +
+          '<div class="set-row"><label class="set-label">' + TL.t("game.counter.intrigue") + "</label>" +
+          '<input type="number" id="mm-intrigue" min="0" max="99" value="' + c.intrigue + '"></div>' +
+          '<div class="set-row"><label class="set-label">' + TL.t("game.counter.guard") + "</label>" +
+          '<input type="number" id="mm-guard" min="0" max="5" value="' + c.guard + '"></div>' +
+          '<div class="set-row"><label class="toggle-row"><input type="checkbox" id="mm-alive"' +
+          (c.alive ? " checked" : "") + "> " + TL.t("game.alive") + "</label></div>";
+        el.querySelector("#mm-loc").addEventListener("change", function () { vals.loc = this.value; });
+        el.querySelector("#mm-paranoia").addEventListener("input", function () { vals.paranoia = parseInt(this.value, 10) || 0; });
+        el.querySelector("#mm-goodwill").addEventListener("input", function () { vals.goodwill = parseInt(this.value, 10) || 0; });
+        el.querySelector("#mm-intrigue").addEventListener("input", function () { vals.intrigue = parseInt(this.value, 10) || 0; });
+        el.querySelector("#mm-guard").addEventListener("input", function () { vals.guard = parseInt(this.value, 10) || 0; });
+        el.querySelector("#mm-alive").addEventListener("change", function () { vals.alive = this.checked; });
+      },
+      buttons: [
+        { label: TL.t("common.cancel"), value: "cancel" },
+        { label: TL.t("common.confirm"), value: "ok", primary: true }
+      ]
+    }).then(function (v) {
+      if (v !== "ok") return;
+      var payload = {
+        charId: cid,
+        loc: vals.loc,
+        paranoia: vals.paranoia,
+        goodwill: vals.goodwill,
+        intrigue: vals.intrigue,
+        guard: vals.guard,
+        alive: vals.alive
+      };
+      TL.UI.core.netAction("mmManualSet", payload);
+    });
+  }
+
+  // 聯機劇作家手動模式：編輯版圖（密謀等）
+  function openMMLocEditor(locId) {
+    var loc = S.game.state.locations[locId];
+    if (!loc) return;
+    var vals = { intrigue: loc.intrigue || 0 };
+    TL.UI.modal({
+      title: TL.t("game.mmManualLocEdit") + "：" + TL.lname(locId),
+      body: function (el) {
+        el.innerHTML =
+          '<div class="set-row"><label class="set-label">' + TL.t("game.counter.intrigue") + "</label>" +
+          '<input type="number" id="mm-loc-intrigue" min="0" max="99" value="' + (loc.intrigue || 0) + '"></div>';
+        el.querySelector("#mm-loc-intrigue").addEventListener("input", function () { vals.intrigue = parseInt(this.value, 10) || 0; });
+      },
+      buttons: [
+        { label: TL.t("common.cancel"), value: "cancel" },
+        { label: TL.t("common.confirm"), value: "ok", primary: true }
+      ]
+    }).then(function (v) {
+      if (v !== "ok") return;
+      TL.UI.core.netAction("mmManualSet", { locId: locId, intrigue: vals.intrigue });
+    });
+  }
+
   function renderSecret() {
     var panel = TL.UI.$("secret-panel");
     if (S.online && TL.Net.perspective !== "mm") { panel.style.display = "none"; return; }
@@ -400,7 +477,7 @@ TL.UI.Panels = (function () {
       return TL.t("editor.dayX", { n: inc.day }) + " " + TL.iname(inc.incidentId) + " → " + TL.cname(inc.culpritId);
     }).join("<br>");
     panel.innerHTML = "<h4>" + TL.t("game.secretInfo") + "</h4>" +
-      "<div>" + TL.t("game.mainRow") + (main ? TL.pname(main.id) : "—") + "</div>" +
+      "<div>" + TL.t("game.mainRow") + (main ? TL.pname(main.id) + "：" + TL.desc("plot." + main.id, main.desc) : "—") + "</div>" +
       "<div>" + TL.t("game.subRow") + S.game.script.subplots.map(function (sid) { return TL.pname(sid); }).join("、") + "</div>" +
       (S.game.script.specialRules ? "<div style='margin-top:6px;'>" + TL.t("game.secretSpecial") + "<br>" + TL.escapeHtml(S.game.script.specialRules) + "</div>" : "") +
       (S.game.script.publicSpecialRules ? "<div style='margin-top:6px;'>" + TL.t("game.dataSpecialPublic") + "<br>" + TL.escapeHtml(S.game.script.publicSpecialRules) + "</div>" : "") +
@@ -414,6 +491,8 @@ TL.UI.Panels = (function () {
     renderPlays: renderPlays,
     renderAbilityPanel: renderAbilityPanel,
     renderSecret: renderSecret,
-    handleAbilityTarget: handleAbilityTarget
+    handleAbilityTarget: handleAbilityTarget,
+    openMMCharEditor: openMMCharEditor,
+    openMMLocEditor: openMMLocEditor
   };
 })();

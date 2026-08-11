@@ -3,10 +3,10 @@ window.TL = window.TL || {};
 
 TL.Game.prototype.finalGuess = async function (charId, roleId) {
   var st = this.state;
-  if (!st.finalGuess) return { ok: false, msg: "當前不是最終決戰" };
+  if (!st.finalGuess) return { ok: false, msg: TL.t("game.err.notFinalGuess") };
   var c = st.chars[charId];
-  if (!c) return { ok: false, msg: "角色不存在" };
-  if (c.roleRevealed) return { ok: false, msg: "該角色身份已公開" };
+  if (!c) return { ok: false, msg: TL.t("game.err.noChar") };
+  if (c.roleRevealed) return { ok: false, msg: TL.t("game.err.roleRevealed") };
   if (c.role === roleId) {
     c.roleRevealed = true;
     this._log(TL.L("finalCorrect", { char: this._charName(charId), role: TL.rname(roleId) }) ||

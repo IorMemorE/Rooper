@@ -28,6 +28,7 @@ const files = [
   "js/core/phases.js",
   "js/core/death.js",
   "js/core/final.js",
+  "js/data/ai-strategies.js",
   "js/ai/ai.js",
   "js/ai/strategies.js"
 ];

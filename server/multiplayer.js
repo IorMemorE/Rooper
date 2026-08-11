@@ -89,6 +89,7 @@ function publicRoom(room) {
     hostId: room.hostId,
     started: room.started,
     scriptTitle: room.script ? room.script.title : null,
+    script: room.script ? publicScript(room.script) : null,
     players: room.players.map(function (p) {
       return { id: p.id, name: p.name, avatar: p.avatar, slots: p.slots, online: !!p.conn };
     })
@@ -141,6 +142,7 @@ function buildView(room, player) {
     loop: st.loop,
     leader: st.leader,
     ended: st.ended,
+    mmManual: !!room.mmManual,
     chars: chars,
     locations: {
       hospital: st.locations.hospital.intrigue,
@@ -304,6 +306,36 @@ async function handleAction(room, player, msg) {
         const r = await g.finalGuess(msg.cid, msg.rid);
         return r.ok ? { ok: true } : err(r.msg || "猜測失敗");
       }
+      case "mmManualEnable": {
+        if (player.slots.indexOf("mm") < 0) return err("你不是劇作家");
+        room.mmManual = !!msg.enabled;
+        broadcastViews(room);
+        return { ok: true };
+      }
+      case "mmManualSet": {
+        if (player.slots.indexOf("mm") < 0) return err("你不是劇作家");
+        if (!room.mmManual) return err("劇作家手動模式未開啟");
+        if (msg.locId != null) {
+          // 地點編輯：調整版圖密謀
+          const loc = st.locations[msg.locId];
+          if (!loc) return err("版圖不存在");
+          if (msg.intrigue != null) loc.intrigue = Math.max(0, Math.min(99, Math.round(msg.intrigue)));
+        } else {
+          const c = st.chars[msg.charId];
+          if (!c) return err("角色不存在");
+          if (msg.loc != null) {
+            if (!LOC_INDEX[msg.loc]) return err("版圖不存在");
+            c.loc = msg.loc;
+          }
+          if (msg.paranoia != null) c.paranoia = Math.max(0, Math.min(99, Math.round(msg.paranoia)));
+          if (msg.goodwill != null) c.goodwill = Math.max(0, Math.min(99, Math.round(msg.goodwill)));
+          if (msg.intrigue != null) c.intrigue = Math.max(0, Math.min(99, Math.round(msg.intrigue)));
+          if (msg.guard != null) c.guard = Math.max(0, Math.min(5, Math.round(msg.guard)));
+          if (typeof msg.alive === "boolean") c.alive = msg.alive;
+        }
+        broadcastViews(room);
+        return { ok: true };
+      }
       default:
         return err("未知動作：" + msg.action);
     }
@@ -345,6 +377,9 @@ function handleJoin(conn, data, client) {
   client.id = player.id;
   clients.set(conn, client);
   send(conn, { type: "welcome", id: player.id, room: publicRoom(room) });
+  if (room.chat && room.chat.length) {
+    send(conn, { type: "chat_history", messages: room.chat.slice(-50) });
+  }
   broadcastRoom(room);
   if (room.started && room.game) send(conn, buildView(room, player));
 }
@@ -370,6 +405,7 @@ function handleCreate(conn, data, client) {
     prompts: new Map(),
     promptPlayer: null,
     promptIsMastermind: false,
+    mmManual: false,
     chat: []
   };
   rooms.set(room.code, room);
@@ -418,9 +454,10 @@ async function dispatch(msg, client, conn) {
     case "chat": {
       if (!client.room || !msg.text) break;
       const text = String(msg.text).slice(0, 300);
-      client.room.chat.push({ from: client.name, avatar: client.avatar, text: text, ts: Date.now() });
+      const entry = { from: client.name, avatar: client.avatar, text: text, ts: Date.now(), senderId: client.id };
+      client.room.chat.push(entry);
       if (client.room.chat.length > 200) client.room.chat.splice(0, client.room.chat.length - 200);
-      const out = { type: "chat", from: client.name, avatar: client.avatar, text: text, ts: Date.now() };
+      const out = { type: "chat", from: client.name, avatar: client.avatar, text: text, ts: entry.ts, senderId: client.id };
       client.room.players.forEach(function (p) { send(p.conn, out); });
       break;
     }

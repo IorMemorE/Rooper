@@ -14,7 +14,8 @@ TL.Game.prototype._goodwillPhase = async function () {
     var usable = this._usableGoodwill();
     if (!usable.length) { this._log(TL.I18N.log("gwNone") || "（沒有可用的友好能力）"); break; }
     var opts = usable.map(function (u) {
-      return self._charName(u.charId) + "（友好" + u.ability.cost + "）：" + u.ability.desc;
+      return self._charName(u.charId) + "（友好" + u.ability.cost + "）：" +
+        TL.desc("char." + u.charId + "." + u.abilityIdx, u.ability.desc);
     });
     opts.push("結束友好能力階段");
     var idx = await this.io.askChoice({
@@ -175,8 +176,9 @@ TL.Game.prototype._execGoodwill = async function (chosen, leaderDeck, targetOver
     var ctx = TL.goodwillCtx(this, chosen);
     await impl.exec(this, ctx, targetOverride, leaderDeck);
   } else {
-    this._log(TL.L("gwAbilityUsed", { who: this._charName(chosen.charId), desc: chosen.ability.desc }) ||
-      ("【" + this._charName(chosen.charId) + "】使用了能力：" + chosen.ability.desc));
+    var usedDesc = TL.desc("char." + chosen.charId + "." + chosen.abilityIdx, chosen.ability.desc);
+    this._log(TL.L("gwAbilityUsed", { who: this._charName(chosen.charId), desc: usedDesc }) ||
+      ("【" + this._charName(chosen.charId) + "】使用了能力：" + usedDesc));
   }
   // 巫師：結算該角色友好能力後，公開該角色身份；之後隊長可以使Ex槽增加1
   if (c.role === "wizard") {
