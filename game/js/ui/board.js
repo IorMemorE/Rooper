@@ -7,30 +7,36 @@ TL.UI.Board = (function () {
 
   function playCardHtml(pl, faceUp, omitTag) {
     var ownerCls = pl.owner === "mm" ? "mm" : "p";
+    var dataAttr = (pl.idx != null && !omitTag)
+      ? ' data-owner="' + pl.owner + '" data-idx="' + pl.idx + '"'
+      : "";
+    // 看队友盖牌设置：p 牌显示卡面；剧作家的牌仍保持背面直到掀开
+    var showFace = faceUp && (pl.owner === "mm" ? (!S.online || !!S.game.state.revealed) : true);
     var tag = omitTag ? "" :
       '<span class="card-target">' + TL.escapeHtml(pl.targetType === "location" ? TL.t("game.locationTag") : TL.cname(pl.targetId)) + "</span>";
-    if (faceUp) {
+    if (showFace) {
       var card = CARD_INDEX[pl.card];
       if (!card) {
-        return '<span class="card-wrap"><div class="face-up unknown ' + ownerCls + '">?</div>' + tag + "</span>";
+      return '<span class="card-wrap"' + dataAttr + '><div class="face-up unknown ' + ownerCls + '">?</div>' + tag + "</span>";
       }
       var imgSrc = pl.owner === "mm"
         ? "assets/mastermind_cards/" + card.img
         : "assets/protagonist" + ["A", "B", "C"][pl.deck] + "_cards/" + card.img;
-      return '<span class="card-wrap"><img class="face-up ' + ownerCls + '" src="' + imgSrc + '" title="' +
+      return '<span class="card-wrap"' + dataAttr + '><img class="face-up ' + ownerCls + '" src="' + imgSrc + '" title="' +
         TL.escapeHtml(TL.cardname(pl.card)) + '" alt="">' + tag + "</span>";
     }
     var backSrc = pl.owner === "mm"
       ? "assets/mastermind_cards/back.png"
       : "assets/protagonist" + ["A", "B", "C"][pl.deck] + "_cards/back.png";
-    return '<span class="card-wrap"><img class="face-down ' + ownerCls + '" src="' + backSrc + '" alt="">' + tag + "</span>";
+    return '<span class="card-wrap"' + dataAttr + '><img class="face-down ' + ownerCls + '" src="' + backSrc + '" alt="">' + tag + "</span>";
   }
 
   function renderBoard() {
     var board = TL.UI.$("board");
     var st = S.game.state;
     board.innerHTML = "";
-    var faceUp = S.revealMode || !!S.resolvePlays;
+    var faceUp = S.revealMode || !!S.resolvePlays ||
+      (S.online && (!!st.revealed || (!!st.seeTeammateCards && st.phase === "p_play")));
     var mmList = S.resolvePlays ? S.resolvePlays.mm : st.mmPlays;
     var pList = S.resolvePlays ? S.resolvePlays.p : st.pPlays;
     LOCATIONS.forEach(function (loc) {
@@ -43,8 +49,8 @@ TL.UI.Board = (function () {
       });
       var intrigue = st.locations[loc.id].intrigue;
       var playsOn = [];
-      mmList.map(function (p) { return { owner: "mm", card: p.card, targetType: p.targetType, targetId: p.targetId }; })
-        .concat(pList.map(function (p) { return { owner: "p", deck: p.deck, card: p.card, targetType: p.targetType, targetId: p.targetId }; }))
+      mmList.map(function (p, i) { return { owner: "mm", card: p.card, targetType: p.targetType, targetId: p.targetId, idx: i }; })
+        .concat(pList.map(function (p, i) { return { owner: "p", deck: p.deck, card: p.card, targetType: p.targetType, targetId: p.targetId, idx: i }; }))
         .forEach(function (pl) {
           if ((pl.targetType === "location" && pl.targetId === loc.id) ||
               (pl.targetType === "char" && st.chars[pl.targetId] && st.chars[pl.targetId].loc === loc.id)) {
@@ -72,14 +78,50 @@ TL.UI.Board = (function () {
       });
       var targetable = isTargetable("location", loc.id);
       if (targetable) panel.classList.add("targetable");
-      if (S.online && TL.Net.perspective === "mm" && S.game.state.mmManual) {
+      // 手動模式編輯入口：僅在「沒有進行中的目標選擇」時啟用，避免擋住打牌/能力選目標
+      var manualLocEdit = S.online && TL.Net.perspective === "mm" && S.game.state.mmManual &&
+        !S.pending && !S.pendingAbility && st.phase !== "mm_play" &&
+        st.phase !== "final_guess" && st.phase !== "final_guess_pending" && st.phase !== "final_result";
+      if (manualLocEdit) {
         panel.classList.add("mm-editable");
-        panel.addEventListener("click", function () { TL.UI.Panels.openMMLocEditor(loc.id); });
+        panel.addEventListener("click", function (e) {
+          if (tryRemovePlay(e)) return;
+          TL.UI.Panels.openMMLocEditor(loc.id);
+        });
       } else {
-        panel.addEventListener("click", function () { onTargetClick("location", loc.id); });
+        panel.addEventListener("click", function (e) {
+          if (tryRemovePlay(e)) return;
+          onTargetClick("location", loc.id);
+        });
       }
       board.appendChild(panel);
     });
+  }
+
+  // 点击盘面上的已盖牌 → 收回（图标重新可用）。返回 true 表示已处理
+  function tryRemovePlay(e) {
+    var cw = e.target && e.target.closest ? e.target.closest(".card-wrap[data-owner]") : null;
+    if (!cw) return false;
+    var st = S.game.state;
+    var owner = cw.getAttribute("data-owner");
+    var idx = parseInt(cw.getAttribute("data-idx"), 10);
+    if (owner === "mm" && st.phase === "mm_play" && !S.resolvePlays) {
+      e.stopPropagation();
+      e.preventDefault();
+      if (S.online) TL.UI.core.netAction("mmRemovePlay", { idx: idx });
+      else S.game.mmRemovePlay(idx);
+      TL.UI.core.render();
+      return true;
+    }
+    if (owner === "p" && st.phase === "p_play" && !S.resolvePlays) {
+      e.stopPropagation();
+      e.preventDefault();
+      if (S.online) TL.UI.core.netAction("pRemovePlay", { idx: idx });
+      else S.game.pRemovePlay(idx);
+      TL.UI.core.render();
+      return true;
+    }
+    return false;
   }
 
   function makeCharToken(cid, charCards, faceUp) {
@@ -94,6 +136,13 @@ TL.UI.Board = (function () {
     if (c.paranoia > 0) counters += '<div class="counter pa"><img src="assets/token/paranoia.png" alt="' + TL.t("game.counter.paranoia") + '"><span>' + c.paranoia + "</span></div>";
     if (c.intrigue > 0) counters += '<div class="counter in"><img src="assets/token/intrigue.png" alt="' + TL.t("game.counter.intrigue") + '"><span>' + c.intrigue + "</span></div>";
     if (c.guard > 0) counters += '<div class="counter guard"><img src="assets/token/guard.png" alt="' + TL.t("game.counter.guard") + '"><span>' + c.guard + "</span></div>";
+    if (c.hope > 0) counters += '<div class="counter hope"><img src="assets/token/hope.png" alt="' + TL.t("game.counter.hope") + '"><span>' + c.hope + "</span></div>";
+    if (c.despair > 0) counters += '<div class="counter despair"><img src="assets/token/despair.png" alt="' + TL.t("game.counter.despair") + '"><span>' + c.despair + "</span></div>";
+    var tokens = "";
+    if (c.perished) tokens += '<div class="token-mark" title="' + TL.t("game.token.perished") + '"><img src="assets/token/perished.png" alt=""></div>';
+    if (c.acquainted) tokens += '<div class="token-mark" title="' + TL.t("game.token.acquainted") + (c.acquaintedRefused ? "（拒絕）" : "") + '"><img src="assets/token/acquainted.png" alt=""></div>';
+    if (c.loyaltyOn) tokens += '<div class="token-mark" title="' + TL.t("game.token.loyalty") + '"><img src="assets/token/loyalty.png" alt=""></div>';
+    if (tokens) counters += '<div class="token-row">' + tokens + "</div>";
     if (st.exCards && st.exCards[cid]) counters += '<div class="counter ex" title="' + TL.term("basic.exCard", "Ex牌") + '">Ex</div>';
     var roleBadge = "";
     if (role && (c.roleRevealed || S.secretOn)) {
@@ -119,12 +168,22 @@ TL.UI.Board = (function () {
     }
     var token = document.createElement("div");
     token.className = "char-token";
+    // 最终决战结果框（绿=正确 / 红=错误）
+    if (S.online && st.phase === "final_result" && st.finalGuess && st.finalGuess.result) {
+      var fgRes = st.finalGuess.result.filter(function (r) { return r.charId === cid; })[0];
+      if (fgRes) token.className += fgRes.correct ? " guess-correct" : " guess-wrong";
+    }
     token.dataset.cid = cid;
+    var guessTag = "";
+    if (S.online && st.phase === "final_guess" && st.finalGuess && st.finalGuess.selections &&
+        st.finalGuess.selections[cid]) {
+      guessTag = '<div class="guess-tag">' + TL.t("game.fg.guessShort") + TL.escapeHtml(TL.rname(st.finalGuess.selections[cid])) + "</div>";
+    }
     token.innerHTML = '<img class="' + imgClass + '" src="assets/' + img + "/" + encodeURIComponent(cid) + '.png" alt="">' +
       '<div class="cname">' + TL.escapeHtml(TL.cname(cid)) + (c.alive ? "" : TL.t("game.died")) + "</div>" +
       (counters ? '<div class="counters">' + counters + "</div>" : "") +
       '<div class="paranoia-limit">' + TL.t("game.limitShort") + data.paranoiaLimit + "</div>" + roleBadge +
-      tokenCards + noteHtml;
+      guessTag + tokenCards + noteHtml;
     if (isTargetable("char", cid)) token.classList.add("targetable");
     // 長按（或右鍵）查看角色卡大圖
     var pressTimer = null;
@@ -165,8 +224,21 @@ TL.UI.Board = (function () {
     token.addEventListener("click", function (e) {
       e.stopPropagation(); // 避免冒泡到版圖面板重複觸發目標選擇
       if (S.suppressClick) { S.suppressClick = false; return; }
+      if (tryRemovePlay(e)) return; // 点击角色身上的盖牌 → 收回
+      // 最终决战：主人公点击角色猜测；剧作家只能查看详情
+      if (S.online && (st.phase === "final_guess" || st.phase === "final_guess_pending" || st.phase === "final_result")) {
+        if (st.phase === "final_guess" && TL.Net.perspective !== "mm") {
+          TL.UI.core.openGuessModal(cid);
+        } else {
+          showCharCard(cid);
+        }
+        return;
+      }
       // 聯機劇作家手動模式：點擊角色直接開啟編輯面板
-      if (S.online && TL.Net.perspective === "mm" && S.game.state.mmManual) {
+      var manualCharEdit = S.online && TL.Net.perspective === "mm" && S.game.state.mmManual &&
+        !S.pending && !S.pendingAbility && st.phase !== "mm_play" &&
+        st.phase !== "final_guess" && st.phase !== "final_guess_pending" && st.phase !== "final_result";
+      if (manualCharEdit) {
         TL.UI.Panels.openMMCharEditor(cid);
         return;
       }

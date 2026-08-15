@@ -1,0 +1,601 @@
+--- PAGE 1 ---
+Tragedy Looper Rei
+Observer’s Handbook
+Suchalovelygamethisis.
+--- PAGE 2 ---
+Greetings from the Observer
+Welcome,ohbraveProtagonists.Welcome,ohenigmaticMasterminds.
+Manyatimehaveyouconqueredtragedy,andmanyatimehaveyourtragediesconquered.
+Andattheculminationofallthosegameboards,herenowyoustand.
+Thisistheendofhours,whereintimefoldsuponitselftobecomealookoutofahigherorder.
+Fromthisvantage,Ihaveobservedyourgamesinawaythatnotevenyouhavebeenableto.
+Suchcruel,suchrich,suchentertaininggames.
+…Iapologizeformydiscourteousness.Imeannottoaffront.
+Imerelywishforyoutoallowmetojointheranksofyourpieces.
+Therearemanyfragmentsinthisplace.Fragmentsofforgottenpurpose,fragmentsofnewfaces,and
+fragmentsshowingawaytotheorigin,theplacethatisthestart,andtheend,ofyourjourney.
+Thoughwhatyouwillseetherenowisofcoursenotthesameaswhatyousawthen.
+…Ah,yes.Ialsohavethisoldmirror.
+Ifyouaretrulyinsatiable,perhapsyouwouldliketovisitanotherworld?
+Whateveryourchoice,allowmetoonceagainwelcomeyoufromthebottomofmyheart.
+Youwhohavefoughtthroughrainandsnow,takingdestinybythereins.
+Igifttoyoutheseraiments,asproofofyourreign,andraiseatoastinyourhonor.
+Please,doenjoyyourstay.
+Contents
+● Components
+● Additional Rules
+● Sample Script
+● FAQ
+Components
+● Character Cards (4)
+○ Four new companions have joined the pieces who adorn your game board.
+● Action Cards (8)
+○ The Protagonists and Mastermind have access to new abilities. However, none of
+these cards are added to the players’ hands at the start of the game. Details will
+follow.
+● Counters and Tokens (33)
+○ Hope Counters (6)
+--- PAGE 3 ---
+■ Represent the hope that a character may hold. Only the Protagonists can
+place these. They count as 1 Goodwill and -1 Intrigue, and remove
+Goodwill Refusal.
+○ Despair Counter (6)
+■ Represent the despair that a character may suffer. Only the Mastermind
+can place these. They count as 1 Paranoia and 1 Intrigue, and grant
+Goodwill Refusal.
+○ Perished Tokens (10)
+■ Mark if a character has ever died over the course of the entire game.
+○ Acquainted Tokens (10)
+■ Mark if a character’s Goodwill ability was ever used/refused over the
+course of the entire game.
+○ Loyalty Token (1)
+■ Marks the target of the Servant’s ability.
+Images of these components can be found at counters-1.png and counters-2.png .
+● Rulebooks (3)
+○ This book, plus the books for the new Tragedy Sets.
+● Summary Sheets (16)
+○ Summary sheets for the new Tragedy Sets, and updated versions for the old
+○ Tragedy Sets
+Additional Rules
+“Hope +1” and “Despair +1”
+“Hope +1” is a Protagonist Action card, and “Despair +1” is a Mastermind Action card. These
+cards are by default not in the players’ hands at the start of loops, but are added to their hands
+by various effects. These effects are included in both the new Tragedy Sets, and as an optional
+expansion ruleset to previous Tragedy Sets. The effects of these cards are as follows:
+Hope +1
+Place 1 Hope counter on this character, and remove “Hope +1” from each player’s hand. If two
+or more players played “Hope +1” on the same day, treat all those cards as “Goodwill +1” cards
+instead. (Do not remove them from the players’ hands.)
+Despair +1
+(1x∞) Place 1 Despair counter on this character.
+--- PAGE 4 ---
+“Paranoia +2” and “Goodwill +1”
+“Paranoia +2” is a Protagonist Action card, and “Goodwill +1” is a Mastermind Action card.
+These cards are only used in the “Another Horizon” Tragedy Set. The effects of these cards are
+as follows:
+Paranoia +2
+(1x∞) Place 2 Paranoia counters on this character. “Forbid Paranoia” prevents the effect of this
+card. Resolve this card before a “Paranoia -1” on the same character.
+Goodwill +1
+Place 1 Goodwill counter on this character.
+(Note for Masterminds: You may choose to use these cards even outside of Another Horizon as
+a special rule for a script. It’s up to you to explore these possibilities to make a script as only you
+can.)
+Hope and Despair Counters
+These counters may be placed on characters, and each have multiple effects. To put it
+concisely, Hope is very good, and Despair very bad, for the Protagonists.
+Hope Counters
+● If a rule or effect counts Goodwill counters, this counts toward that total.
+● If a rule or effect counts Intrigue counters, this counts as 1 against (to a minimum of 0).
+● The character this is on loses Goodwill Refusal.
+Despair Counters
+● If a rule or effect counts Paranoia counters, this counts toward that total.
+● If a rule or effect counts Intrigue counters, this counts toward that total.
+● The character this is on gains Mandatory Goodwill Refusal.
+Despite having multiple effects, a single Hope or Despair counter is still considered only a single
+counter. For example, if the A.I. has a Despair counter on it, its Trait will not count the Despair
+counter twice.
+If an effect cares about whether a specific type of counter exists or not, Despair and Hope will
+count as Paranoia and Goodwill, and for or against Intrigue. (Think of it as if the condition
+checks if there is 1 or more of that type of counter.)
+The effect of removing Goodwill Refusal applies to all forms of Goodwill Refusal, including
+Mandatory and Puppeted.
+--- PAGE 5 ---
+Effects that remove Goodwill Refusal supersede effects that add it. In other words, Hope does
+not succumb to Despair.
+Perished and Acquainted Tokens
+In order to determine the Roles of the characters, it is important to keep track of if their Goodwill
+abilities have been used, and if their death had any effects. Until now, players mostly did so by
+taking notes. These new tokens are used as an aide to simplify such notes.
+Using these tokens is by default optional, and their inclusion is up to the Mastermind to decide.
+However, in the new Tragedy Set “Last Liar”, they are mandatory, not optional.
+Acquainted Tokens
+The first time the use of a given character’s Goodwill ability is declared, regardless of whether
+that Goodwill ability is refused, place an Acquainted token on that character. These tokens are
+double-sided, to help record whether the ability was refused or not. These tokens are not
+removed between loops.
+If a Goodwill ability from a character that already has an Acquainted token is declared, do not
+add further such tokens. Tokens are different from counters, so effects that care about counters
+do not affect tokens.
+Adding a token happens before the ability itself or any other effect that triggers off of using the
+ability resolves. As such, no effect can prevent the token from being placed.
+Perished Tokens
+The first time a given character dies, place a Perished token on that character’s corpse. These
+tokens are not removed between loops.
+If a character that already has a Perished token dies, do not add further such tokens. Tokens
+are different from counters, so effects that care about counters do not affect tokens.
+If an effect such as Unkillable prevents a death from occurring entirely, do not place a Perished
+token. As before, the Mastermind is not obliged to indicate anything has happened (or failed to
+happen).
+Adding a token happens before any other effect that triggers off of the death resolves. As such,
+if the character indeed dies, no effect can prevent the token from being placed.
+--- PAGE 6 ---
+Regarding 1x∞ Goodwill Abilities
+Various aspects of this expansion interact with 1x∞ Goodwill abilities in important ways, so we
+are making a minor adjustment to the rules.
+If a 1x∞ Goodwill ability is declared and then refused, that does not count towards the 1x∞ limit
+for that ability. Therefore, the Protagonists may attempt to use that ability again the following day
+(though normally it will simply be refused again).
+If the Mastermind somehow uses a 1x∞ Goodwill ability, that counts towards its limit. If the
+Protagonists later attempt to use that ability, the Mastermind should announce that the ability
+has already been used.
+New Characters
+This expansion contains 4 new characters: Part-Timer, Part-Timer(?), Servant, and Metaworld
+Denizen. The Part-Timer, Servant, and Metaworld Denizen may all be included in a script as any
+other character would. However, the Part-Timer(?) can only be added to the game due to the
+Part-Timer’s Trait, and cannot be written directly into a script.
+Multiple Starting Locations
+If a character has multiple printed starting locations, and no Trait detailing how to place them at
+the start of the loop, that character must be assigned one of their possible starting locations at
+script creation, which applies to all loops.
+(The Henchman has a Trait that specifies how his starting location works, and so continues to
+function as before.)
+Character Introductions
+Part-Timer
+Adult / Male
+Paranoia Limit: 1
+Starting Location: City
+Trait:
+This card ignores its assigned Role and is a Person instead.
+Trait:
+At the end of the day, if there are 3 or more total counters on this character, he dies.
+Trait:
+At the start of the day, if this card is dead, place "Part-Timer(?)" in the City.
+--- PAGE 7 ---
+Part-Timer(?)
+Girl
+Paranoia Limit: 3
+Starting Location: City
+Trait:
+This character has the same Role, and is the culprit of the same Incident(s), as
+"Part-Timer".
+Goodwill 3 (1x∞):
+Reveal this character's Role. Place 2 Goodwill on any character at this location.
+Servant
+Adult / Female
+Paranoia Limit: 3
+Starting Location: City/School
+Trait:
+If the Rich Man's Daughter or Boss would move from this character's location, she
+moves with that character, ignoring her original movement if needed. (If this could move her in
+multiple ways, the Leader decides which.) If the Rich Man's Daughter or Boss is at her location
+and would die, she dies instead.
+Goodwill 4 (1x∞):
+Choose any other character in play. For the remainder of the loop, that character is also
+included in the above Trait.
+Metaworld Denizen
+Girl
+Paranoia Limit: 2
+Starting Location: Shrine
+Goodwill 3 (1x∞):
+Place 1 Hope or Despair counter on a character at this location. If this character has
+Goodwill Refusal and at least 1 Goodwill counter, the Mastermind may use this ability as their
+own.
+(TL Note: The printed card says “another character at this location”, which differs from what the
+rulebook says. This error has been acknowledged by BakaFire, and he has declared the version
+in the rulebook as official. Therefore the physical cards are currently incorrect, though he has
+released a corrected image online.)
+--- PAGE 8 ---
+Detailed Character Abilities
+Part-Timer(?)
+● The Leader chooses a character at the Part-Timer(?)’s location.
+● The Mastermind announces the Part-Timer’s Role, then places 2 Goodwill on the chosen
+character.
+Servant
+● The Leader chooses a character at any location.
+● For the rest of the loop, the Servant’s Trait is also affected by the chosen character.
+Place the Servant’s Loyalty token on that character as a reminder.
+Metaworld Denizen
+● The Leader chooses a character at the Metaworld Denizen’s location, and either Hope or
+Despair.
+● The Mastermind places the chosen type of counter on the chosen character.
+● If the Metaworld Denizen has Goodwill Refusal and at least 1 Goodwill counter, during
+the Mastermind abilities phase, the Mastermind may use this ability to place a Hope or
+Despair counter on any other character at the Metaworld Denizen’s location. As with
+Role abilities, they do not have to explain why this happened.
+Character Advice
+Part-Timer/Part-Timer(?)
+(★★★☆☆: Intermediate)
+A convenience store worker dies, and a mysterious girl appears. Her ability is powerful and
+revealing, but the difficulty of getting her to arrive in the first place also makes her suitable for
+concealing a Role. The abilities of her Role are also naturally harder to use, which allows for
+some fine balancing of script difficulty. Who exactly is the “Part-Time Warrior” of this world line?
+Servant
+(★★★★☆: Advanced)
+A traditional maid, and a strict one at that. Rules-wise, her ability is fairly simple, but also fairly
+easy to accidentally forget or resolve incorrectly, making her best suited for advanced players. In
+particular, both the Mastermind and Protagonists should collaborate to keep an eye on her
+movement and achieve world peace. Her movement restriction is probably stronger than you
+imagine it to be, so separating her from her charges is difficult. It’s interesting to have her in a
+script where the grouping of characters is important.
+Metaworld Denizen
+(★★★☆☆: Intermediate)
+--- PAGE 9 ---
+She is not human. She transcends even the so-called “Godly Beings” of the human world.
+Indeed, she is more of a concept than an entity, and her manifestation a quirk of the metaworld.
+Her ability is simple and straightforward, and can allow for more exposure to this expansion’s
+mechanics. But be careful as Despair counters can make it easy to accidentally create a Taboo.
+Is she a blessing, or a curse? How does a spectator act when placed on stage?
+New Rules in Previous Tragedy Sets
+It is possible to include this expansion’s new mechanics in previously released Tragedy Sets by
+augmenting them. This option is available to the Mastermind at script creation. If they choose to
+do so, they should should append a “+” to the Tragedy Set’s name on the script cards, for
+example “Basic Tragedy+”. Adding these rules generally increases the difficulty of a script, so do
+so judiciously.
+In an augmented Tragedy Set, an additional Subplot, Role, and 2 Incidents are available. When
+creating such a script, choose 2 of the now 8 possible Subplots. The Incidents may be added as
+any other Incident would be. The new Fragment Role requires some additional accommodation.
+Fragments and the Final Guess
+After all other Roles have been assigned, choose one Person to instead become a Fragment.
+However, during the Final Guess, the Fragment does not have to be identified as such: if the
+Fragment is named as a Person, that is also considered to be correct.
+Additional Subplot: Crossing World Lines
+Roles: 1 Conspiracy Theorist
+Additional Rule:
+[Mandatory: Loop start] At the start of even numbered loops, the Mastermind adds "+1 Despair"
+to hand. At the start of the final loop, the Protagonists add "+1 Hope" to hand.
+Additional Role: Fragment
+[Mandatory: Loop start] If this character was dead at the end of the previous loop, the
+Mastermind adds "+1 Despair" to hand.
+[Mandatory: Loop start] If this character was alive and had 2+ Goodwill at the end of the
+previous loop, the Protagonists add "+1 Hope" to hand.
+Additional Incident: The Light of Hope
+The Leader chooses a character. Place a Hope counter on that character. When determining
+whether this Incident triggers, use Goodwill counters instead of the original counter type.
+Additional Incident: The Murk of Despair
+Place a Despair counter on any character.
+--- PAGE 10 ---
+What Next?
+Thank you for reading this far. This concludes the introduction of the new general rules in this
+expansion. Based on how you wish to enjoy the game, please consider the following options as
+to what to read next.
+New to Tragedy Looper?
+First play a game without these new rules, using “First Steps” or “Basic Tragedy”, included in the
+base game.
+Want to try Hope, Despair, and the new characters?
+Try the sample script that follows, “Approaching Zero”.
+Want to try the new Tragedy Sets?
+Read the rules for “Last Liar”, and play a game using that Set. The other Tragedy Set included
+in this expansion, “Another Horizon”, is also an appealing option, but it is intended for
+particularly experienced players. We strongly recommend that you first play with “Last Liar”.
+Sample Script
+(TL Note: I have instead placed that script in a separate document as a form of protection
+against accidental spoilers.)
+Approaching Zero
+General FAQ
+These are questions and answers concerning the new rules in this expansion. They are mostly
+questions we speculate will come up frequently, based on our playtesting. If you have any
+questions about the rules, please first read through these thoroughly.
+Hope and Despair
+Q1: Can these counters be placed on locations?
+A1: No.
+Q2: Can “Despair +1”/“Hope +1” be prevented with “Forbid Intrigue”/“Forbid Goodwill”?
+A2: No. As such, “Despair +1” can also be used as an “Intrigue +1” that cannot be
+Forbidden, and “Hope +1” can also be used as a “Goodwill +1” in the same way.
+Q3: There is a Despair counter on the Nurse. Can her Goodwill ability be used?
+--- PAGE 11 ---
+A3: Yes, if she has sufficient Goodwill. The Nurse is given Mandatory Goodwill Refusal by
+the Despair, but the effect of her ability means she will still not refuse anyways. The same is true
+for the Mystery Boy and the Copycat.
+Q4: The Doctor has 2 Goodwill and 1 Despair. Can the Mastermind use his ability?
+A4: Yes, as the Doctor is given Mandatory Goodwill Refusal. The same is true for the
+Metaworld Denizen.
+Q5: The A.I. has 3 Intrigue and 1 Hope, and is the culprit of an Incident. Will that Incident
+trigger?
+A5: Yes. The A.I. treats all counters on it as Paranoia for the purposes of triggering Incidents,
+including the Hope counter. While the Hope counter reduces the total amount of Intrigue on a
+character, the amount of Intrigue isn’t being counted here.
+Q6: What if the A.I. had 2 Paranoia and 1 Despair instead?
+A6: The Incident doesn’t trigger. Both the A.I.’s Trait and the effects of the Despair counter
+count it towards total Paranoia, but a single counter is still only a single counter, and is not
+counted twice. The case with the Sacrifice is similar.
+Q7: Does the Little Sister gain Mandatory Goodwill Refusal with a Despair counter?
+A7: Yes. Her Trait only applies during script creation.
+Q8: The Informer refused to use her Goodwill ability. On the next day, a Hope counter is
+placed on her. Can the Protagonists attempt to use her ability again?
+A8: Yes. A refused Goodwill ability does not count towards its 1x∞ limit.
+Q9: Does the Scientist’s ability remove his Hope or Despair counters?
+A9: Yes.
+Q10: Can the Forensic Specialist’s ability move Hope or Despair counters?
+A10: Yes.
+Q11: The Boy Student has 1 Paranoia and 1 Despair. Can the Nurse’s ability remove his
+Paranoia?
+A11: Yes. The Despair counts towards Paranoia, so the Boy Student is panicked in this
+situation. However, the Nurse’s ability cannot remove the Despair counter. The same is true for
+the Sect Founder.
+Q12: The Sacred Tree has a Hope or Despair counter. Can those counters be moved with its
+Trait?
+A12: Yes.
+Q13: In “Threads of Fate”, at the start of a loop, are Paranoia counters placed on characters
+who had a Hope counter at the end of the previous loop?
+--- PAGE 12 ---
+A13: Yes. The Hope counters are counted towards total Goodwill.
+Q14: The Loved One has 1 Despair and 2 Paranoia. Can their ability be used?
+A14: Yes. The Despair counter is counted towards both total Paranoia and Intrigue. The case
+with the Sacrifice is similar.
+Q15: Can I place a Hope or Despair counter with the Butterfly Effect?
+A15: No. While the wording on the summary sheets appears to allow this, the full description
+in the rulebook specifies that the placed counter must be Goodwill, Paranoia, or Intrigue.
+Q16: In Cosmic Mythology, does a character refusing their Goodwill ability with the Mandatory
+Goodwill Refusal granted by a Despair counter cause the Extra Gauge to increase?
+A16: Yes.
+Perished and Acquainted Tokens
+Q17: The Alien kills the Key Person Boy Student with her Goodwill ability. What is the order of
+resolution of effects, including placing tokens?
+A17: First, the Alien’s ability is announced. This causes an Acquainted token to be placed on
+her. Next, the Mastermind resolves the effect of that ability, causing the Boy Student to die,
+which in turn causes a Perished token to be placed on her. Finally, the Key Person’s ability
+triggers, causing the loop to end with a Protagonist loss.
+Q18: The Transfer Student is not on the game board. Does she keep her Perished and
+Acquainted tokens?
+A18: Yes. Neither counters nor tokens are removed when a character is removed from a
+board. (However, counters are removed when setting up for a new loop.) The same is true for
+the Illusion and the Part-Timer(?).
+New Characters
+Q19: The Part-Timer died, and the next day, the Part-Timer(?) was placed in the City. On the
+day following that one, is another Part-Timer(?) placed?
+A19: No. There is only 1 Part-Timer(?) in the game, so more cannot be placed.
+Q20: In “Sign with me!”, can the Part-Timer be assigned to be the Key Person?
+A20: No. While the Key Person would effectively be the Part-Timer(?), the Role would need to
+first be assigned to the Part-Timer, which is not allowed. For a similar reason, the Part-Timer
+can be assigned the Role of Ninja in “Male Confrontation”.
+Q21: So that would mean in “The Noble Bloodline” the Key Person and Vampire could both
+end up being Girls. This arouses me.
+A21: I suppose that is the case, yes.
+Q22: In “Fated Connections”, the Part-Timer has an Extra card. What is his Role?
+--- PAGE 13 ---
+A22: He is a Key Person. First his Trait overrides his initial Role to be a Person, which is then
+further overridden to be a Key Person.
+Q23: The Part-Timer is an Obstinate. Must he still be the culprit of an Incident?
+A23: Yes. His Trait only changes him to be a Person while the game is actually being played.
+It does not affect any requirements during script creation.
+Q24: The Servant is a Serial Killer, and is alone with the Rich Man’s Daughter at the end of
+the day. What happens? Furthermore, what if the RMD is Unkillable?
+A24: In the former case, the Servant would die in the RMD’s place. In the latter case, there is
+no death to replace, so neither dies.
+Q25: The Servant and RMD are in the same location. What happens if “Forbid Movement” is
+played on the Servant, and “Horizontal Movement” is played on the RMD?
+A25: The Servant ignores her own movement, including Forbid Movement, and follows the
+RMD.
+Q26: The Metaworld Denizen has Goodwill Refusal.
+1. The Mastermind used her ability. Can the Protagonists then also use it?
+2. The Protagonists used her ability and it was not refused. Can the Mastermind then also
+use it?
+3. The Protagonists used her ability and it was refused. Can the Mastermind then use it?
+A26:
+1. No. The 1x∞ limit has already been reached.
+2. No, for the same reason as above.
+3. Yes. A refused Goodwill ability does not count towards its 1x∞ limit.
+Additional Rules
+Q27: In an augmented Tragedy Set, can “Crossing World Lines” be named with the Informer’s
+Goodwill ability?
+A27: Yes.
+Q28: In an augmented Tragedy Set, can the Mystery Boy or Copycat be assigned to be the
+Fragment?
+A28: The Mystery Boy can’t, because the Role isn’t added to the Tragedy Set by normal
+means. The Copycat can, because there will be another character with the Role for him to copy.
+Still have questions?
+If you have a question, and couldn’t find the answer in the above FAQ, please contact BakaFire
+at “ba********@*****il.com”.
+(TL Note: I have censored the address to prevent potential abuse. The full address can be
+found on the game’s homepage. BakaFire does speak a little bit of English, and welcomes
+messages from fans.)
+--- PAGE 14 ---
+Last Liar FAQ
+Plots
+Q1: How does the timing for the Traitor victory conditions work? For example, if a Serial Killer
+causes Protagonist A’s victory condition to be fulfilled, but there are also 2 Intrigue counters on
+the Shrine to enable the rule from “The Sealed Conclusion”, can the Mastermind kill the
+Protagonists?
+A1: The conditions are constantly checked while in the appropriate phase. In this case,
+Protagonist A would win as soon as the Serial Killer kills.
+Q2: Does an effect that causes the Protagonists to die also cause Traitors to die? For
+example, a Hospital Incident causes Protagonist A’s victory condition to be fulfilled, but also
+causes the Protagonists to die. Can Protagonist A claim victory?
+A2: Traitors are still considered Protagonists, so they die to such effects as well. As the Day
+end phase is never reached, the next time Victory Condition A would be checked is at the end of
+the first day of the next loop. If it was already the final loop in this scenario, Protagonist A has
+lost.
+Q3: Are tokens on cards not on the game board, such as the Transfer Student, Illusion, and
+Part-Timer(?) counted towards Victory Conditions A and B?
+A3: Yes. The Victory Conditions don’t care about where the cards that the tokens are on are.
+Q4: In “The Final Plan”, the Key Person has a Hope counter. What happens if Protagonist A
+or B’s victory condition is met?
+A4: They are not currently Traitors, so they don’t win the game from the Traitor victory
+conditions. However, as the Hope counter is removed between loops, it is likely that such a
+Traitor would win at the appropriate time on the first day of the next loop.
+Q5: In “The Final Plan”, the Protagonists use the Metaworld Denizen’s Goodwill ability to
+place a Hope counter on the Key Person, but using ability places a 6th Acquainted token,
+fulfilling Protagonist B’s victory condition. What happens?
+A5: The Acquainted token is placed as soon as the ability is declared, before it resolves.
+Protagonist B wins.
+Q6: In “The Final Plan”, the Key Person has a Hope counter during the final loop, then dies,
+causing a Protagonist loss. What happens to the Traitor Protagonist C?
+A6: As they were not a Traitor at the time, they do not have the opportunity to identify
+culprits. All of the Protagonists work together to make a Final Guess.
+Q7: In “The Demon's Script”, the Watcher has only a single Despair counter at the end of the
+last day. Can the Mastermind kill the Protagonists? What if the Watcher had 1 Intrigue and 1
+Hope?
+--- PAGE 15 ---
+A7: Yes in the former case, no in the latter. When counting the total number of counters,
+Hope and Despair counters each count as only 1.
+Q8: There is no Secretkeeper in my script, so I added a Killer with the effect of “The
+Mythomaniac's Secret”. Furthermore, the Main Plot is not “The Final Plan”, so there would not
+have originally been a Killer. Can the Mystery Boy be set as a Killer?
+A8: Yes. The Mystery Boy only cares about Roles added automatically by the Plots, not
+about those added by the Additional Rules of the Plot.
+Q9: In “The Final Plan” combined with “The Mythomaniac’s Secret”, there are 2 Killers. If the
+Copycat is then set to be a third Killer, whose name should be announced when his ability is
+used?
+A9: The names of both other Killers should be announced.
+Roles and Incidents
+Q10: How do effects that refer to a character’s starting location, such as the Influencer or
+Distortion, interact with the Henchman and Servant?
+A10: For the Henchman, use the location he started this loop at. For the Servant, use the
+location specified for her during script creation.
+Q11: There are 2 Influencers. The first used a Goodwill ability, and thus had their 1x∞ ability
+trigger. What happens if the second then also uses a Goodwill ability?
+A11: The second Influencer’s 1x∞ ability also triggers. Unlike the Magician, the 1x∞ limit on
+the Influencer’s ability applies to each individual, rather than to the whole Role.
+Q12: What is the meaning of “end of that day or last day” in the Secretkeeper’s ability on the
+summary sheet?
+A12: This is to make sure the Mastermind can still win with the ability, even if it was triggered
+on the last day of a loop. A more explicit description is in the Last Liar rulebook.
+Q13: In the case where the Secretkeeper’s ability is triggered on the last day of a loop, does
+that mean that the Mastermind can only play 1 Action card on the first day of the next loop?
+A13: No. “Next day” means the next day of this loop specifically.
+Q14: When choosing a Protagonist for The Executor, can the Mastermind look at the
+Protagonists’ Extra Cards?
+A14: No, The Executor doesn’t have such an effect. The Mastermind should try to deduce
+which Protagonist will choose a beneficial target based on the Protagonists’ actions thus far.
+Q15: The A.I. is the culprit of The Light of Hope. How many and what kind of counters are
+required for it to trigger?
+A15: 4 Goodwill counters are required (not accounting for Hope counters).
+--- PAGE 16 ---
+Q16: A Distortion or Hospital Incident triggered. If in “The Sealed Conclusion”, are Hope and
+Despair counters on characters at the relevant location also considered for the Intrigue total?
+A16: Yes.
+Q17: What is the Mystery Boy’s role?
+A17: Iamtherebelwholurksinthedarkness.Thejesterwhoplays,butplaysatyourexpense.Yes—Iamthe
+WILDCARD.Nowcome,joinme,andweshallwaltztothesweetsoundofchaos!
+Q18: Oh, so there’s no Traitor then? Alright everyone, let’s crush this Mastermind.
+A18: W-wait, that’s not wha—
+Another Horizon FAQ
+Plots
+Q1: Can the A.I. be assigned to be a “L: Person / D: Serial Killer”, or the Little Sister to be a
+“L: Key Person / D: Brain”?
+A1: Yes. Dual Roles ignore all Role assignment restrictions, including Role maxima.
+Q2: Can the Mystery Boy be assigned to be a Dual Role such as “L: Obstinate / D: Key
+Person”? Alternatively, if another character is a “L: Obstinate / D: Key Person”, can he be
+assigned to be either an Obstinate or Key Person?
+A2: Neither of these are possible. The Mystery Boy must be assigned a single Role that
+exists in neither the Light nor Dark World.
+(TL Note: This feels to me like it directly contradicts the previous answer…)
+Q3: Can the Copycat copy a Dual Role, such as “L: Key Person / D: Brain”? If so, what
+happens if his Goodwill ability is used?
+A3: Yes, this is possible. If his Goodwill ability is used, the Mastermind should name all
+characters who share his current Role.
+Q4: The Subplots are “Jekyll and Hyde” and “The Plaguebringer”. Can the Dual Roles be
+mixed-and-matched, to create “L: Key Person / D: Gossip” and “L: Pied Piper / D: Brain”?
+A4: No. The Roles are specifically "L: Key Person / D: Brain" and "L: Pied Piper / D: Gossip".
+Q5: The "L: Key Person / D: Brain" Office Worker died in the Dark World. Later, in the Light
+World, the Forensic Special used his second Goodwill ability to reveal the dead Office Worker’s
+Role. What Role should be announced?
+A5: Key Person should be announced. Dual Roles are always considered to be only the
+Role appropriate to the current World.
+Q6: The Scientist used his ability to increase the Extra Gauge. If a Warp is supposed to
+happen that day, does the Extra Gauge increase again?
+--- PAGE 17 ---
+A6: Yes. The Scientist directly manipulates the Extra Gauge without Warping, so the Warp
+still happens as the once per day limit has not been reached.
+Q7: If the Class Rep has Puppeted Goodwill Refusal, can the Mastermind use her ability to
+return “Despair +1” to their hand?
+A7: Yes, if they have used that card previously in this loop.
+Q8: In “Into Nothingness”, the Extra Gauge is at 3. If the Obstinate has only a single Hope
+counter at loop end, do the Protagonists lose?
+A8: Yes. The number of Intrigue counters on the Obstinate is 0, not -1, as it cannot be
+negative. That combined with the Extra Gauge of 3 fulfills the loss condition.
+Q9: In “Into Nothingness”, the Copycat is copying the Obstinate. If there are 2 Intrigue
+counters on the Copycat and the Extra Gauge is at 1 at the end of the loop, do the Protagonists
+lose?
+A9: No. The Copycat is only copying the Role added by the Plot. He is not actually the
+specific Obstinate that the Plot added.
+Q10: In “Into Nothingness”, the Illusion is the Obstinate, and has 4 Intrigue and 1 Hope. She is
+then removed from the board using her Goodwill ability. Do the Protagonists lose at the end of
+the loop?
+A10: No. The rule from the Plot checks for the living or dead Obstinate, but cannot find the
+Obstinate if they are not on the board. (Contrast this with Last Liar’s Victory Conditions, which
+check for the tokens on the characters, not the characters themselves.)
+Q11: In “Puppeteer’s Strings”, the Henchman is the Obstinate. If the Mastermind uses the
+Henchman’s Goodwill ability, will he trigger his Incident?
+A11: No. If an effect forces an Incident or other effect to trigger, and another effect prevents it,
+the prevention takes precedence.
+Roles
+Q12: The Police Officer is a Marionette, and has 5 Goodwill. What happens if he uses his
+second Goodwill ability on himself?
+A12: First, the effects of his Goodwill ability places a Guard counter on himself. After that
+ability resolves, the ability of the Marionette triggers. As he now has at least 2 kinds of counters
+(Goodwill and Guard), that effect causes him to die, and causes a Warp. The death is replaced
+by removing the Guard counter. The net effect is that only a Warp will happen.
+Q13: The Scientist is a Marionette, with 2+ kinds of counters on him. What happens if his
+Goodwill ability is used?
+A13: The Scientist will remove all counters from himself, so when the Marionette’s ability
+triggers, it sees 0 kinds of counters and does nothing.
+--- PAGE 18 ---
+Q14: The Illusion is a Marionette, with 2+ kinds of counters on her. What happens if her
+second Goodwill ability is used?
+A14: She is removed from the board. While not on the board, she is not considered a
+character, so the Marionette’s ability does nothing.
+Q15: The Lullaby is a character whose ability does not target a character, such as the Office
+Worker or Henchman. What happens after their Goodwill ability is used?
+A15: As there is no character to kill, nothing happens.
+Q16: The Forensic Specialist is the Lullaby, and uses his first Goodwill ability to move a
+counter from the Office Worker to the Pop Idol. What happens?
+A16: Both the Office Worker and Pop Idol die.
+Q17: The Journalist is the Lullaby, and the Little Sister uses her Goodwill ability to use one of
+the Journalist’s abilities, targeting the Boy Student. What happens?
+A17: The Boy Student dies.
+Q18: The Servant is the Lullaby, and uses her Goodwill ability on another character at her
+location. What happens?
+A18: First, the targeted character is added to the Servant’s Trait. Then, the Lullaby’s effect
+would cause the targeted character to die, which due to the Servant’s Trait causes her to die
+instead.
+Q19: The Boss is a Gossip and is in the Hospital, and something causes him to die. The
+Servant is in the Boss’s turf, the City. What happens?
+A19: The Servant’s Trait doesn’t allow her to protect the Boss, as death isn’t an ability that
+would allow the use of the Boss’s Trait. Then the Gossip’s ability, combined with the Boss’s
+Trait, places a Despair counter on any character in either the Hospital or City, and optionally
+triggers a Warp.
+Q20: The Alice used a Goodwill ability when the Extra Gauge was 1 or more, but there were
+no other characters at their location. On the next day, they again use a Goodwill ability. What
+happens?
+A20: Even though there were no other characters at their location, because the Extra Gauge
+condition was met and the Alice ability is Mandatory, the 1x∞ limit is considered met, and so
+cannot trigger again the next time their Goodwill ability is used. The Mastermind may hide the
+Alice in this way.
+Q21: What is the Mystery Boy’s role?
+A21: Iamlo    le,ad    le,an fu  ofcu    it .Theve  pi   r ofapu  ma    ,p i pan p e  .I’mAli  ,ofco    !
+Q22: Who is the Copycat copying?
+A22: Mybrother,the“MysteryBoy”.Buthedoesn’tunderstand,andneither,itseems,doyou.
+Copy,yousay?I’mtherealone!
+--- PAGE 19 ---
+Incidents
+Q23: The Sect Founder is the culprit of a Crime of Passion. How many Paranoia counters are
+needed for the Incident to trigger?
+A23: Just 1. The Sect Founder’s Trait doubles the effects of her Incident, including the effect
+that decreases the required Paranoia.
+Q24: The Henchman is the culprit of a Dimensional Distortion. If his Goodwill ability has been
+used, does the Incident trigger?
+A24: No.
+Q25: On Day 2 of the first loop, The Singularity triggered in the Dark World. During the second
+loop, if that same Incident triggers in the Light World, do the Protagonists die? Alternatively,
+what happens if a different The Singularity triggers in the Light World on Day 3 of the second
+loop?
+A25: In the former case, the Protagonists do not die as the Incident had previously triggered
+this game, even though it was in the other World. In the latter case, the Protagonists would die.
+Q26: What happens if in the Light World the A.I. resolves The Singularity that had not
+previously triggered that game? Furthermore, what happens if that Incident then proceeds to
+trigger later that loop in the Light World?
+A26: In the former case, it would simply cause a Warp. The A.I.’s ability does not count as
+triggering the Incident, so it can’t be the first time the Incident has triggered. In the latter case,
+the Protagonists would die.

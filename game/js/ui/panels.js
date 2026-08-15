@@ -120,11 +120,28 @@ TL.UI.Panels = (function () {
     cards.className = "hand-cards";
     var deckId = kind === "mm" ? "mm" : "p" + deck;
     var cardIds = kind === "mm" ? MASTERMIND_DECK : PROTAGONIST_DECK;
-    cardIds.forEach(function (cid) {
+    var extra = kind === "mm"
+      ? (st.mmHandExtra || [])
+      : ((st.pHandExtra && st.pHandExtra[deck]) || []);
+    // 已盖出的牌：对应手牌实例灰掉（收回后恢复可用）
+    var playedCount = {};
+    if (kind === "mm") {
+      st.mmPlays.forEach(function (p) { playedCount[p.card] = (playedCount[p.card] || 0) + 1; });
+    } else {
+      st.pPlays.filter(function (p) { return p.deck === deck; })
+        .forEach(function (p) { playedCount[p.card] = (playedCount[p.card] || 0) + 1; });
+    }
+    var playedLeft = {};
+    cardIds.concat(extra).forEach(function (cid) {
       var card = CARD_INDEX[cid];
       var used = !!st.used[deckId][cid];
+      if (!used && (playedLeft[cid] || 0) < (playedCount[cid] || 0)) {
+        playedLeft[cid] = (playedLeft[cid] || 0) + 1;
+        used = true; // 已盖出 → 暂时灰掉
+      }
       var btn = document.createElement("div");
       btn.className = "hand-card" + (used ? " used" : "");
+      btn.title = used ? TL.t("game.cardInPlay") : "";
       var imgPath = kind === "mm"
         ? "assets/mastermind_cards/" + card.img
         : "assets/protagonist" + ["A", "B", "C"][deck] + "_cards/" + card.img;
@@ -173,8 +190,10 @@ TL.UI.Panels = (function () {
     var perspDeck = persp && persp !== "mm" ? { a: 0, b: 1, c: 2 }[persp] : null;
     var viewerMM = S.online ? persp === "mm" : !S.aiMode;
     var canSee = function (owner, deck) {
-      if (owner === "mm") return true; // 蓋牌顯示目標位置，不顯示卡面
+      if (owner === "mm") return true; // 劇作家牌：顯示目標位置（掀開後顯示卡面）
       if (!S.online) return true;
+      if (st.revealed) return true;      // 掀開後所有人可見
+      if (st.seeTeammateCards) return true; // 房主設定：主人公可看隊友蓋牌
       return perspDeck != null && deck === perspDeck;
     };
     var cardLabel = function (p, owner) {
@@ -393,7 +412,7 @@ TL.UI.Panels = (function () {
   function openMMCharEditor(cid) {
     var c = S.game.state.chars[cid];
     if (!c) return;
-    var vals = { loc: c.loc, paranoia: c.paranoia, goodwill: c.goodwill, intrigue: c.intrigue, guard: c.guard, alive: c.alive };
+    var vals = { loc: c.loc, paranoia: c.paranoia, goodwill: c.goodwill, intrigue: c.intrigue, guard: c.guard, hope: c.hope, despair: c.despair, alive: c.alive };
     var locOpts = LOCATIONS.map(function (l) {
       return '<option value="' + l.id + '"' + (c.loc === l.id ? " selected" : "") + ">" + TL.lname(l.id) + "</option>";
     }).join("");
@@ -411,6 +430,10 @@ TL.UI.Panels = (function () {
           '<input type="number" id="mm-intrigue" min="0" max="99" value="' + c.intrigue + '"></div>' +
           '<div class="set-row"><label class="set-label">' + TL.t("game.counter.guard") + "</label>" +
           '<input type="number" id="mm-guard" min="0" max="5" value="' + c.guard + '"></div>' +
+          '<div class="set-row"><label class="set-label">' + TL.t("game.counter.hope") + "</label>" +
+          '<input type="number" id="mm-hope" min="0" max="5" value="' + (c.hope || 0) + '"></div>' +
+          '<div class="set-row"><label class="set-label">' + TL.t("game.counter.despair") + "</label>" +
+          '<input type="number" id="mm-despair" min="0" max="5" value="' + (c.despair || 0) + '"></div>' +
           '<div class="set-row"><label class="toggle-row"><input type="checkbox" id="mm-alive"' +
           (c.alive ? " checked" : "") + "> " + TL.t("game.alive") + "</label></div>";
         el.querySelector("#mm-loc").addEventListener("change", function () { vals.loc = this.value; });
@@ -418,6 +441,8 @@ TL.UI.Panels = (function () {
         el.querySelector("#mm-goodwill").addEventListener("input", function () { vals.goodwill = parseInt(this.value, 10) || 0; });
         el.querySelector("#mm-intrigue").addEventListener("input", function () { vals.intrigue = parseInt(this.value, 10) || 0; });
         el.querySelector("#mm-guard").addEventListener("input", function () { vals.guard = parseInt(this.value, 10) || 0; });
+        el.querySelector("#mm-hope").addEventListener("input", function () { vals.hope = parseInt(this.value, 10) || 0; });
+        el.querySelector("#mm-despair").addEventListener("input", function () { vals.despair = parseInt(this.value, 10) || 0; });
         el.querySelector("#mm-alive").addEventListener("change", function () { vals.alive = this.checked; });
       },
       buttons: [
@@ -433,6 +458,8 @@ TL.UI.Panels = (function () {
         goodwill: vals.goodwill,
         intrigue: vals.intrigue,
         guard: vals.guard,
+        hope: vals.hope,
+        despair: vals.despair,
         alive: vals.alive
       };
       TL.UI.core.netAction("mmManualSet", payload);

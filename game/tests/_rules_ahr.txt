@@ -1,0 +1,596 @@
+--- PAGE 1 ---
+Tragedy Looper Rei
+Another Horizon
+Thepsi-functionoftheentiresystem
+wouldexpressthisbyhavinginitthe
+livinganddeadcat(pardontheexpression)
+mixedorsmearedoutinequalparts.
+—ErwinSchrdinger
+--- PAGE 2 ---
+Tragedy Set — Another Horizon
+Ontheothersideofthemirrorwasaworldwethoughtweknew.
+Set Concept
+Another Horizon Revised (AH) is a Tragedy Set aimed at advanced players. Both the complexity
+of the rules and the required skill level to manage them are higher than for other Sets, so before
+using it, players should have a good understanding of BT, and as much experience with other
+expansion Tragedy Sets as possible. AH is for those insatiable few who have mastered the rest
+of Tragedy Looper as a whole, and want to explore its innermost workings. To those people, let
+us proceed beyond even the “Last” stage, and into the hall of mirrors.
+The Tragedy Set is based on the concepts of “Excess” and “Transcendence”. It exists as a
+bonus stage for those who have travelled through many worlds, returned to where it all began,
+fought what was to be the final fight, and yet still hunger for more.
+The defining feature of AH is the parallel worlds in which it takes place. The Protagonists travel
+between the two worlds to escape the tragedies, while being toyed with by the whims of the
+changing world. But the Mastermind is also subject to those whims; as the world transforms, so
+may the hearts of the characters that the Mastermind would call their pawns.
+Games played with this Tragedy Set require both the Mastermind and the Protagonists to use
+their wits to a degree not yet seen in the series, as they will have to make use of not only the
+parallel worlds, but also the lasting effects of the looping universe in order to win. It could be
+said that this has transcended the realm of deduction game to become a true clash of minds.
+Extra Gauge: Parallel Worlds
+The Extra Gauge is used in AH to represent which world the players are currently in. At the start
+of each loop, set the Extra Gauge to 0. While the Gauge is an even number, the players are in
+the Light World; while it is odd, the players are in the Dark World.
+Warping
+Many abilities and effects in this Set “trigger a Warp”. If one or more Warps are triggered on a
+given day, at the end of that day, increase the Extra Gauge by 1. This increase happens before
+any other effects during the Day end phase, including Mandatory effects. Note that even if
+multiple Warps are triggered on the same day, the Gauge still only increases by 1.
+The Mastermind is not obliged to announce when a Warp is triggered. As such, if a Warp is
+triggered, but the loop ends before the end of that day, they can hide the fact that it triggered at
+all.
+--- PAGE 3 ---
+1x∞ Goodwill Abilities and Warping
+In addition to effects that trigger a Warp, a Warp is automatically triggered after each time any
+player, Protagonist or Mastermind, uses a 1x∞ Goodwill ability. (Thematically these abilities
+have a powerful effect on the world, causing instability in the timeline.)
+Change of Heart
+In the Dark World, Goodwill and Paranoia are inverted. Specifically:
+● When determining if an Incident triggers, Goodwill is counted instead of Paranoia.
+● When determining if a Goodwill ability can be used, Paranoia is counted instead of
+Goodwill.
+The effects of these counters are only switched for those purposes, not for any others. For
+example, the Fragment’s ability will always count the actual Goodwill counters on them and not
+Paranoia counters. Cards such as Forbid Goodwill and Forbid Paranoia are similarly unaffected.
+Puppeted Goodwill Refusal
+Puppeted Goodwill Refusal is a new form of Goodwill Refusal. In addition to providing the basic
+effect of Goodwill Refusal, the Mastermind may use the Goodwill abilities of a character with
+Puppeted Goodwill Refusal during the Mastermind abilities phase, provided that there are
+sufficient counters on that character. When they do, they must announce what ability is being
+used, and any targets that ability has, if applicable.
+Dual Roles
+Some Plots add a Dual Role such as “L: Obstinate / D: Key Person”. On the Mastermind’s script
+card, that Dual Role should be assigned in full to a single character. In this example, that
+character is an Obstinate while in the Light World, and a Key Person while in the Dark World.
+Both parts of a Dual Role must be correctly identified to count as successful for the Final Guess.
+Dual Roles ignore Role maxima and other restrictions on assigning Roles. For example, the
+Little Sister can be assigned “L: Key Person / D: Brain” despite the Brain having Goodwill
+Refusal.
+Changes to Starting Action Cards
+The Protagonists additionally each have a Paranoia +2 (1x∞) card, and the Mastermind
+additionally has a Goodwill +1 card. Furthermore, the Mastermind also adds a Despair +1 (1x∞)
+card to their hand for the first loop only. (On later loops, they only gain it if an effect allows them
+to do so.)
+--- PAGE 4 ---
+Kinds of Counters
+If an effect references the kinds of counters on a character, it counts how many of the following
+types of counters are on that character: Paranoia, Goodwill, Intrigue, Hope, Despair, and Guard
+(from the Police Officer). Note that while a Despair counter has the effects of both Paranoia and
+Intrigue, it only counts as Despair determining the kinds of counters actually on that character. A
+similar thing is true for Hope.
+The Servant's Loyalty token, as well as Perished and Acquainted tokens, are considered
+tokens, not counters, and are not counted for this purpose.
+(TL Note: In the Z-Man Games English edition, "Guard counters" were translated as "Guard
+markers". In the original Japanese, they are officially "counters" for the purposes of this rule and
+abilities such as the Scientist's or Forensic Specialist's.)
+Plot Overview
+Four of the Main Plots provide loss conditions for the end of the loop. The Mastermind should
+have an idea about which of these they wish to use as a Cover Story (CS). The conditions are
+set up in a way that they provide support for each other. For example, winning by triggering Last
+Will in Dimensional Merger also progresses the condition for Mother Goose Mystery, while the
+Obstinate provided by Into Nothingness can act as a bluff for The Forbidden Future.
+(TL Note: The original says “as a bluff for Dimensional Merger”, but I can’t see why that would
+work as such, so I translated it thinking it’s a typo for The Forbidden Future. I might also just be
+missing something though.)
+Summary Sheet
+A translated summary sheet is available here: Another Horizon Summary.png
+--- PAGE 5 ---
+Main Plots
+The Forbidden Future Fairy-Tale Murderer
+Roles: Roles:
+“L: Obstinate / D: Key Person”, Marionette, Key Person, Lullaby, Brain
+Storyteller
+Additional Rules: Additional Rules:
+If the players are in the Light World at the (None)
+end of the loop, the Protagonists lose.
+Mother Goose Mystery Dimensional Merger
+Roles: Roles:
+Marionette, Storyteller Storyteller, Shifter, Fragment
+Additional Rules: Additional Rules:
+If there are X or more corpses at the end of If Last Will or Left Behind has triggered this
+the loop, the Protagonists lose. X is the loop, at the end of the loop, the Protagonists
+current loop number, to a maximum of 3. lose.
+Into Nothingness
+Roles:
+Obstinate, Marionette, Brain
+Additional Rules:
+If the sum of the Extra Gauge and the
+number of Intrigue counters on the
+Obstinate added by this Plot is 3 or more at
+the end of the loop, the Protagonists lose.
+--- PAGE 6 ---
+Subplots
+Jekyll and Hyde The Plaguebringer
+Roles: Roles:
+“L: Key Person / D: Brain”, Marionette “L: Pied Piper / D: Gossip”
+Additional Rules: Additional Rules:
+(None) (None)
+Puppeteer’s Strings Through the Looking-Glass
+Roles: Roles:
+Fragment, Gossip, “L: Person / D: Serial “L: Conspiracy Theorist / D: Serial Killer”,
+Killer” Alice
+Alice must be a Girl
+Additional Rules: Additional Rules:
+All types of Goodwill Refusal become (None)
+Puppeted Goodwill Refusal (including
+Mandatory Goodwill Refusal and that granted
+by Despair counters).
+Crossing World Lines Unspeakable Horrors
+Roles: Roles:
+Conspiracy Theorist “L: Conspiracy Theorist / D: Obstinate”,
+Gossip
+Additional Rules: Additional Rules:
+At the start of even numbered loops, the If the Extra Gauge is 3 or higher, at the end of
+the day, you may kill the Protagonists.
+Mastermind adds "Despair +1" to hand. At the
+start of the final loop, the Protagonists add
+"Hope +1" to hand.
+Hysteria Virus
+Roles:
+Fragment, Conspiracy Theorist, Gossip
+Additional Rules:
+While in the Dark World, characters whose
+original Roles were either Person or
+Fragment and have 2 or more kinds of
+counters on them instead become Serial
+Killers.
+--- PAGE 7 ---
+Roles
+Key Person Obstinate
+Max: None Max: None
+Mandatory Goodwill Refusal
+Abilities: Abilities:
+[Mandatory] When this character dies, the [Mandatory] This character must be the
+Protagonists lose, and the loop immediately culprit of an Incident.
+ends. [Mandatory] When determining if an Incident
+triggers for which this character is the culprit,
+it always triggers regardless of the number of
+counters on them.
+Plots: Plots:
+The Forbidden Future (D) The Forbidden Future (L)
+Fairy-Tale Murderer Into Nothingness
+Jekyll and Hyde (L) Unspeakable Horrors (D)
+Marionette Lullaby
+Max: None Max: None
+Puppeted Goodwill Refusal Puppeted Goodwill Refusal
+Abilities: Abilities:
+[Mandatory] After resolving this character’s [Mandatory] After resolving this character’s
+Goodwill ability, if there are 2 or more kinds of Goodwill ability, the target of that ability dies.
+counters on this character, they die, and you [Optional] (1x∞) During the Mastermind
+trigger a Warp. abilities phase, you may place 1 Paranoia or
+Goodwill counter on a character at this
+character’s location.
+[Optional] At the end of the day, if there are 4
+or more kinds of counters on this character,
+you may kill the Protagonists.
+Plots: Plots:
+The Forbidden Future Fairy-Tale Murderer
+Mother Goose Mystery
+Into Nothingness
+Jekyll and Hyde
+Storyteller Brain
+Max: None Max: None
+Unkillable Goodwill Refusal
+Abilities: Abilities:
+[Optional] If the Extra Gauge is 1 or higher, [Optional] During each Mastermind abilities
+--- PAGE 8 ---
+during each Mastermind abilities phase, you phase, you may place 1 Intrigue counter on
+may move 1 counter between two other this character’s location, or on a character at
+characters at this character’s location. that location.
+[Mandatory] At the start of the loop, if the
+Extra Gauge was 3 or more at the end of the
+previous loop, the Protagonists add "Hope
++1" to hand.
+Plots: Plots:
+The Forbidden Future Fairy-Tale Murderer
+Mother Goose Mystery Into Nothingness
+Dimensional Merger Jekyll and Hyde (D)
+Shifter Serial Killer
+Max: None Max: None
+Unkillable
+Abilities: Abilities:
+[Mandatory] Ignore Forbid Goodwill cards [Mandatory] At the end of the day, if there is
+played on this character. exactly 1 other character at this character’s
+[Optional] At the end of the last day, if there location, that character dies.
+are 2 or fewer kinds of counters on this
+character, you may kill the Protagonists.
+Plots: Plots:
+Dimensional Merger Puppeteer’s Strings (D)
+Through the Looking-Glass (D)
+Hysteria Virus (D*)
+Conspiracy Theorist Alice
+Max: 1 Max: None
+Abilities: Abilities:
+[Optional] During each Mastermind abilities [Mandatory] At the end of the loop, if this
+phase, you may place 1 Paranoia counter on character is dead, the Protagonists lose.
+a character at this character’s location. [Mandatory] (1x∞) After this character’s
+Goodwill ability resolves, if the Extra Gauge is
+1 or higher, place 1 Hope counter on each
+other character at this character’s location.
+Plots: Plots:
+Through the Looking-Glass (L) Through the Looking-Glass
+Crossing World Lines
+Unspeakable Horrors (L)
+Hysteria Virus
+Fragment Pied Piper
+--- PAGE 9 ---
+Max: None Max: None
+Goodwill Refusal
+Abilities: Abilities:
+[Mandatory] At the start of the loop, if this [Mandatory] (1x∞) At the end of the day, if the
+character was dead at the end of the previous Extra Gauge is 2 or higher, one character at
+this character’s location dies.
+loop, the Mastermind adds "Despair +1" to
+[Optional] At the end of the day, you may
+hand.
+place 1 Intrigue counter on a corpse at this
+[Mandatory] At the start of the loop, if this
+character’s location. Then, if there is a total of
+character was alive and had 2+ Goodwill at
+3 or more Intrigue counters on all corpses
+the end of the previous loop, the Protagonists
+combined, kill the Protagonists.
+add "Hope +1" to hand.
+Plots: Plots:
+Dimensional Merger The Plaguebringer (L)
+Puppeteer’s Strings
+Hysteria Virus
+Gossip
+Max: 1
+Abilities:
+[Optional] During each Mastermind abilities
+phase, you may place 1 Goodwill counter on
+a character at this character’s location.
+[Mandatory] When this character dies, place
+1 Despair counter on a character at this
+character’s location, and you may trigger a
+Warp.
+Plots:
+The Plaguebringer (D)
+Puppeteer’s Strings
+Unspeakable Horrors
+Hysteria Virus
+--- PAGE 10 ---
+Incidents
+Crime of Passion Dimensional Distortion
+One other character at the culprit’s location Trigger a Warp.
+dies, if possible. When determining if this Incident triggers, it
+When determining if this Incident triggers, always triggers regardless of the number of
+treat the culprit’s Paranoia Limit as 1 lower. counters on the culprit.
+Dimensional Perversion Dimensional Fracture
+You may trigger a Warp. You may trigger a Warp.
+Place 2 Paranoia counters on any character, If there are 3 or more kinds of counters on the
+and 2 Goodwill counters on any other culprit, kill the Protagonists.
+character.
+Left Behind Phantasmal Incident
+Place 1 Intrigue counter on a character at the Resolve the effect of Crime of Passion,
+culprit’s location, then move the culprit to any Dimensional Perversion, or Left Behind.
+location. When determining if this Incident triggers,
+refer to the number of Intrigue counters on
+the culprit instead of the original type of
+counter.
+Hospital Incident Last Will
+If there are 1 or more Intrigue counters on the The culprit dies. At the start of the next loop,
+Hospital, each character there dies. the Protagonists add "Hope +1" to hand.
+Furthermore, if there are 2 or more Intrigue
+counters on the Hospital, kill the Protagonists.
+The Singularity Seeping Daylight
+If the players are in the Light World, trigger a The Leader chooses a character. Place 1
+Warp. Furthermore, if this is the first time this Hope counter on that character.
+game that this Incident triggered, kill the
+Protagonists.
+If the players are in the Dark World and there
+is 1 or more Intrigue counter on the culprit’s
+starting location, kill the Protagonists.
+The Murk of Despair
+Place 1 Despair counter on any character.
+--- PAGE 11 ---
+Script Creation Guide
+Introduction
+This section is meant for Masterminds intent on creating their own scripts with Another Horizon
+(AH), and explains some things that are important to know when doing so. It can also be used
+as a reference for how to navigate through games as the Mastermind. As this is aimed at
+Masterminds, it is recommended that players who intend on playing the Protagonist side to not
+read this section to start with. There is a very real risk that doing so will result in being able to
+enjoy the Tragedy Set less.
+This section will use the abbreviations PP (Power Play) and CS (Cover Story) as described in
+the original Mastermind’s Handbook included in the base game. For a detailed explanation of
+those terms, please refer to that handbook.
+(TL Note: In the Z-Man Games English Translation, “Cover Story” was instead “Coverup”, and
+the acronyms were not used.)
+The Mastermind Increases the Extra Gauge
+The Extra Gauge is an important factor in AH, so therefore we should discuss the particulars of
+how it works. The first point we will touch upon is the fact that the side who generally wants to
+increase it is the Mastermind side.
+The clear reason for this is that while the Gauge is 0, it’s hard for the Mastermind to win. Even in
+scripts where winning under that condition is possible, actually doing so shuts off many possible
+CSs, so raising it still has value and makes for a more interesting script.
+It’s easy to see why the above is true with a quick glance at the Main Plots. It’s obviously the
+case for Into Nothingness. The Forbidden Future is usually easier to win by Warping from the
+Dark World to the Light World on the last day, rather than trying to just stay in the Light World.
+It’s easier for characters to die in the Dark World in Mother Goose Mystery, so you’ll want to
+Warp to it when possible. Even Subplots and Incidents such as The Plaguebringer,
+Unspeakable Horrors, and The Singularity are harder to use without having increased the Extra
+Gauge.
+With the above in mind, the Protagonists don’t really have a reason to increase the Gauge. If
+they just leave it alone, the Mastermind could lose without having to do anything else. As such,
+it’s risky to create a script that assumes the Protagonists will increase the Gauge, especially in
+the first loop.
+It follows that for most scripts, you’ll want to prepare a way for the Mastermind to trigger a Warp
+in the early game. A simple way of doing so is setting a Dimensional Distortion on Day 1 or 2. If
+you want to allow for the possibility of the Warp being prevented or delayed, you can instead try
+--- PAGE 12 ---
+using a Dimensional Perversion or Dimensional Fracture, giving Puppeted Goodwill Refusal to a
+character with a 1x∞ Goodwill ability, or making use of a Marionette.
+Of course, this isn’t the end of the story. Let’s also look at some cases where the Protagonists
+may wish to Warp.
+Protagonists May Warp to Avoid a PP
+As mentioned above, the Protagonists normally won’t try to increase the Extra Gauge. But it’s a
+different story if not doing so would lead to their loss, or is risky for some other reason.
+Let’s look at an example of the former involving Incidents. Suppose you set a particularly
+dangerous Incident on Day 2 or 3, with the culprit being a Conspiracy Theorist or Obstinate. In
+that case, the Protagonists are encouraged to try to Warp on Day 1 or 2. To that end, you should
+provide them with ample easy-to-use 1x∞ Goodwill abilities, such as on the Class Rep, Soldier,
+or Godly Being.
+An example of the latter is that in the Light World, there can be 2 Conspiracy Theorists, which
+are easy to hide but hard to differentiate. Staying in the Light World risks allowing Incident after
+Incident to be triggered, resulting in a Protagonist loss with little information gained, such as
+multiple Crimes of Passion fulfilling the loss condition for Mother Goose Mystery without even
+entering the Dark World. If the Protagonists lose in that way in the first loop, they may try to
+increase the Gauge to avoid the same fate.
+If the Gauge is already 1 or higher, then there’s many possible reasons for them to want to
+increase it further. Increasing it from 1 to 2 can stop Serial Killers and blunt The Singularity,
+while raising it from 2 to 3 can stop a Pied Piper. As such, you don’t need to worry nearly as
+much about raising the Gauge beyond 1 as you do about raising it to 1 to begin with.
+Protagonists May Warp to Gain Information
+Experienced Protagonists may also try to increase the Gauge to gain information. Increasing it
+to 1 can reveal Alice or a Serial Killer, increasing it to 2 can reveal a Pied Piper, and increasing it
+to 3 can reveal a Storyteller. Whether doing so is actually a good idea depends heavily on the
+script and the board state, so we’ll reserve judgment on that here. However, you should
+definitely not rely on them doing this, but in scripts aimed at high-level players it might be a good
+idea to make sure it’s at least an option.
+Protagonists May Warp Incidentally
+It’s also possible that the Protagonists may Warp without specifically trying to do so, as a side
+effect of using 1x∞ Goodwill abilities. Such abilities are generally quite powerful, which is why
+they’re 1x∞ to begin with, so the Protagonists are already incentivized to use them. The Shrine
+--- PAGE 13 ---
+Maiden’s Goodwill 5 ability is of course very strong, and characters such as the Teacher and the
+Alien tend to attract Goodwill +2 if the Mastermind doesn’t play a card on them.
+If you provide access to such abilities, you can expect them to cause the Extra Gauge to
+increase at some point. However, because the expectation is only “at some point”, you shouldn’t
+expect them to be used at any specific part of the game. For example, don’t rely on the
+Protagonists to use them on the first loop.
+To put it another way, the Gauge will incidentally be increased from time to time over the course
+of the game, meaning there will be loops where it will be higher than what you would otherwise
+have planned. Which loop(s) that will be depends on the Protagonists, so you won’t exactly
+know when it will happen, but when making a script, it’s a good idea to have a plan for what to
+do on loops when the Gauge is particularly high.
+A straightforward example is in Unspeakable Horrors, you can plan to win with that Plot’s rule if
+the Protagonists happen to use two 1x∞ Goodwill abilities in a single loop. A more common
+example would be saying something like “In this script, the Extra Gauge will usually be
+increased twice. On loops when the Protagonists use a 1x∞ ability to increase it a third time, I’ll
+place Paranoia on this culprit and win by killing the Key Person.” Details such as these can
+make for more compelling scripts.
+Managing the Gauge
+Let’s take what we’ve learned so far and apply it to a script. First, consider where you plan to
+have the Gauge be at the end of the loop (excluding cases where the loop ends early such as a
+Key Person death). Choose from among the following:
+0-1: A script that doesn’t rely much on the Extra Gauge. It may be a point of contention
+how the side that wants to increase it will do so.
+1-2: A standard script. The Mastermind tries to move to the Dark World, and the
+Protagonists try to move back.
+2-3: A script where the Gauge gets increased relatively often. If you want it to reach 3,
+make sure to include enough ways to do so.
+3-4: A grand script. It’s hard to achieve this without at least 7 days per loop. Requires a lot
+of preparation and determination.
+Next, decide what methods for increasing it you wish to include. It’s a good idea to divide these
+into ways that can reliably be used to increase the Gauge, and ways that can be reasonably
+prevented. An example of the former for the Protagonists is the Class Rep or Soldier’s 1x∞
+abilities, while an example of the latter for the Mastermind is setting the Girl Student as the
+culprit of a Dimensional Perversion.
+You should use a reliable method to avoid what would otherwise be an unreasonable or
+unenjoyable situation, whereas you should use a preventable method if you want it to be a point
+of conflict for the players to fight over. For example, if the script wouldn’t be interesting unless
+--- PAGE 14 ---
+the Extra Gauge is increased at least once, you should provide a reliable Gauge increase to the
+Mastermind, or if there would be an otherwise unavoidable PP, you need to provide one to the
+Protagonists.
+With all of the above in mind, consider which side you expect to want to increase the Gauge at
+any given moment, and choose which options to give them as appropriate. Let’s look at two
+examples:
+Ex1. Expected Gauge: 1-2 (Mastermind, Mastermind)
+A script that uses a Serial Killer in the Dark World to win with the rule from Mother Goose
+Mystery. You decide to set a Dimensional Distortion on Day 2 to trigger the initial Warp.
+However, once the Serial Killer has been revealed, it’s hard to win with them alone. As a
+backup, you plan on using the Marionette Rich Man’s Daughter’s ability to Warp back to
+the Light World and make a PP involving the Pied Piper.
+The first of these is a reliable Warp, whereas the second is preventable.
+Ex2. Expected Gauge: 2-3 (Protagonists, Mastermind, Protagonists)
+You have a PP set up to have the Key Person Rich Man’s Daughter trigger Last Will on
+Day 3, so you also provide the Protagonists a way to Warp to the Dark World by Day 2,
+where she instead becomes a Brain.
+If the PP on Day 3 is prevented, you plan on winning with the rule from The Forbidden
+Future by Warping back to the Light World with the Marionette or a Dimensional
+Distortion on Day 5. In order to allow the Protagonists to escape back to the Dark World,
+you need to provide a second way for the Protagonists to Warp on Day 6, such as
+another 1x∞ Goodwill ability.
+The first of these three Warps must be reliable. It’s probably fine for the other two to be
+preventable. The specifics of how to do so is a test of your skill as a scriptwriter.
+Number of Loops
+As with other Tragedy Sets, we have prepared a quick reference for approximately how many
+loops your script should have. Please use it only as a rough estimate.
+Main Plot
+The Forbidden Future +1.5
+Fairy-Tale Murderer +1.4
+Mother Goose Mystery +1.8
+Dimensional Merger +1.4 (+0.5 for each related Incident)
+Into Nothingness +1.8
+--- PAGE 15 ---
+Subplots
+Jekyll and Hyde +0.7
+The Plaguebringer +0.8
+Puppeteer’s Strings +0.5
+Through the Looking-Glass +0.8
+Crossing World Lines +0.5
+Unspeakable Horrors +0.8
+Hysteria Virus +0.6
+Incidents
+Hospital Incident +0.4
+The Singularity +0.6
+Dimensional Fracture +0.2
+4 Incidents +0.0 (±0.4 for each Incident above/below 4)
+Days Per Loop
+6 Days -0.2
+5 or Fewer Days -0.6
+Further Reading
+If you would like further resources on creating scripts, please check the "Tragedy Looper Script
+Collection". On pages 15-24, you'll find an example and explanation of a full script being
+created. There is also a section on pages 30-32 on Taboos and how to avoid creating one,
+which can ruin a script.
+In both the "Tragedy Looper Script Collection" and "Tragedy Looper Script Collection II" there
+are many high-quality scripts taken from places such as the Worldwide Scriptwriting
+Competitions, which may provide good ideas and inspiration.
+(TL Note: Unfortunately neither of these currently have English translations.)
+--- PAGE 16 ---
+Plot Overview
+M: The Forbidden Future M: Fairy-Tale Murderer
+If you just sit around in the Light World, the You can secure a loop by finding a way to kill
+Protagonists will use a 1x∞ ability on the last the Key Person, and another by using
+day. It’s easier to win by going to the Dark “Despair +1” to kill the Protagonists with the
+World, then Warping back on the last day Lullaby. This Plot is unsuited for CSs with
+instead. You can also focus on winning by other Main Plots, so you’ll want to set up a
+killing the Key Person in the Dark World. nice PP instead.
+M: Mother Goose Mystery M: Dimensional Merger
+In early loops, you can use any other Main Victory is all but guaranteed in loops where
+Plot as a CS for this, or vice-versa. On the the Protagonists don’t have “Hope +1”. Make
+other hand, winning in later loops is difficult. sure the related Incidents aren’t too easy to
+By itself, this rule can only create 1 corpse, trigger to give them a chance to fight back. It
+so use Subplots and Incidents to supplement. makes for an interesting script if you use the
+Serial Killers and Pied Pipers are valuable. fact that the Shifter’s GW abilities are easy to
+And then, there were… use as a weak point.
+M: Into Nothingness S: Jekyll and Hyde
+This serves as a great CS for any other Main Pick which half of the Dual Role you want to
+Plot by simply placing 2 or so Intrigue on any use as part of a CS. If you choose the Key
+Goodwill Refusal character. If you’re going to Person, it adds a win condition and allows
+use the Brain, try to do so in the Dark World you to bluff Fairy-Tale Murderer. If you choose
+to keep CSs open. There should be at most the Brain, it allows you to more easily bluff
+1 reliable way for the Mastermind to Warp. Into Nothingness.
+S: The Plaguebringer S: Puppeteer’s Strings
+The Extra Gauge being exactly 2 becomes a The key points are the Puppeted Goodwill
+point of contention. The Protagonists will Refusal and the Serial Killer. The other two
+either want to prevent it from getting there, or Roles generate Despair when they die, so
+raise it from 2 to 3. The Pied Piper is very you can use them to add more Goodwill
+strong in providing PPs. Ideally you’ll win with Refusal and manipulate the Extra Gauge.
+them as a surprise attack the first time the Also keep in mind the ability to conceal
+Extra Gauge reaches 2. Mandatory Goodwill Refusal.
+S: Through the Looking-Glass S: Crossing World Lines
+Easy to use, as it provides a Serial Killer and Continues from its appearance in the
+another win condition, plus a Conspiracy Observer's Handbook and Last Liar. As
+Theorist in the Light World. A good Plot to before, it makes the second loop extremely
+pick if you’re having trouble deciding. The easy to win, so it can help with script stability
+Roles themselves are easily revealed, so so while also driving up the tension. We
+is this Plot. Don’t rely too much on the win recommended planning on having someone
+condition this provides. die in the first loop to bluff a Fragment.
+S: Unspeakable Horrors S: Hysteria Virus
+--- PAGE 17 ---
+Provides a clear incentive to repeatedly The return of Paranoia Virus. The condition
+increase the Gauge. The Protagonists can’t for becoming a Serial Killer is easier, though
+freely use 1x∞ abilities, so if you make too now restricted to the Dark World. Be careful
+strong a PP, they might feel unsatisfyingly that even if a Fragment becomes a Serial
+restricted. A good balance is planning to win Killer, the actual effect of the Fragment will
+with this just once, when the Gauge happens still effectively function as normal.
+to be higher than normal.
+Sample Script Collection
+Seekyourdreamsinthelandofwonders;prayforignoranceinthelightanddark.
+The following pages contain 5 sample scripts, meant for players who wish to jump right in and
+experience Another Horizon.
+AH is a cut above the average Tragedy Set in terms of complexity. It requires both the
+Mastermind and the Protagonists to have the understanding to correctly process the summary
+sheet, and the creativity to use that knowledge to create a plan to win the game. Only true
+masters pass through even the final world and onto this side stage in search of more.
+Creating scripts for AH is, of course, also difficult. That said, for a Mastermind who already has
+experience making scripts for all of the other Tragedy Sets, it’s altogether not that much of a
+step up. Even so, there’s no doubt that even for such adepts that it would be safer to start by
+trying the sample scripts provided here.
+We recommend playing the first of these scripts first; it’s a relatively stable way of experiencing
+the chaos that is AH. After that, the rest of the scripts can be played in any order. If you’ve come
+this far, you probably don’t need any more crude words of guidance. Please enjoy the unending
+battle of wits however you see fit.
+After finishing all five, you will have reached the utmost limits of Tragedy Looper. From here on
+out, I will no longer be the one to provide you with new worlds to explore. If your curiosity is still
+unsatiated, then it is time to begin your journey of creating those worlds for yourself, using the
+skills and wisdom you’ve gained along the way. But fear not, as our paths will surely cross
+again. Until that time comes, I wish you good health, and blessings upon your voyage.
+Notes for the Mastermind
+Script Titles
+You should only reveal the name of the script you’re playing after the game is over, as the
+names of some scripts contain spoilers.
+--- PAGE 18 ---
+Table Talk
+We leave the decision of whether or not to allow Table Talk in the provided scripts to the
+Mastermind. However, AH has many complicated rules, so we recommend first allowing it even
+with advanced players, or first playing 1 vs. 1. Playing without Table Talk might be a bit too
+much, even for the most experienced players.
+Number of Loops
+Choose from the provided options based on the skill level of the Protagonists. If you’re not sure,
+go with the higher option to lessen the chance that they feel like it’s too difficult. It’s also a good
+idea to ask them what they would prefer, for both this and Table Talk.
+Scripts
+(TL Note: I have instead placed the scripts each in their own separate document as a form of
+protection against accidental spoilers.)
+1. Another Horizon Sample Script 1
+2. Another Horizon Sample Script 2
+3. Another Horizon Sample Script 3
+4. Another Horizon Sample Script 4
+5. Another Horizon Sample Script 5
+Credits
+Game Design: BakaFire, 東野K
+Art: NEKOG
+Rulebook: BakaFire
+Playtest: option, gleipnil, souma, たらみ, たろいも, ヒナタペロ王子,
+ロキルス
+Sample Script Design: See individual script pages
+Printed By: タチキタプリント
+Tragedy Looper Expansion Ex Another Horizon Revised
+Publication Date: 2021/12/03, by BakaFire
+Copyright: BakaFire Party
+http://bakafire.main.jp/rooper/sr_top.htm
+--- PAGE 19 ---
+Postscript
+Hello, this is BakaFire. Well, it happened. In the Last Liar postscript I was writing from a position
+of relative leisure, but time has passed and I have now entered an incredibly busy period. I’ve
+gone from anxious from thinking about it, to anxious from being in it.
+This Tragedy Set was actually not originally my doing, but the result of the player Higashino K
+(東野K), who came to me asking about the possibility of remaking the original Another Horizon.
+Third parties are mostly free to do what they wish, but since the plan was to remake an official
+Set, he preferred to try to do it officially, under the BakaFire name. Of course, I had to get
+involved directly in that case. At the time, I had my hands full with Sakura Arms, so he did the
+initial design work by himself, to which I applied a multitude of changes and tweaks. (That’s
+where the Tragedy Looper Rei rules came into the picture, and we ended up with a more
+interesting product.)
+In that way, it would be appropriate to call this a collaborative design. As it was based on the
+original AH, I joined the design effort myself, but in general the rules for making derivative works
+from the Tragedy Looper series are quite lenient. As mentioned before, the future of the series
+might no longer rest with me. I look forward to what everyone will do within and without the
+framework provided here, and how they intend to cross beyond even zero.
+-BakaFire, 2021/10/15, from home

@@ -613,6 +613,13 @@ a:hover { text-decoration: underline; color: var(--accent2); }
 .char-token .counter.pa { background: #b05e2e; }
 .char-token .counter.in { background: #98417f; }
 .char-token .counter.guard { background: #3f6cad; }
+.char-token .counter.hope { background: #f0c94a; color: #3a2f00; }
+.char-token .counter.despair { background: #4a2f6b; }
+.char-token .token-row { display: flex; gap: 3px; justify-content: center; margin-top: 3px; flex-wrap: wrap; }
+.char-token .token-mark img { width: 18px; height: 18px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,.35); }
+.char-token .guess-tag { font-size: 11px; color: var(--accent); background: var(--accent-soft); border-radius: 8px; padding: 1px 6px; margin-top: 2px; }
+.char-token.guess-correct { outline: 3px solid #3fae5f; border-radius: 10px; }
+.char-token.guess-wrong { outline: 3px solid #e05555; border-radius: 10px; }
 .char-token .counter.ex { background: #7a3fb0; padding: 1px 8px; font-size: 11.5px; letter-spacing: .5px; }
 .char-token .role-badge {
   background: rgba(255, 255, 255, .10);

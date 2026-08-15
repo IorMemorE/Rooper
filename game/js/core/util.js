@@ -86,7 +86,8 @@ TL.validateScript = function (script) {
   if (main && main.module !== "both" && main.module !== script.moduleId) {
     errors.push(TL.t("validate.mainNotInModule", { name: TL.pname(main.id), mod: TL.modname(script.moduleId) }));
   }
-  if (script.moduleId === "BTX" && (script.subplots || []).length !== 2) {
+  var needSubs = mod.subplotsCount;
+  if (needSubs != null && script.moduleId !== "FS" && (script.subplots || []).length !== needSubs) {
     errors.push(TL.t("validate.btxSubs", { mod: TL.modname(script.moduleId) }));
   }
   if (script.moduleId === "FS" && (!script.subplots || script.subplots.length < 1)) {
@@ -278,6 +279,7 @@ TL.defaultScript = function (moduleId) {
     incidents: [],
     specialRules: "",
     publicSpecialRules: "",
+    allowFinalGuess: mod.finalGuess !== false,
     note: mod.note
   };
   var roles = TL.rolesFromScript(script);

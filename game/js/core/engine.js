@@ -7,6 +7,7 @@ TL.Game = function (script, opts) {
   this.script = TL.clone(script);
   this.module = MODULES[this.script.moduleId] || MODULES.FS;
   this.protagonistCount = opts.protagonists || 3;
+  this.onlineMode = !!opts.onlineMode;
   this.io = opts.io || {
     log: function () {},
     askChoice: async function (q) { return 0; },
@@ -42,6 +43,8 @@ TL.Game.prototype.nextStep = async function () {
       st.usedMMAbility = {};
       st.feed = [];
       this._log(TL.I18N.log("dayStart", { n: st.day }) || ("—— 第" + st.day + "天 早晨 ——"));
+      // 臨時工：回合開始階段，若該卡牌為死亡狀態 → 在都市放置「臨時工？」
+      await this._partTimerSpawn();
       // Ex槽1+ 感應咒文：第1天回合開始階段，隊長可選擇任意1名角色放置2枚[友好]
       if (st.day === 1 && st.exGauge >= 1) {
         await this._exIncantation();
@@ -191,5 +194,105 @@ TL.Game.prototype.confirmPPlays = function () {
     if (have < need) return { ok: false, msg: TL.t("game.err.pNeedPlays", { n: i + 1, k: need - have }) };
   }
   st.phase = "resolve";
+  return { ok: true };
+};
+
+// ---------- 联机流程：分人确认 / 掀开卡牌 / 结算完成 / 宣告失败 ----------
+
+// 联机：单个主人公确认自己的出牌（需打满自己的牌数）
+TL.Game.prototype.confirmPPlayByPlayer = function (playerIndex) {
+  var st = this.state;
+  if (st.phase !== "p_play") return { ok: false, msg: TL.t("game.err.notPPlay") };
+  if (st.pConfirmed[playerIndex]) return { ok: true }; // 已确认过
+  var need = this._playsPerProtagonist(playerIndex);
+  var have = st.pPlays.filter(function (p) { return p.player === playerIndex; }).length;
+  if (have < need) return { ok: false, msg: TL.t("game.err.pNeedPlays", { n: playerIndex + 1, k: need - have }) };
+  st.pConfirmed[playerIndex] = true;
+  var all = true;
+  for (var i = 0; i < this.protagonistCount; i++) {
+    if (!st.pConfirmed[i]) { all = false; break; }
+  }
+  st.allPConfirmed = all;
+  return { ok: true };
+};
+
+// 联机：剧作家掀开所有卡牌（所有人可见卡面）。自动模式直接结算；手动模式进入手动结算阶段
+TL.Game.prototype.revealPlays = async function (manual) {
+  var st = this.state;
+  if (st.phase !== "p_play" || !st.allPConfirmed) return { ok: false, msg: TL.t("game.err.notPPlay") };
+  st.revealed = true;
+  st.feed = [];
+  if (!manual) {
+    // 自动模式：立即结算并清空盘面卡牌
+    return await this._resolveOnlinePlays();
+  }
+  // 手动模式：保留卡牌在盘面，进入手动结算（由“进入剧作家能力阶段”按钮结算）
+  st.phase = "resolve";
+  return { ok: true };
+};
+
+// 结算（联机共用，自动/手动最后一步）：清空盘面卡牌并进入剧作家能力阶段
+TL.Game.prototype._resolveOnlinePlays = async function () {
+  var st = this.state;
+  if (!st.revealed) return { ok: false, msg: TL.t("game.err.notPPlay") };
+  this._log(TL.I18N.log("resolve") || "—— 翻開並結算行動牌 ——");
+  var all = st.mmPlays.map(function (p) { return { card: p.card, targetType: p.targetType, targetId: p.targetId, owner: "mm" }; })
+    .concat(st.pPlays.map(function (p) { return { card: p.card, targetType: p.targetType, targetId: p.targetId, owner: "p" + p.deck }; }));
+  all.forEach(function (p) {
+    var who = p.owner === "mm" ? "劇作家" : "主人公";
+    var target = p.targetType === "location" ? LOC_INDEX[p.targetId].name + "（版圖）" : TL.cname(p.targetId);
+    st.log.push({ text: (TL.I18N.log("reveal", { who: who, card: TL.cardname(p.card), target: target }) ||
+      ("翻開：" + who + "【" + CARD_INDEX[p.card].name + "】→ " + target)), day: st.day, loop: st.loop });
+    st.feed.push({ type: "reveal", owner: p.owner, card: p.card, targetType: p.targetType, targetId: p.targetId });
+  });
+  all.forEach(function (play) {
+    var card = CARD_INDEX[play.card];
+    if (card && card.oncePerLoop) st.used[play.owner][play.card] = true;
+  });
+  // 简化联机结算：直接执行 _resolveCards 的核心逻辑（移用现有实现）
+  await this._resolveCards();
+  st.mmPlays = [];
+  st.pPlays = [];
+  st.resolveDone = true;
+  st.phase = "resolve_done";
+  return { ok: true };
+};
+
+// 联机：右上角“进入剧作家能力阶段”——手动模式在此执行结算；自动模式直接推进
+TL.Game.prototype.finishResolve = async function () {
+  var st = this.state;
+  if (st.phase === "resolve_done") {
+    st.phase = "mm_abilities";
+    return { ok: true };
+  }
+  if (st.phase === "resolve" && st.revealed) {
+    var r = await this._resolveOnlinePlays();
+    if (!r.ok) return r;
+    st.phase = "mm_abilities";
+    st.resolveDone = true;
+    return { ok: true };
+  }
+  return { ok: false, msg: TL.t("game.err.notPPlay") };
+};
+
+// 联机：剧作家宣告主人公失败/死亡（开启下一轮回）
+TL.Game.prototype.declareLose = function (type) {
+  var st = this.state;
+  if (type !== "fail" && type !== "death") return { ok: false, msg: "unknown type" };
+  st.loseCause = type;
+  st.ended = "lose";
+  st.phase = "loop_end";
+  this._log(type === "death"
+    ? (TL.L("mmDeclareDeath") || "劇作家宣告：主人公死亡。")
+    : (TL.L("mmDeclareFail") || "劇作家宣告：主人公失敗。"));
+  if (st.loop >= this.script.loops) {
+    // 最终轮回失败：允许最终决战则进入待命（联机显示按钮）；否则直接结束
+    this._enterFinalGuessPending();
+  } else {
+    // 有剩余轮回：直接出现「下一轮回」按钮
+    st.loop += 1;
+    st.nextLoopPending = true;
+    this._log(TL.L("nextLoopReady") || "主人公失敗。準備進入下一輪輪迴（點擊「下一輪輪迴」開始）。");
+  }
   return { ok: true };
 };

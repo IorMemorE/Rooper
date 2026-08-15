@@ -159,6 +159,33 @@
       });
     });
 
+    // 房间设置（房主）：主人公能否看队友盖牌 + 起始队长
+    var settingsBox = $("lb-room-settings");
+    if (settingsBox) {
+      if (isHost && !room.started) {
+        settingsBox.innerHTML =
+          '<h4 class="lobby-sec">' + TL.t("lobby.settings") + "</h4>" +
+          '<label class="set-row toggle-row"><input type="checkbox" id="lb-see-cards"' +
+          (room.seeTeammateCards ? " checked" : "") + "> " + TL.t("lobby.seeCards") + "</label>" +
+          '<div class="set-row"><span class="set-label">' + TL.t("lobby.leaderStart") + '</span>' +
+          '<select id="lb-leader-start">' +
+          ["A", "B", "C"].map(function (n, i) {
+            return '<option value="' + i + '"' + ((room.leaderStart || 0) === i ? " selected" : "") + ">主人公" + n + "</option>";
+          }).join("") + "</select></div>";
+        settingsBox.style.display = "";
+        var seeCards = settingsBox.querySelector("#lb-see-cards");
+        var leaderSel = settingsBox.querySelector("#lb-leader-start");
+        if (seeCards) seeCards.addEventListener("change", function () {
+          TL.Net.roomSetting({ seeTeammateCards: this.checked });
+        });
+        if (leaderSel) leaderSel.addEventListener("change", function () {
+          TL.Net.roomSetting({ leaderStart: parseInt(this.value, 10) });
+        });
+      } else {
+        settingsBox.style.display = "none";
+      }
+    }
+
     // 劇本選擇（房主）
     if (isHost) {
       var saved = loadEditorScript();

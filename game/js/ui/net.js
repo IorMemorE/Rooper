@@ -139,7 +139,7 @@ window.TL.Net = (function () {
 
   function action(name, payload) {
     var obj = { type: "action", action: name };
-    for (var k in (payload || {})) obj[k] = payload[k];
+    for (var k in (payload || {})) if (k !== "type") obj[k] = payload[k];
     send(obj);
   }
   function promptReply(id, value) {
@@ -153,6 +153,9 @@ window.TL.Net = (function () {
   }
   function selectScript(presetId, script) {
     send({ type: "select_script", presetId: presetId || null, script: script || null });
+  }
+  function roomSetting(payload) {
+    send(Object.assign({ type: "room_setting" }, payload || {}));
   }
   function startGame() {
     send({ type: "start" });
@@ -183,6 +186,7 @@ window.TL.Net = (function () {
     chat: chat,
     assign: assign,
     selectScript: selectScript,
+    roomSetting: roomSetting,
     startGame: startGame,
     setAvatar: setAvatar,
     setPerspective: setPerspective,

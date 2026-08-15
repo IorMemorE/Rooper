@@ -90,6 +90,8 @@ function publicRoom(room) {
     started: room.started,
     scriptTitle: room.script ? room.script.title : null,
     script: room.script ? publicScript(room.script) : null,
+    seeTeammateCards: !!room.seeTeammateCards,
+    leaderStart: room.leaderStart || 0,
     players: room.players.map(function (p) {
       return { id: p.id, name: p.name, avatar: p.avatar, slots: p.slots, online: !!p.conn };
     })
@@ -127,7 +129,9 @@ function buildView(room, player) {
     const c = st.chars[id];
     chars[id] = {
       loc: c.loc, alive: c.alive, paranoia: c.paranoia, goodwill: c.goodwill,
-      intrigue: c.intrigue, guard: c.guard, roleRevealed: c.roleRevealed
+      intrigue: c.intrigue, guard: c.guard, hope: c.hope, despair: c.despair,
+      perished: c.perished, acquainted: c.acquainted, acquaintedRefused: c.acquaintedRefused,
+      loyaltyOn: c.loyaltyOn, roleRevealed: c.roleRevealed
     };
     roles[id] = isMM || c.roleRevealed ? c.role : null;
   });
@@ -142,7 +146,17 @@ function buildView(room, player) {
     loop: st.loop,
     leader: st.leader,
     ended: st.ended,
+    nextLoopPending: !!st.nextLoopPending,
     mmManual: !!room.mmManual,
+    manualArmed: !!room.manualArmed,
+    seeTeammateCards: !!room.seeTeammateCards,
+    leaderStart: room.leaderStart || 0,
+    pConfirmed: st.pConfirmed || {},
+    allPConfirmed: !!st.allPConfirmed,
+    revealed: !!st.revealed,
+    resolveDone: !!st.resolveDone,
+    loseCause: st.loseCause || null,
+    gwManualPending: !!room.gwManualPending,
     chars: chars,
     locations: {
       hospital: st.locations.hospital.intrigue,
@@ -150,9 +164,9 @@ function buildView(room, player) {
       city: st.locations.city.intrigue,
       school: st.locations.school.intrigue
     },
-    mmPlays: isMM ? st.mmPlays : st.mmPlays.map(function (p) { return { card: null, targetType: p.targetType, targetId: p.targetId, owner: "mm" }; }),
+    mmPlays: (isMM || st.revealed) ? st.mmPlays : st.mmPlays.map(function (p) { return { card: null, targetType: p.targetType, targetId: p.targetId, owner: "mm" }; }),
     pPlays: st.pPlays.map(function (p) {
-      return (!isMM && ownedDecks.indexOf(p.deck) >= 0)
+      return (st.revealed || (!isMM && ownedDecks.indexOf(p.deck) >= 0) || room.seeTeammateCards)
         ? p
         : { card: null, player: p.player, deck: p.deck, targetType: p.targetType, targetId: p.targetId, owner: "p" };
     }),
@@ -160,6 +174,15 @@ function buildView(room, player) {
     usedGoodwill: st.usedGoodwill,
     usedGoodwillDay: st.usedGoodwillDay,
     usedMMAbility: isMM ? st.usedMMAbility : {},
+    mmHandExtra: isMM ? (st.mmHandExtra || []) : [],
+    pHandExtra: (function () {
+      const out = {};
+      ownedDecks.forEach(function (d) {
+        if (st.pHandExtra && st.pHandExtra["p" + d]) out[d] = st.pHandExtra["p" + d].slice();
+      });
+      return out;
+    })(),
+    exGauge: st.exGauge,
     plotFlags: isMM ? st.plotFlags : {},
     feed: st.feed,
     log: st.log,
@@ -167,11 +190,13 @@ function buildView(room, player) {
     incidentHistory: isMM
       ? st.incidentHistory
       : st.incidentHistory.map(function (h) { return { day: h.day, loop: h.loop, incidentId: h.incidentId, happened: h.happened }; }),
-    script: isMM ? room.script : publicScript(room.script),
+    script: (isMM || st.phase === "final_result") ? room.script : publicScript(room.script),
     protagonistCount: 3,
     slots: player.slots,
     finalGuess: st.finalGuess,
-    guessRoles: st.phase === "final_guess" ? TL.rolesFromScript(room.script) : null
+    guessRoles: (st.phase === "final_guess" || st.phase === "final_guess_pending" || st.phase === "final_result")
+      ? TL.rolesFromScript(room.script)
+      : null
   };
 }
 
@@ -187,7 +212,7 @@ function playerOfSlot(room, slot) {
 
 function routePrompt(room, q, kind) {
   return new Promise(function (resolve) {
-    const toMM = kind === "confirm" || room.promptIsMastermind;
+    const toMM = kind === "confirm" || kind === "gw_request" || room.promptIsMastermind;
     let player = toMM ? playerOfSlot(room, "mm") : (room.promptPlayer || playerOfSlot(room, "mm"));
     if (!player) player = room.players[0] || null;
     if (!player || !player.conn) {
@@ -200,7 +225,8 @@ function routePrompt(room, q, kind) {
     send(player.conn, {
       type: "prompt", id: promptId, kind: kind,
       title: q.title || "", text: q.text || "",
-      options: q.options || null, targets: q.targets || null
+      options: q.options || null, targets: q.targets || null,
+      detail: q.detail || null, canRefuse: q.canRefuse, canAgree: q.canAgree, manual: q.manual
     });
   });
 }
@@ -218,7 +244,7 @@ async function startGame(room, script) {
   const v = TL.validateScript(script);
   if (v.errors.length) return { ok: false, msg: "劇本不合法：" + v.errors.join("；") };
   room.script = script;
-  room.game = new TL.Game(script, { protagonists: 3, io: makeServerIO(room) });
+  room.game = new TL.Game(script, { protagonists: 3, io: makeServerIO(room), onlineMode: true });
   room.game.uiManaged = true; // 能力階段由各客戶端面板驅動
   room.started = true;
   room.promptSeq = 0;
@@ -266,22 +292,86 @@ async function handleAction(room, player, msg) {
         return { ok: true };
       }
       case "confirmPPlays": {
-        if (!player.slots.some(function (s) { return s !== "mm"; })) return err("你不是主人公");
-        const r = g.confirmPPlays();
+        // 联机：分人确认。每个主人公点击“确认打出”结束自己的阶段（从队长开始由客户端引导）
+        const deck = msg.deck != null ? msg.deck : st.leader;
+        // 确认打出始终由主人公自己操作（手动模式也不例外）
+        if (player.slots.indexOf(DECK_SLOT[deck]) < 0) {
+          return err("你不是主人公" + ["A", "B", "C"][deck]);
+        }
+        const r = g.confirmPPlayByPlayer(deck);
         return r.ok ? { ok: true } : err(r.msg || "確認失敗");
+      }
+      case "revealAll": {
+        if (player.slots.indexOf("mm") < 0) return err("你不是劇作家");
+        const r = await g.revealPlays(!!room.mmManual);
+        return r.ok ? { ok: true } : err(r.msg || "掀開失敗");
+      }
+      case "finishResolve": {
+        if (player.slots.indexOf("mm") < 0) return err("你不是劇作家");
+        const r = await g.finishResolve();
+        return r.ok ? { ok: true } : err(r.msg || "推進失敗");
+      }
+      case "mmDeclareLose": {
+        if (player.slots.indexOf("mm") < 0) return err("你不是劇作家");
+        const r = g.declareLose(msg.loseType || msg.type);
+        return r.ok ? { ok: true } : err(r.msg || "宣告失敗");
+      }
+      case "beginFinalGuess": {
+        if (player.slots.indexOf(DECK_SLOT[st.leader]) < 0) return err("你不是現任隊長");
+        const r = g.beginFinalGuess();
+        return r.ok ? { ok: true } : err(r.msg || "進入最終決戰失敗");
+      }
+      case "finalGuessSet": {
+        if (player.slots.indexOf("mm") >= 0) return err("劇作家不可以猜測");
+        const r = g.finalGuessSet(msg.cid, msg.rid);
+        return r.ok ? { ok: true } : err(r.msg || "設定猜測失敗");
+      }
+      case "finalGuessConfirm": {
+        const deck = msg.deck != null ? msg.deck : st.leader;
+        if (player.slots.indexOf(DECK_SLOT[deck]) < 0) return err("你不是主人公" + ["A", "B", "C"][deck]);
+        const r = g.finalGuessConfirm(deck);
+        return r.ok ? { ok: true } : err(r.msg || "確認猜測失敗");
+      }
+      case "finalGuessReveal": {
+        if (player.slots.indexOf("mm") < 0) return err("你不是劇作家");
+        const r = g.finalGuessReveal();
+        return r.ok ? { ok: true } : err(r.msg || "顯示結果失敗");
       }
       case "nextStep": {
         if (st.phase === "mm_play" || st.phase === "p_play") {
           return err("打牌階段請使用「確認打出」");
         }
-        const ownerOk =
-          (st.phase === "mm_abilities" || st.phase === "resolve" || st.phase === "incident" ||
-           st.phase === "day_end" || st.phase === "loop_end" || st.phase === "day_start") ?
-            (player.slots.indexOf("mm") >= 0) :
-          (st.phase === "goodwill") ?
-            (player.slots.indexOf(DECK_SLOT[st.leader]) >= 0) :
-          true;
+        const isMM = player.slots.indexOf("mm") >= 0;
+        let ownerOk;
+        // 结束友好能力始终归队长（主人公）；其余推进/结算归剧作家
+        ownerOk = (st.phase === "goodwill")
+          ? (player.slots.indexOf(DECK_SLOT[st.leader]) >= 0)
+          : isMM;
         if (!ownerOk) return err("當前階段不是由你操作");
+        // 手動模式：結算類階段需要「準備 → 開始」兩步，避免自動結算
+        const settlePhase = st.phase === "resolve" || st.phase === "incident" ||
+          st.phase === "day_end" || st.phase === "loop_end";
+        if (room.mmManual && settlePhase && !room.manualArmed) {
+          room.manualArmed = true;
+          broadcastViews(room);
+          return { ok: true, manualArmed: true };
+        }
+        room.manualArmed = false;
+        // 手动模式：事件/夜晚阶段不自动结算，由剧作家手动调整盘面后直接推进
+        if (room.mmManual && (st.phase === "incident" || st.phase === "day_end")) {
+          g._log(TL.L("manualSettleSkipped", { phase: st.phase === "incident" ? TL.t("game.phase.incident") : TL.t("game.phase.day_end") }) ||
+            ("（手動模式）" + (st.phase === "incident" ? "事件" : "夜晚") + "由劇作家手動結算，已跳過自動結算。"));
+          if (st.phase === "incident") {
+            st.phase = "day_end";
+          } else if (st.day >= g.script.days) {
+            st.phase = "loop_end";
+          } else {
+            st.day += 1;
+            g._updateOnStage(st.loop, st.day);
+            st.phase = "day_start";
+          }
+          return { ok: true };
+        }
         room.promptPlayer = player;
         room.promptIsMastermind = true;
         await g.nextStep();
@@ -296,9 +386,53 @@ async function handleAction(room, player, msg) {
       }
       case "execGoodwill": {
         if (player.slots.indexOf(DECK_SLOT[st.leader]) < 0) return err("你不是現任隊長");
+        const chosen = msg.chosen;
+        const data = CHAR_INDEX[chosen.charId];
+        const ab = (data.goodwill || [])[chosen.abilityIdx];
+        if (!data || !ab) return err("友好能力不存在");
+        const refusal = g._refusalOf(chosen.charId);
+        const canRefuse = !ab.cannotBeRefused && refusal !== "mandatory";
+        const canAgree = refusal !== "mandatory";
+        const tgt = msg.target || null;
+        const detail = {
+          who: g._charName(chosen.charId),
+          role: st.chars[chosen.charId].role ? g._role(chosen.charId).name : TL.t("basic.commoner"),
+          desc: ab.desc,
+          target: tgt ? (tgt.type === "location" ? g._locName(tgt.id) : g._charName(tgt.id)) : ""
+        };
+        // 友好能力请求必须询问剧作家（即使不能拒绝）
+        room.promptPlayer = player;
+        room.promptIsMastermind = true;
+        const reply = await routePrompt(room, {
+          title: TL.L("gwRequestTitle") || "友好能力請求",
+          text: TL.L("gwRequestText", { who: detail.who, desc: detail.desc }) || (detail.who + " 請求使用友好能力：" + detail.desc),
+          detail: detail, canRefuse: canRefuse, canAgree: canAgree, manual: !!room.mmManual
+        }, "gw_request");
+        if (reply === "refuse") {
+          if (!canRefuse && !room.mmManual) return err("劇作家不能拒絕此能力");
+          g.markGoodwillDeclared(chosen, true);
+          g._log(TL.L("gwRefusedByMM", { who: detail.who }) || ("【拒絕】劇作家拒絕了" + detail.who + "的友好能力。"));
+          return { ok: true };
+        }
+        // 同意
+        if (!canAgree && !room.mmManual) return err("劇作家不能同意此能力");
+        if (room.mmManual) {
+          // 手动模式：标记已使用，权限转移给剧作家手动结算，等待「主人公继续」
+          g.markGoodwillDeclared(chosen, false);
+          g._log(TL.L("gwManualSettle", { who: detail.who }) || ("【友好能力】劇作家同意" + detail.who + "的請求，進入手動結算。"));
+          room.gwManualPending = true;
+          broadcastViews(room);
+          return { ok: true };
+        }
         room.promptPlayer = player;
         room.promptIsMastermind = false;
-        await g.execGoodwill(msg.chosen, "p" + st.leader, msg.target || null);
+        await g.execGoodwill(chosen, "p" + st.leader, tgt);
+        return { ok: true };
+      }
+      case "gwContinue": {
+        if (player.slots.indexOf("mm") < 0) return err("你不是劇作家");
+        room.gwManualPending = false;
+        broadcastViews(room);
         return { ok: true };
       }
       case "finalGuess": {
@@ -309,6 +443,7 @@ async function handleAction(room, player, msg) {
       case "mmManualEnable": {
         if (player.slots.indexOf("mm") < 0) return err("你不是劇作家");
         room.mmManual = !!msg.enabled;
+        if (!room.mmManual) room.manualArmed = false;
         broadcastViews(room);
         return { ok: true };
       }
@@ -331,6 +466,8 @@ async function handleAction(room, player, msg) {
           if (msg.goodwill != null) c.goodwill = Math.max(0, Math.min(99, Math.round(msg.goodwill)));
           if (msg.intrigue != null) c.intrigue = Math.max(0, Math.min(99, Math.round(msg.intrigue)));
           if (msg.guard != null) c.guard = Math.max(0, Math.min(5, Math.round(msg.guard)));
+          if (msg.hope != null) c.hope = Math.max(0, Math.min(5, Math.round(msg.hope)));
+          if (msg.despair != null) c.despair = Math.max(0, Math.min(5, Math.round(msg.despair)));
           if (typeof msg.alive === "boolean") c.alive = msg.alive;
         }
         broadcastViews(room);
@@ -406,6 +543,10 @@ function handleCreate(conn, data, client) {
     promptPlayer: null,
     promptIsMastermind: false,
     mmManual: false,
+    manualArmed: false,
+    seeTeammateCards: false,
+    leaderStart: 0,
+    gwManualPending: false,
     chat: []
   };
   rooms.set(room.code, room);
@@ -507,6 +648,14 @@ async function dispatch(msg, client, conn) {
       broadcastRoom(room);
       break;
     }
+    case "room_setting": {
+      const room = client.room;
+      if (!room || room.hostId !== client.id) { send(conn, { type: "error", msg: "只有房主可以修改設置" }); break; }
+      if (typeof msg.seeTeammateCards === "boolean") room.seeTeammateCards = msg.seeTeammateCards;
+      if (msg.leaderStart != null && [0, 1, 2].indexOf(msg.leaderStart) >= 0) room.leaderStart = msg.leaderStart;
+      broadcastRoom(room);
+      break;
+    }
     case "start": {
       const room = client.room;
       if (!room || room.hostId !== client.id) { send(conn, { type: "error", msg: "只有房主可以開始遊戲" }); break; }
@@ -520,6 +669,7 @@ async function dispatch(msg, client, conn) {
         // 預設使用第一個官方劇本
         room.script = TL.clone(PRESETS[0]);
       }
+      room.script.leaderStart = room.leaderStart || 0;
       const r = await startGame(room, room.script);
       if (!r.ok) { send(conn, { type: "error", msg: r.msg }); break; }
       broadcastRoom(room);

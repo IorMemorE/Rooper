@@ -207,6 +207,7 @@ TL.AI = (function () {
     var used = state.used.mm || {};
     var deckCount = {};
     MASTERMIND_DECK.forEach(function (c) { deckCount[c] = (deckCount[c] || 0) + 1; });
+    (state.mmHandExtra || []).forEach(function (c) { deckCount[c] = (deckCount[c] || 0) + 1; });
     var candidates = [];
     function add(card, tt, ti, score) {
       if (!card || !CARD_INDEX[card]) return;
@@ -254,6 +255,18 @@ TL.AI = (function () {
     }
     if (p.primary === "virus" && p.virusTarget) {
       add("m_paranoia_plus", "char", p.virusTarget, 96);
+    }
+    // 十周年：絕望+1（優先放在關鍵人物/事件當事人身上）
+    if (state.mmHandExtra && state.mmHandExtra.indexOf("m_despair_plus1") >= 0 && !onceUsed("m_despair_plus1")) {
+      if (p.primary === "kp" && kpId && state.chars[kpId].alive) add("m_despair_plus1", "char", kpId, 120);
+      else if (kpId && state.chars[kpId].alive) add("m_despair_plus1", "char", kpId, 90);
+      else if (alive.length) add("m_despair_plus1", "char", pick(alive), 70);
+    }
+    // AHR：友好+1（劇作家）——用於觸發傀儡/提線木偶等能力
+    if (state.mmHandExtra && state.mmHandExtra.indexOf("m_goodwill_plus1") >= 0) {
+      var puppeted = aliveChars(state).filter(function (id) { return game._refusalOf(id) === "puppeted" && game._effGoodwill(id) < 1; });
+      if (puppeted.length) add("m_goodwill_plus1", "char", pick(puppeted), 88);
+      else if (kpId && state.chars[kpId].alive) add("m_goodwill_plus1", "char", kpId, 40);
     }
     if (p.primary === "lover" && p.lover && state.chars[p.lover].alive) {
       if (state.chars[p.lover].intrigue >= 1) add("m_paranoia_plus", "char", p.lover, 84);

@@ -6,6 +6,16 @@ TL.Game.prototype._goodwillPhase = async function () {
   var st = this.state;
   var self = this;
   this._log(TL.I18N.log("gwPhase", { n: st.leader + 1 }) || ("—— 友好能力階段（隊長：主人公" + (st.leader + 1) + "）——"));
+  // 神話蒐集者（LL 背叛者B）：主人公能力階段，熟識標記6枚以上→主人公B獲勝
+  if (this._hasSubplot("keeper_of_mythology")) {
+    var acquaintedCount = Object.keys(st.chars).filter(function (id) { return st.chars[id].acquainted; }).length;
+    if (acquaintedCount >= 6 && !st.plotFlags.traitorsNormal) {
+      this._log(TL.L("traitorBWin") || "【神話蒐集者】熟識標記6枚以上，主人公B（背叛者）獲勝！");
+      st.ended = "traitorB";
+      st.phase = "game_over";
+      return;
+    }
+  }
   if (this.uiManaged) {
     return;
   }
@@ -37,7 +47,11 @@ TL.Game.prototype._usableGoodwill = function () {
     if (!c.alive || c.onStage === false) return;
     var data = CHAR_INDEX[id];
     (data.goodwill || []).forEach(function (ab, i) {
-      if (c.goodwill < ab.cost) return;
+      // 十周年：希望計入友好；AHR 裏世界以不安判定能否使用友好能力
+      var effGw = (self.module && self.module.id === "AHR" && (st.exGauge % 2) === 1)
+        ? self._effParanoia(id)
+        : self._effGoodwill(id);
+      if (effGw < ab.cost) return;
       if (ab.minLoop && st.loop < ab.minLoop) return;
       if (ab.oncePerLoop) {
         if (st.usedGoodwill[id] && st.usedGoodwill[id][i]) return;
@@ -128,21 +142,48 @@ TL.Game.prototype.execGoodwill = async function (chosen, leaderDeck, target) {
   await this._execGoodwill(chosen, leaderDeck, target);
 };
 
+// 标记友好能力已被声明使用（含熟识标记与 1x∞ 计数），不执行效果（手动结算用）
+TL.Game.prototype.markGoodwillDeclared = function (chosen, refused) {
+  var st = this.state;
+  var c = st.chars[chosen.charId];
+  if (!c) return;
+  if (!c.acquainted) {
+    c.acquainted = true;
+    c.acquaintedRefused = !!refused;
+    this._feed({ type: "token", id: chosen.charId, kind: "acquainted", on: true });
+  } else {
+    c.acquaintedRefused = !!refused;
+  }
+  st.usedGoodwill[chosen.charId] = st.usedGoodwill[chosen.charId] || {};
+  st.usedGoodwillDay[chosen.charId] = st.usedGoodwillDay[chosen.charId] || {};
+  st.usedGoodwillDay[chosen.charId][chosen.abilityIdx] = true;
+  if (chosen.ability.oncePerLoop) st.usedGoodwill[chosen.charId][chosen.abilityIdx] = true;
+};
+
 TL.Game.prototype._execGoodwill = async function (chosen, leaderDeck, targetOverride) {
   var st = this.state;
   var c = st.chars[chosen.charId];
   var role = this._role(chosen.charId);
+  // 十周年：友好能力被聲明使用時（無論是否被拒絕）放置熟識標記
+  if (!c.acquainted) {
+    c.acquainted = true;
+    this._feed({ type: "token", id: chosen.charId, kind: "acquainted", on: true });
+    this._log(TL.L("acquaintedPlaced", { char: this._charName(chosen.charId) }) ||
+      ("【熟識】" + this._charName(chosen.charId) + "的友好能力被聲明使用，放置熟識標記。"));
+  }
   // 十周年規則：每輪限1次的能力被拒絕後不視為已使用；WM 劇本依特規視為已使用
   var markRefusedUsed = !!(this.module && this.module.refusedAbilityUsed);
   // 拒絕判定
-  if (!chosen.ability.cannotBeRefused && role && role.refusal !== "none") {
-    if (role.refusal === "mandatory") {
+  var refusal = this._refusalOf(chosen.charId);
+  if (!chosen.ability.cannotBeRefused && refusal !== "none") {
+    if (refusal === "mandatory") {
       if (markRefusedUsed) {
         st.usedGoodwill[chosen.charId] = st.usedGoodwill[chosen.charId] || {};
         st.usedGoodwillDay[chosen.charId] = st.usedGoodwillDay[chosen.charId] || {};
         st.usedGoodwillDay[chosen.charId][chosen.abilityIdx] = true;
         if (chosen.ability.oncePerLoop) st.usedGoodwill[chosen.charId][chosen.abilityIdx] = true;
       }
+      c.acquaintedRefused = true;
       this._log(TL.I18N.log("refuseMand", { char: this._charName(chosen.charId) }) ||
         ("【拒絕】" + this._charName(chosen.charId) + "拒絕了友好能力。"));
       return;
@@ -156,6 +197,7 @@ TL.Game.prototype._execGoodwill = async function (chosen, leaderDeck, targetOver
       effect: chosen.ability.effect
     });
     if (refuse) {
+      c.acquaintedRefused = true;
       if (markRefusedUsed) {
         st.usedGoodwill[chosen.charId] = st.usedGoodwill[chosen.charId] || {};
         st.usedGoodwillDay[chosen.charId] = st.usedGoodwillDay[chosen.charId] || {};
@@ -167,10 +209,15 @@ TL.Game.prototype._execGoodwill = async function (chosen, leaderDeck, targetOver
       return;
     }
   }
+  c.acquaintedRefused = false;
   st.usedGoodwill[chosen.charId] = st.usedGoodwill[chosen.charId] || {};
   st.usedGoodwillDay[chosen.charId] = st.usedGoodwillDay[chosen.charId] || {};
   st.usedGoodwillDay[chosen.charId][chosen.abilityIdx] = true;
   if (chosen.ability.oncePerLoop) st.usedGoodwill[chosen.charId][chosen.abilityIdx] = true;
+  // AHR：使用 1x∞ 友好能力後自動觸發世界移動
+  if (this.module && this.module.id === "AHR" && chosen.ability.oncePerLoop) {
+    this._triggerWarp(true);
+  }
   var impl = TL.GOODWILL_ABILITIES[chosen.ability.effect];
   if (impl && impl.exec) {
     var ctx = TL.goodwillCtx(this, chosen);
@@ -180,6 +227,9 @@ TL.Game.prototype._execGoodwill = async function (chosen, leaderDeck, targetOver
     this._log(TL.L("gwAbilityUsed", { who: this._charName(chosen.charId), desc: usedDesc }) ||
       ("【" + this._charName(chosen.charId) + "】使用了能力：" + usedDesc));
   }
+  // 友好能力結算後的角色身份效果（提線木偶/敘述者/愛麗絲/網絡名流/密鑰等）
+  var afterFn = TL.GOODWILL_AFTER[c.role];
+  if (afterFn) await afterFn(this, chosen.charId);
   // 巫師：結算該角色友好能力後，公開該角色身份；之後隊長可以使Ex槽增加1
   if (c.role === "wizard") {
     if (!c.roleRevealed) await this._revealRole(chosen.charId);
@@ -565,6 +615,10 @@ TL.registerGoodwillAbility("servant_add_scope", {
     if (target) {
       ctx.st.plotFlags.servantScope = ctx.st.plotFlags.servantScope || [];
       if (ctx.st.plotFlags.servantScope.indexOf(target.id) < 0) ctx.st.plotFlags.servantScope.push(target.id);
+      // 忠诚指示物：标记从者的能力目标
+      Object.keys(ctx.st.chars).forEach(function (id) { ctx.st.chars[id].loyaltyOn = false; });
+      ctx.st.chars[target.id].loyaltyOn = true;
+      game._feed({ type: "token", id: target.id, kind: "loyalty", on: true });
       game._log(TL.L("gwServantScope", { who: ctx.who, char: game._charName(target.id) }) ||
         ("【" + ctx.who + "】將" + game._charName(target.id) + "追加至特性適用對象。"));
     }
@@ -615,4 +669,119 @@ TL.registerGoodwillAbility("reveal_same_roles", {
       chars: sameNames.map(function (id) { return game._charName(id); }).join("、")
     }) || ("【" + ctx.who + "】公開了與其同身份的角色名：" + sameNames.map(function (id) { return game._charName(id); }).join("、") + "。"));
   }
+});
+
+// 上位存在：同一區域選擇1名角色獲得1枚[希望]或[絕望]（1x∞）
+TL.registerGoodwillAbility("hope_despair", {
+  targets: function (game, chosen) { return TL.goodwillCtx(game, chosen).charOpts; },
+  exec: async function (game, ctx, targetOverride) {
+    var target = await ctx.T(ctx.charOpts, ctx.abTitle, ctx.ab.desc, targetOverride);
+    if (!target) return;
+    var kind = await game.io.askChoice({
+      title: TL.L("hopeDespairTitle") || "希望 / 絕望",
+      text: TL.L("hopeDespairText", { char: game._charName(target.id) }) ||
+        ("往" + game._charName(target.id) + "身上放置哪種指示物？"),
+      options: [TL.t("game.counter.hope"), TL.t("game.counter.despair")]
+    });
+    if (kind === 0) {
+      ctx.st.chars[target.id].hope = (ctx.st.chars[target.id].hope || 0) + 1;
+      game._feed({ type: "marker", id: target.id, kind: "hope", delta: 1, value: ctx.st.chars[target.id].hope });
+      game._log(TL.L("hopePlaced", { who: ctx.who, char: game._charName(target.id), v: ctx.st.chars[target.id].hope }) ||
+        ("【" + ctx.who + "】" + game._charName(target.id) + " 希望+1（" + ctx.st.chars[target.id].hope + "）。"));
+    } else {
+      ctx.st.chars[target.id].despair = (ctx.st.chars[target.id].despair || 0) + 1;
+      game._feed({ type: "marker", id: target.id, kind: "despair", delta: 1, value: ctx.st.chars[target.id].despair });
+      game._log(TL.L("despairPlaced", { who: ctx.who, char: game._charName(target.id), v: ctx.st.chars[target.id].despair }) ||
+        ("【" + ctx.who + "】" + game._charName(target.id) + " 絕望+1（" + ctx.st.chars[target.id].despair + "）。"));
+    }
+  }
+});
+
+// 提線木偶：結算友好能力後，2種以上指示物→死亡並世界移動
+TL.registerGoodwillAfter("marionette", async function (game, charId) {
+  if (game._counterKinds(charId).length >= 2) {
+    game._log(TL.L("marionetteAfter", { char: game._charName(charId) }) ||
+      (game._charName(charId) + "（提線木偶）身上有2種以上指示物，死亡並進行世界移動。"));
+    game._triggerWarp(true);
+    await game._applyDeath(charId);
+  }
+});
+
+// 敘述者：結算友好能力後，被指定為對象的角色死亡
+TL.registerGoodwillAfter("storyteller", async function (game, charId) {
+  var st = game.state;
+  var data = CHAR_INDEX[charId];
+  var targets = [];
+  (data.goodwill || []).forEach(function (ab, i) {
+    if (ab.target && ab.target !== "self" && ab.target !== "none") {
+      var area = game._charArea(charId);
+      targets = targets.concat(game._aliveChars(area).filter(function (id) { return id !== charId; }));
+    }
+  });
+  targets = targets.filter(function (id, i) { return targets.indexOf(id) === i; });
+  for (var ti = 0; ti < targets.length; ti++) {
+    game._log(TL.L("storytellerKillTarget", { char: game._charName(charId), char2: game._charName(targets[ti]) }) ||
+      (game._charName(targets[ti]) + "（敘述者能力的對象）死亡。"));
+    await game._applyDeath(targets[ti]);
+  }
+});
+
+// 愛麗絲：結算友好能力後（1x∞），Ex槽1+ → 同一區域所有其他角色獲得1枚希望
+TL.registerGoodwillAfter("alice", async function (game, charId) {
+  if (game.state.exGauge < 1) return;
+  var area = game._charArea(charId);
+  game._aliveChars(area).forEach(function (id) {
+    if (id === charId) return;
+    game.state.chars[id].hope = (game.state.chars[id].hope || 0) + 1;
+    game._feed({ type: "marker", id: id, kind: "hope", delta: 1, value: game.state.chars[id].hope });
+    game._log(game._charName(id) + " 希望+1。");
+  });
+});
+
+// 網絡名流：結算友好能力後（1x∞），同一初始區域其他角色獲得1不安+1友好
+TL.registerGoodwillAfter("influencer", async function (game, charId) {
+  var st = game.state;
+  var start = st.chars[charId].startingLoc;
+  Object.keys(st.chars).forEach(function (id) {
+    if (id === charId || st.chars[id].loc !== start || !st.chars[id].alive) return;
+    st.chars[id].paranoia += 1;
+    st.chars[id].goodwill += 1;
+    game._feed({ type: "marker", id: id, kind: "paranoia", delta: 1, value: st.chars[id].paranoia });
+    game._feed({ type: "marker", id: id, kind: "goodwill", delta: 1, value: st.chars[id].goodwill });
+    game._log(game._charName(id) + " 不安+1、友好+1。");
+  });
+});
+
+// 密鑰：結算友好能力後公開身份
+TL.registerGoodwillAfter("secretkeeper", async function (game, charId) {
+  await game._revealRole(charId);
+});
+
+// 紙老虎：2枚以上不安→失去不死、獲得必定無視友好（在拒絕判定前已透過 _refusalOf/undying 生效）
+TL.registerGoodwillAfter("paper_tiger", async function () {});
+
+// 劇作家能力來源：上位存在（擁有無視友好且有至少1枚友好時，劇作家可在劇作家能力階段使用）
+TL.registerMMSource(function (game) {
+  var st = game.state;
+  var c = st.chars.higher_being;
+  if (!c || !c.alive || c.onStage === false) return null;
+  var refusal = game._refusalOf("higher_being");
+  if (refusal === "none" || game._effGoodwill("higher_being") < 1) return null;
+  // 1x∞ 限制與主人公共用
+  var abIdx = 0;
+  var data = CHAR_INDEX.higher_being;
+  var ab = (data.goodwill || [])[abIdx];
+  if (!ab) return null;
+  if (st.usedGoodwill["higher_being"] && st.usedGoodwill["higher_being"][abIdx]) return null;
+  return {
+    charId: "higher_being",
+    ability: {
+      timing: "mm_phase",
+      mandatory: false,
+      desc: TL.desc("char.higher_being.0", ab.desc),
+      effect: "hope_despair",
+      oncePerLoop: true,
+      abilityIdx: abIdx
+    }
+  };
 });

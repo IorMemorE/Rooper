@@ -24,6 +24,7 @@ TL.UI.state = {
   lastFeedLen: 0,
   lastLogLen: 0,
   roomInfo: null,
+  gwPending: [],            // 联机：剧作家待处理的友好能力请求（可收起）
   aiMode: false,            // 本地模擬對戰：AI 扮演劇作家
   aiBusy: false,
   notes: null,              // 主人公思考輔助（本地記錄）

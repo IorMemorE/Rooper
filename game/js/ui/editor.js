@@ -139,6 +139,7 @@
     SCRIPT.specialRules = $("f-special").value;
     SCRIPT.publicSpecialRules = $("f-public-special").value;
     SCRIPT.turf = $("f-turf").value || null;
+    SCRIPT.allowFinalGuess = $("f-final-guess").checked;
   }
 
   function castEntry(charId) {
@@ -166,6 +167,7 @@
       specialRules: "",
       publicSpecialRules: "",
       turf: null,
+      allowFinalGuess: true,
       note: ""
     };
   }
@@ -182,6 +184,7 @@
     $("f-special").value = SCRIPT.specialRules || "";
     $("f-public-special").value = SCRIPT.publicSpecialRules || "";
     $("f-turf").value = SCRIPT.turf || "";
+    $("f-final-guess").checked = SCRIPT.allowFinalGuess !== false;
     selectedChar = SCRIPT.cast[0] ? SCRIPT.cast[0].characterId : null;
     renderAll();
   }
@@ -200,6 +203,7 @@
     $("f-special").value = SCRIPT.specialRules || "";
     $("f-public-special").value = SCRIPT.publicSpecialRules || "";
     $("f-turf").value = SCRIPT.turf || "";
+    $("f-final-guess").checked = SCRIPT.allowFinalGuess !== false;
     selectedChar = SCRIPT.cast[0] ? SCRIPT.cast[0].characterId : null;
     renderAll();
     TL.UI.notify(TL.t("editor.presetLoaded", { title: p.title }));
@@ -826,6 +830,7 @@
           $("f-special").value = obj.specialRules || "";
           $("f-public-special").value = obj.publicSpecialRules || "";
           $("f-turf").value = obj.turf || "";
+          $("f-final-guess").checked = obj.allowFinalGuess !== false;
           selectedChar = SCRIPT.cast[0] ? SCRIPT.cast[0].characterId : null;
           renderAll();
           TL.UI.notify(TL.t("editor.loaded"));
@@ -852,7 +857,10 @@
         var tabHtml = tabs.map(function (t, i) {
           return '<button class="ref-tab' + (i === 0 ? " active" : "") + '" data-tab="' + i + '">' + t + "</button>";
         }).join("");
-        var moduleOptions = [""].concat(Object.keys(MODULES)).map(function (mid) {
+        var paperOnlyModules = ["AH", "HS", "HSA", "LL", "OF"];
+        var allModuleIds = Object.keys(MODULES);
+        paperOnlyModules.forEach(function (mid) { if (allModuleIds.indexOf(mid) < 0) allModuleIds.push(mid); });
+        var moduleOptions = [""].concat(allModuleIds).map(function (mid) {
           return '<option value="' + mid + '"' + (mid === "" ? " selected" : "") + ">" +
             (mid === "" ? TL.t("editor.refModuleAll") : TL.modname(mid)) + "</option>";
         }).join("");
@@ -883,12 +891,17 @@
           });
         }
         function renderOriginal(list) {
-          var mids = moduleId ? [moduleId] : ["FS", "BTX", "MC", "MZ", "WM"];
+          // 原版模组纸：基础五模组 + 十周年相关模组（AH/HS/HSA/LL/OF）
+          var paperMap = {
+            FS: "FS", BTX: "BTX", MC: "MC", MZ: "MZ", WM: "WM",
+            AHR: "AH", AH: "AH", HS: "HS", HSA: "HSA", LL: "LL", OF: "OF"
+          };
+          var mids = moduleId ? [moduleId] : ["FS", "BTX", "MC", "MZ", "WM", "AHR", "HS", "HSA", "LL", "OF"];
           mids.forEach(function (mid) {
             var img = document.createElement("img");
             img.className = "ref-original";
-            img.src = "assets/rules/" + mid + ".png";
-            img.alt = TL.modname(mid);
+            img.src = "assets/rules/" + (paperMap[mid] || mid) + ".png";
+            img.alt = mid;
             img.addEventListener("error", function () {
               if (img.parentNode) img.parentNode.removeChild(img);
             });

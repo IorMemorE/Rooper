@@ -20,6 +20,41 @@ TL.Game.prototype._applyDeath = async function (charId) {
     return await this._applyDeath(protector);
   }
   c.alive = false;
+  // AHR/LL/HSA 身份死亡效果（佈道者/網絡名流/密鑰等）
+  var deathRoleFns = {
+    gossip: async function (g, id) {
+      var st = g.state;
+      var area = g._charArea(id);
+      var targets = g._aliveChars(area).map(function (cid) { return { type: "char", id: cid, label: g._charName(cid) }; });
+      if (targets.length) {
+        var t = await g.io.askTarget({ title: TL.rname("gossip"), text: "往同一區域的1名角色放置1枚[絕望]：", targets: targets, owner: "mm" });
+        if (t) { st.chars[t.id].despair = (st.chars[t.id].despair || 0) + 1; g._feed({ type: "marker", id: t.id, kind: "despair", delta: 1, value: st.chars[t.id].despair }); }
+      }
+      var warp = await g.io.confirm({ title: TL.rname("gossip"), text: TL.L("gossipWarp") || "是否進行世界移動？", owner: "mm", kind: "warp" });
+      if (warp) g._triggerWarp();
+    },
+    influencer: async function (g, id) {
+      var st = g.state;
+      var start = st.chars[id].startingLoc;
+      Object.keys(st.chars).forEach(function (cid) {
+        if (cid === id || st.chars[cid].loc !== start || !st.chars[cid].alive) return;
+        st.chars[cid].paranoia += 1;
+        g._feed({ type: "marker", id: cid, kind: "paranoia", delta: 1, value: st.chars[cid].paranoia });
+        g._log(g._charName(cid) + " 不安+1。");
+      });
+    },
+    secretkeeper: async function (g, id) {
+      await g._revealRole(id);
+    }
+  };
+  if (deathRoleFns[c.role]) await deathRoleFns[c.role](this, charId);
+  // 十周年：角色首次死亡时放置遗骸标记（跨轮回保留，不因复活移除）
+  if (!c.perished) {
+    c.perished = true;
+    this._feed({ type: "token", id: charId, kind: "perished", on: true });
+    this._log(TL.L("perishedPlaced", { char: this._charName(charId) }) ||
+      ("【遺骸】" + this._charName(charId) + "首次死亡，放置遺骸標記。"));
+  }
   this._log(TL.L("charDeath", { char: this._charName(charId) }) || ("☠ " + this._charName(charId) + "死亡。"));
   // 魔術師：該角色死亡時，移除該角色身上的所有[不安]
   if (c.role === "magician" && c.paranoia > 0) {

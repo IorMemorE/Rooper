@@ -48,6 +48,116 @@ window.INCIDENTS = [
     desc: "選擇與當事人位於同一區域的任意1名角色，往該角色身上放置1枚[友好]、[不安]或[密謀]。",
     target: "char_choice_counter", effect: "butterfly"
   },
+  // ================= 十周年（觀測者之書）事件 =================
+  {
+    id: "the_light_of_hope", name: "希望之光", module: "both",
+    desc: "（通過友好指示物數量判定是否發生）隊長選擇1名角色，往那名角色身上放置1枚[希望]。",
+    target: "char_any", effect: "light_of_hope"
+  },
+  {
+    id: "the_murk_of_despair", name: "絕望之暗", module: "both",
+    desc: "往任意1名角色身上放置1枚[絕望]。",
+    target: "char_any", effect: "murk_of_despair"
+  },
+  // ================= AHR 事件 =================
+  {
+    id: "crime_of_passion", name: "衝動殺人", module: "AHR",
+    desc: "（當事人不安限度－1）與當事人位於同一區域的另外1名角色死亡。",
+    target: "char_other", effect: "kill_other_in_location",
+    extraCondition: { type: "culprit_limit_minus1" }
+  },
+  {
+    id: "dimensional_distortion", name: "次元轉換", module: "AHR",
+    desc: "（當事人存活時必定發生）進行世界移動。",
+    target: "none", effect: "dimensional_distortion",
+    alwaysTriggers: true
+  },
+  {
+    id: "dimensional_perversion", name: "次元歪曲", module: "AHR",
+    desc: "可以進行世界移動。往任意1名角色身上放置2枚[不安]，往另外1名角色身上放置2枚[友好]。",
+    target: "none", effect: "dimensional_perversion"
+  },
+  {
+    id: "dimensional_fracture", name: "次元斷層", module: "AHR",
+    desc: "可以進行世界移動。隨後，若當事人身上有3種或以上不同指示物→主人公死亡。",
+    target: "none", effect: "dimensional_fracture"
+  },
+  {
+    id: "left_behind", name: "遺失物", module: "AHR",
+    desc: "往與當事人位於同一區域中的任意1名角色身上放置1枚[密謀]。隨後，將當事人移動至任意版圖。",
+    target: "char_then_loc", effect: "left_behind"
+  },
+  {
+    id: "phantasmal_incident", name: "空想事件", module: "AHR",
+    desc: "（通過密謀指示物判定是否發生）從衝動殺人、次元歪曲或者遺失物中選擇1個事件並處理。",
+    target: "none", effect: "phantasmal_incident"
+  },
+  {
+    id: "last_will", name: "遺言", module: "AHR",
+    desc: "當事人死亡。下輪輪迴開始時，主人公獲得「希望+1」。",
+    target: "none", effect: "last_will"
+  },
+  {
+    id: "the_singularity", name: "奇點", module: "AHR",
+    desc: "當前為表世界→如果本局遊戲中該事件首次發生，則主人公死亡。否則進行世界移動。當前為裏世界，且當事人的初始區域有1枚或以上[密謀]→主人公死亡。",
+    target: "none", effect: "the_singularity"
+  },
+  {
+    id: "seeping_daylight", name: "隙間的陽光", module: "AHR",
+    desc: "隊長選擇1名角色。往那名角色身上放置1枚[希望]。",
+    target: "char_any", effect: "light_of_hope"
+  },
+  // ================= LL 事件 =================
+  {
+    id: "the_executor", name: "代行者", module: "LL",
+    desc: "劇作家指定1名主人公，由那名主人公選擇1名角色。那名角色死亡。當事人的初始區域有2枚或以上[密謀]→主人公死亡。",
+    target: "none", effect: "the_executor"
+  },
+  {
+    id: "distortion", name: "驟變", module: "LL",
+    desc: "當事人的初始區域有2枚或以上[密謀]→主人公死亡。當事人的初始區域有1枚或以下[密謀]→往當事人的初始區域放置2枚[密謀]。",
+    target: "none", effect: "distortion"
+  },
+  // ================= HSA 事件 =================
+  {
+    id: "blasphemous_murder", name: "褻瀆殺人", module: "HSA",
+    desc: "與當事人位於同一區域的另外1名角色死亡，或往當事人所在版圖放置1枚[密謀]。",
+    target: "char_or_location", effect: "blasphemous_murder"
+  },
+  {
+    id: "word_curse", name: "言靈詛咒", module: "HSA",
+    desc: "往當事人身上放置1張Ex牌。",
+    target: "none", effect: "faked_suicide"
+  },
+  {
+    id: "left_alone", name: "孤守", module: "HSA",
+    desc: "將與當事人位於同一區域的其它所有角色分別移動至其它任意版圖。",
+    target: "none", effect: "left_alone"
+  },
+  {
+    id: "night_of_madness", name: "瘋狂之夜", module: "HSA",
+    desc: "（群眾事件）（必要屍體數0）該事件發生時，遊戲中有6具或以上的喪屍→本回合的回合結束階段時，主人公死亡。",
+    target: "none", effect: "night_of_madness",
+    mobIncident: true, mobCorpses: 0
+  },
+  {
+    id: "curse_awakening", name: "詛咒活化", module: "HSA",
+    desc: "（群眾事件）（必要屍體數1）往當事人所在版圖放置Ex牌。",
+    target: "none", effect: "curse_awakening",
+    mobIncident: true, mobCorpses: 1
+  },
+  {
+    id: "filth_overflow", name: "污穢溢出", module: "HSA",
+    desc: "（群眾事件）（必要屍體數2）往任意1名角色身上放置2枚[不安]，隨後往任意1塊版圖上放置1枚[密謀]。",
+    target: "none", effect: "filth_overflow",
+    mobIncident: true, mobCorpses: 2
+  },
+  {
+    id: "apocalypse_of_the_dead", name: "死者默示錄", module: "HSA",
+    desc: "（群眾事件）（必要屍體數2）使當事人所在版圖中的所有角色死亡。之後，如果當事人所在版圖有5具或以上的屍體，則主人公死亡。",
+    target: "none", effect: "apocalypse_of_the_dead",
+    mobIncident: true, mobCorpses: 2
+  },
   // ================= MC / MZ / WM 擴充事件 =================
   {
     id: "serial_murder", name: "連續殺人", module: "both",

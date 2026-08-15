@@ -4,7 +4,7 @@ window.TL = window.TL || {};
 // 卡牌效果註冊表
 // TL.registerCard(cardId, phase, { apply(game, play, ctx) })
 // phase: forbid_move | move | forbid_intrigue | forbid | action_paranoia_plus
-//        | action_paranoia_minus | action_goodwill | action_intrigue
+//        | action_paranoia_minus | action_goodwill | action_intrigue | action_hope | action_despair
 TL.CARD_EFFECTS = {};
 TL.CARD_PHASE = {};
 TL.registerCard = function (cardId, phase, impl) {
@@ -48,12 +48,50 @@ function applyLocMarker(game, locId, delta) {
     }
   });
 });
+// AH：不安+2（1x∞）——與不安-1同角色時先結算（不安+ 階段在不安- 之前）
+TL.registerCard("p_paranoia_plus2", "action_paranoia_plus", {
+  apply: function (game, play) {
+    if (play.targetType === "char") applyMarker(game, play.targetId, "paranoia", 2);
+  }
+});
 ["p_paranoia_minus", "m_paranoia_minus"].forEach(function (cid) {
   TL.registerCard(cid, "action_paranoia_minus", {
     apply: function (game, play) {
       if (play.targetType === "char") applyMarker(game, play.targetId, "paranoia", -1);
     }
   });
+});
+// 十周年：希望+1（若當日2名以上主人公打出則改為友好+1，不回收）
+TL.registerCard("p_hope_plus1", "action_hope", {
+  apply: function (game, play, ctx) {
+    if (play.targetType !== "char") return;
+    if (ctx.hopeShared) {
+      applyMarker(game, play.targetId, "goodwill", 1);
+    } else {
+      var c = game.state.chars[play.targetId];
+      c.hope = (c.hope || 0) + 1;
+      game._feed({ type: "marker", id: play.targetId, kind: "hope", delta: 1, value: c.hope });
+      game._log(TL.L("hopePlus", { char: game._charName(play.targetId), v: c.hope }) ||
+        (game._charName(play.targetId) + " 希望+1（" + c.hope + "）。"));
+    }
+  }
+});
+// 十周年：絕望+1（1x∞）
+TL.registerCard("m_despair_plus1", "action_despair", {
+  apply: function (game, play) {
+    if (play.targetType !== "char") return;
+    var c = game.state.chars[play.targetId];
+    c.despair = (c.despair || 0) + 1;
+    game._feed({ type: "marker", id: play.targetId, kind: "despair", delta: 1, value: c.despair });
+    game._log(TL.L("despairPlus", { char: game._charName(play.targetId), v: c.despair }) ||
+      (game._charName(play.targetId) + " 絕望+1（" + c.despair + "）。"));
+  }
+});
+// AH：友好+1（劇作家）
+TL.registerCard("m_goodwill_plus1", "action_goodwill", {
+  apply: function (game, play) {
+    if (play.targetType === "char") applyMarker(game, play.targetId, "goodwill", 1);
+  }
 });
 ["p_goodwill_plus1", "p_goodwill_plus2"].forEach(function (cid) {
   TL.registerCard(cid, "action_goodwill", {
@@ -96,7 +134,8 @@ TL.registerCard("p_forbid_intrigue", "forbid_intrigue", { apply: function () {} 
 // 結算順序（禁止移動 → 移動 → 禁止密謀 → 其他禁止 → 不安+ → 不安- → 友好 → 密謀）
 var RESOLVE_PHASES = [
   "forbid_move", "move", "forbid_intrigue", "forbid",
-  "action_paranoia_plus", "action_paranoia_minus", "action_goodwill", "action_intrigue"
+  "action_paranoia_plus", "action_paranoia_minus", "action_goodwill", "action_intrigue",
+  "action_hope", "action_despair"
 ];
 
 TL.Game.prototype._resolveCards = async function () {
@@ -105,6 +144,12 @@ TL.Game.prototype._resolveCards = async function () {
   this._log(TL.I18N.log("resolve") || "—— 翻開並結算行動牌 ——");
   var all = st.mmPlays.map(function (p) { return { card: p.card, targetType: p.targetType, targetId: p.targetId, owner: "mm" }; })
     .concat(st.pPlays.map(function (p) { return { card: p.card, targetType: p.targetType, targetId: p.targetId, owner: "p" + p.deck }; }));
+  // 十周年：若2名以上主人公同日打出希望+1，全部視為友好+1（不回收）
+  var hopePlays = st.pPlays.filter(function (p) { return p.card === "p_hope_plus1"; });
+  st.hopeHandShared = hopePlays.length >= 2;
+  if (st.hopeHandShared) {
+    this._log(TL.L("hopeShared") || "【希望+1】2名以上主人公同時打出，全部改為友好+1。");
+  }
   all.forEach(function (p) {
     var who = p.owner === "mm" ? "劇作家" : "主人公";
     var target = p.targetType === "location" ? LOC_INDEX[p.targetId].name + "（版圖）" : self._charName(p.targetId);
@@ -130,6 +175,7 @@ TL.Game.prototype._resolveCards = async function () {
 
   // 1) 禁止移動
   var ctx = { moveForbidden: {}, forbidParanoia: {}, forbidGoodwill: {} };
+  ctx.hopeShared = st.hopeHandShared;
   grouped.forbid_move.forEach(function (p) {
     TL.CARD_EFFECTS[p.card].apply(self, p, ctx);
   });
@@ -232,6 +278,16 @@ TL.Game.prototype._resolveCards = async function () {
     });
   });
 
+  // 希望+1 使用後回收（除非當日共享改為友好+1）
+  if (!st.hopeHandShared) {
+    var pDecks = Object.keys(st.pHandExtra || {});
+    pDecks.forEach(function (d) {
+      var arr = st.pHandExtra[d] || [];
+      for (var hi = arr.length - 1; hi >= 0; hi--) {
+        if (arr[hi] === "p_hope_plus1") arr.splice(hi, 1);
+      }
+    });
+  }
   st.mmPlays = [];
   st.pPlays = [];
 };

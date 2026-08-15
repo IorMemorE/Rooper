@@ -9,6 +9,10 @@ window.CARDS = [
   { id: "p_forbid_move", name: "禁止移動", side: "protagonist", oncePerLoop: true, img: "movement_forbid.png", desc: "無效化同一角色身上的移動牌。" },
   { id: "p_move_v", name: "移動↑↓", side: "protagonist", oncePerLoop: false, img: "movement_v.png", desc: "該角色向上或向下移動。" },
   { id: "p_move_h", name: "移動←→", side: "protagonist", oncePerLoop: false, img: "movement_h.png", desc: "該角色向左或向右移動。" },
+  // 十周年扩展：希望+1（默认不在手牌，由效果加入）
+  { id: "p_hope_plus1", name: "希望+1", side: "protagonist", oncePerLoop: false, img: "hope_increase.png", desc: "往該角色身上放置1枚[希望]。" },
+  // AH 专属：不安+2（1x∞）
+  { id: "p_paranoia_plus2", name: "不安+2", side: "protagonist", oncePerLoop: true, img: "paranoia_double.png", desc: "往該角色身上放置2枚[不安]。（禁止不安可無效化；與同角色不安-1同時出現時先結算）" },
   // 劇作家牌
   { id: "m_paranoia_plus", name: "不安+1", side: "mastermind", oncePerLoop: false, count: 2, img: "paranoia_increase.png", desc: "往該角色身上放置1枚[不安]。" },
   { id: "m_paranoia_minus", name: "不安-1", side: "mastermind", oncePerLoop: false, img: "paranoia_decrease.png", desc: "移除該角色身上1枚[不安]。" },
@@ -18,7 +22,11 @@ window.CARDS = [
   { id: "m_intrigue_plus2", name: "密謀+2", side: "mastermind", oncePerLoop: true, img: "intrigue_double.png", desc: "往該角色或版圖上放置2枚[密謀]。" },
   { id: "m_move_v", name: "移動↑↓", side: "mastermind", oncePerLoop: false, img: "movement_v.png", desc: "該角色向上或向下移動。" },
   { id: "m_move_h", name: "移動←→", side: "mastermind", oncePerLoop: false, img: "movement_h.png", desc: "該角色向左或向右移動。" },
-  { id: "m_move_d", name: "斜向移動", side: "mastermind", oncePerLoop: true, img: "movement_x.png", desc: "該角色對角線移動。" }
+  { id: "m_move_d", name: "斜向移動", side: "mastermind", oncePerLoop: true, img: "movement_x.png", desc: "該角色對角線移動。" },
+  // 十周年扩展：绝望+1（1x∞，默认不在手牌，由效果加入）
+  { id: "m_despair_plus1", name: "絕望+1", side: "mastermind", oncePerLoop: true, img: "despair_increase.png", desc: "往該角色身上放置1枚[絕望]。" },
+  // AH 专属：友好+1（劇作家）
+  { id: "m_goodwill_plus1", name: "友好+1", side: "mastermind", oncePerLoop: false, img: "goodwill_increase.png", desc: "往該角色身上放置1枚[友好]。" }
 ];
 
 window.CARD_INDEX = {};

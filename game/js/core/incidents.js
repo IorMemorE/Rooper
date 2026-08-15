@@ -43,10 +43,19 @@ TL.Game.prototype._incidentPhase = async function () {
         ("【事件】「" + def.name + "」沒有發生。"));
       continue;
     }
-    // 判定是否發生：強迫症/偵探強制發生；預言家同區域阻擋
-    var force = culprit.role === "obstinate" || this._detectiveForce(inc.culpritId);
+    // 判定是否發生：強迫症/偵探/必定發生事件強制發生；預言家同區域阻擋
+    var force = !!def.alwaysTriggers || culprit.role === "obstinate" || this._detectiveForce(inc.culpritId);
     var blocked = this._prophetBlocks(inc.culpritId);
-    if (!culprit.alive || blocked || (this._incidentCount(def, inc.culpritId) < this._incidentLimit(def, inc.culpritId) && !force)) {
+    // HSA 群眾事件：以當事人所在版圖的屍體數量（含版圖密謀）判定是否發生
+    var mobOk = true;
+    if (def.mobIncident) {
+      var mobLoc = culprit ? culprit.loc : inc.culpritId;
+      var corpseCount = Object.keys(st.chars).filter(function (id) {
+        return !st.chars[id].alive && st.chars[id].loc === mobLoc;
+      }).length + (st.locations[mobLoc] ? st.locations[mobLoc].intrigue : 0);
+      mobOk = corpseCount >= (def.mobCorpses || 0);
+    }
+    if ((def.mobIncident ? !mobOk : (!culprit || !culprit.alive || blocked || (this._incidentCount(def, inc.culpritId) < this._incidentLimit(def, inc.culpritId) && !force)))) {
       this._log(TL.L("incidentNotHappen", { name: TL.iname(inc.incidentId) }) ||
         ("【事件】「" + def.name + "」沒有發生（當事人存活/不安條件不滿足）。"));
       continue;
@@ -172,6 +181,32 @@ TL.registerIncident("butterfly", async function (g, def, culpritId) {
   c.st.plotFlags.butterflyHappened = true;
   g._log(TL.L("butterflyLog", { char: g._charName(t7.id), kind: [TL.t("game.counter.goodwill"), TL.t("game.counter.paranoia"), TL.t("game.counter.intrigue")][kind] }) ||
     ("【蝴蝶效應】" + g._charName(t7.id) + " [" + ["友好", "不安", "密謀"][kind] + "]+1。"));
+});
+
+TL.registerIncident("light_of_hope", async function (g, def, culpritId) {
+  var c = TL.incidentCtx(g, culpritId);
+  var targets = Object.keys(c.st.chars).filter(function (id) { return c.st.chars[id].alive; })
+    .map(function (id) { return { type: "char", id: id, label: g._charName(id) }; });
+  var t = await c.askTarget(targets, TL.iname(def.id), "選擇1名角色放置1枚[希望]：");
+  if (t) {
+    c.st.chars[t.id].hope = (c.st.chars[t.id].hope || 0) + 1;
+    g._feed({ type: "marker", id: t.id, kind: "hope", delta: 1, value: c.st.chars[t.id].hope });
+    g._log(TL.L("hopeIncident", { char: g._charName(t.id), v: c.st.chars[t.id].hope }) ||
+      (g._charName(t.id) + " 希望+1（" + c.st.chars[t.id].hope + "）。"));
+  }
+});
+
+TL.registerIncident("murk_of_despair", async function (g, def, culpritId) {
+  var c = TL.incidentCtx(g, culpritId);
+  var targets = Object.keys(c.st.chars).filter(function (id) { return c.st.chars[id].alive; })
+    .map(function (id) { return { type: "char", id: id, label: g._charName(id) }; });
+  var t = await c.askTarget(targets, TL.iname(def.id), "選擇1名角色放置1枚[絕望]：");
+  if (t) {
+    c.st.chars[t.id].despair = (c.st.chars[t.id].despair || 0) + 1;
+    g._feed({ type: "marker", id: t.id, kind: "despair", delta: 1, value: c.st.chars[t.id].despair });
+    g._log(TL.L("despairIncident", { char: g._charName(t.id), v: c.st.chars[t.id].despair }) ||
+      (g._charName(t.id) + " 絕望+1（" + c.st.chars[t.id].despair + "）。"));
+  }
 });
 
 TL.registerIncident("city_incident", async function (g) {
@@ -319,4 +354,165 @@ TL.registerIncident("hound_dog_scent", async function (g) {
 
 TL.registerIncident("discovery", async function (g) {
   g._addExGauge(1);
+});
+
+// ================= AHR / LL / HSA 事件 =================
+
+// 世界移動
+TL.registerIncident("dimensional_distortion", async function (g) {
+  g._triggerWarp();
+});
+
+TL.registerIncident("dimensional_perversion", async function (g, def) {
+  var c = TL.incidentCtx(g, def.culpritId);
+  var t1 = await c.askTarget(c.anyChars, TL.iname(def.id), "選擇1名角色放置2枚[不安]：");
+  var t2 = await c.askTarget(c.anyChars, TL.iname(def.id), "選擇另外1名角色放置2枚[友好]：");
+  if (t1) { c.st.chars[t1.id].paranoia += 2; g._log(g._charName(t1.id) + " 不安+2。"); }
+  if (t2) { c.st.chars[t2.id].goodwill += 2; g._log(g._charName(t2.id) + " 友好+2。"); }
+  var warp = await g.io.confirm({
+    title: TL.iname(def.id),
+    text: TL.L("warpAsk") || "是否進行世界移動？",
+    owner: "mm", kind: "warp"
+  });
+  if (warp) g._triggerWarp();
+});
+
+TL.registerIncident("dimensional_fracture", async function (g, def, culpritId) {
+  var warp = await g.io.confirm({
+    title: TL.iname(def.id),
+    text: TL.L("warpAsk") || "是否進行世界移動？",
+    owner: "mm", kind: "warp"
+  });
+  if (warp) g._triggerWarp();
+  if (g._counterKinds(culpritId).length >= 3) {
+    await g._protagonistDeath("次元斷層（當事人身上3種以上指示物）");
+  }
+});
+
+TL.registerIncident("left_behind", async function (g, def, culpritId) {
+  var c = TL.incidentCtx(g, culpritId);
+  g.state.plotFlags.leftBehindTriggered = true;
+  var targets = g._aliveChars(c.loc).map(function (id) { return { type: "char", id: id, label: g._charName(id) }; });
+  var t = await c.askTarget(targets, TL.iname(def.id), "往與當事人同一區域的1名角色放置1枚[密謀]：");
+  if (t) { c.st.chars[t.id].intrigue += 1; g._log(g._charName(t.id) + " 密謀+1。"); }
+  var loc = await c.askTarget(c.locs, TL.iname(def.id), "將當事人移動至哪塊版圖？");
+  if (loc) { c.st.chars[culpritId].loc = loc.id; g._log(g._charName(culpritId) + "移動至" + g._locName(loc.id) + "。"); }
+});
+
+TL.registerIncident("phantasmal_incident", async function (g, def, culpritId) {
+  var c = TL.incidentCtx(g, culpritId);
+  var pick = await g.io.askChoice({
+    title: TL.iname(def.id),
+    text: TL.L("phantasmalPick") || "處理哪個事件的效果？",
+    options: [TL.iname("crime_of_passion"), TL.iname("dimensional_perversion"), TL.iname("left_behind")]
+  });
+  var subId = ["crime_of_passion", "dimensional_perversion", "left_behind"][pick == null ? 0 : pick];
+  await g._execIncident(INCIDENT_INDEX[subId], culpritId);
+});
+
+TL.registerIncident("last_will", async function (g, def, culpritId) {
+  g.state.plotFlags.lastWillTriggered = true;
+  await g._applyDeath(culpritId);
+});
+
+TL.registerIncident("the_singularity", async function (g, def, culpritId) {
+  var st = g.state;
+  if (!g._isDarkWorld()) {
+    if (!st.plotFlags.singularityFired) {
+      st.plotFlags.singularityFired = true;
+      await g._protagonistDeath("奇點（表世界首次發生）");
+    } else {
+      g._triggerWarp();
+    }
+  } else {
+    var c = st.chars[culpritId];
+    if (st.locations[c.startingLoc].intrigue >= 1) {
+      await g._protagonistDeath("奇點（裏世界，當事人初始區域有密謀）");
+    }
+  }
+});
+
+TL.registerIncident("the_executor", async function (g, def, culpritId) {
+  var st = g.state;
+  st.plotFlags.executorTriggered = true;
+  var pIdx = await g.io.askChoice({
+    title: TL.iname(def.id),
+    text: TL.L("executorPick") || "劇作家指定1名主人公，由那名主人公選擇1名角色死亡。",
+    options: [TL.t("basic.protagonistA"), TL.t("basic.protagonistB"), TL.t("basic.protagonistC")]
+  });
+  var targets = Object.keys(st.chars).filter(function (id) { return st.chars[id].alive; })
+    .map(function (id) { return { type: "char", id: id, label: g._charName(id) }; });
+  var t = await g.io.askTarget({ title: TL.iname(def.id), text: TL.L("executorTarget") || "選擇1名角色：那名角色死亡。", targets: targets });
+  if (t) await g._applyDeath(t.id);
+  var c = st.chars[culpritId];
+  if (st.locations[c.startingLoc].intrigue >= 2) {
+    await g._protagonistDeath("代行者（當事人初始區域密謀2枚以上）");
+  }
+});
+
+TL.registerIncident("distortion", async function (g, def, culpritId) {
+  var st = g.state;
+  var c = st.chars[culpritId];
+  if (st.locations[c.startingLoc].intrigue >= 2) {
+    await g._protagonistDeath("驟變（當事人初始區域密謀2枚以上）");
+  } else {
+    st.locations[c.startingLoc].intrigue += 2;
+    g._log(g._locName(c.startingLoc) + " 密謀+2。");
+  }
+});
+
+TL.registerIncident("blasphemous_murder", async function (g, def, culpritId) {
+  var c = TL.incidentCtx(g, culpritId);
+  var opts = c.others.map(function (o) { return { type: "char", id: o.id, label: g._charName(o.id) }; })
+    .concat([{ type: "location", id: c.loc, label: g._locName(c.loc) + "（版圖）" }]);
+  var t = await c.askTarget(opts, TL.iname(def.id), "選擇1名角色死亡，或往當事人所在版圖放置1枚[密謀]：");
+  if (!t) return;
+  if (t.type === "char") await g._applyDeath(t.id);
+  else { c.st.locations[t.id].intrigue += 1; g._log(g._locName(t.id) + " 密謀+1。"); }
+});
+
+TL.registerIncident("left_alone", async function (g, def, culpritId) {
+  var c = TL.incidentCtx(g, culpritId);
+  var movers = c.others.slice();
+  for (var mi = 0; mi < movers.length; mi++) {
+    var id = movers[mi].id;
+    var from = c.st.chars[id].loc;
+    var locOpts = LOCATIONS.filter(function (l) { return !l.offBoard && l.id !== from; })
+      .map(function (l) { return { type: "location", id: l.id, label: g._locName(l.id) }; });
+    var t = await c.askTarget(locOpts, TL.iname(def.id), ("將" + g._charName(id) + "移動至哪塊版圖？"));
+    if (t) { c.st.chars[id].loc = t.id; g._feed({ type: "move", id: id, from: from, to: t.id }); }
+  }
+});
+
+TL.registerIncident("night_of_madness", async function (g, def, culpritId) {
+  var zombieCount = g._aliveChars().filter(function (id) { return g.state.chars[id].role === "zombie"; }).length +
+    Object.keys(g.state.chars).filter(function (id) { return !g.state.chars[id].alive && g.state.chars[id].role === "zombie"; }).length;
+  if (zombieCount >= 6) {
+    g.state.plotFlags.nightOfMadness = true;
+    g._log(TL.L("nightMadness") || "【瘋狂之夜】遊戲中有6具或以上喪屍，本回合結束階段主人公死亡。");
+  }
+});
+
+TL.registerIncident("curse_awakening", async function (g, def, culpritId) {
+  var c = TL.incidentCtx(g, culpritId);
+  g.state.plotFlags.curseLoc = c.loc;
+  g._log(TL.L("curseAwaken", { loc: g._locName(c.loc) }) || ("【詛咒活化】往" + g._locName(c.loc) + "放置1張詛咒牌。"));
+});
+
+TL.registerIncident("filth_overflow", async function (g, def, culpritId) {
+  var c = TL.incidentCtx(g, culpritId);
+  var t1 = await c.askTarget(c.anyChars, TL.iname(def.id), "選擇1名角色放置2枚[不安]：");
+  var t2 = await c.askTarget(c.locs, TL.iname(def.id), "選擇1塊版圖放置1枚[密謀]：");
+  if (t1) { c.st.chars[t1.id].paranoia += 2; g._log(g._charName(t1.id) + " 不安+2。"); }
+  if (t2) { c.st.locations[t2.id].intrigue += 1; g._log(g._locName(t2.id) + " 密謀+1。"); }
+});
+
+TL.registerIncident("apocalypse_of_the_dead", async function (g, def, culpritId) {
+  var c = TL.incidentCtx(g, culpritId);
+  var victims = g._aliveChars(c.loc).slice();
+  for (var vi = 0; vi < victims.length; vi++) await g._applyDeath(victims[vi]);
+  var corpseCount = Object.keys(c.st.chars).filter(function (id) {
+    return !c.st.chars[id].alive && c.st.chars[id].loc === c.loc;
+  }).length;
+  if (corpseCount >= 5) await g._protagonistDeath("死者默示錄（5具以上屍體）");
 });

@@ -1,0 +1,552 @@
+--- PAGE 1 ---
+Tragedy Looper Rei
+Last Liar
+Thecruelestliesareoftentoldinsilence.
+—RobertLouisStevenson
+--- PAGE 2 ---
+Tragedy Set — Last Liar
+Pastthemyriadworlds,whatliesbehindthefinaldoor?
+Set Concept
+Last Liar (LL) is a unique Tragedy Set. It is particularly notable in two ways. First, it was created
+with the assumption that Table Talk is off. Second, the possibility of Traitors breaks the
+foundation of One versus Many games. That’s right; in this Tragedy Set, the Protagonists are
+not necessarily on the same side. Of course, you are no exception.
+On the other hand, the complexity isn’t altogether too high. So long as you have played Basic
+Tragedy (BT) at least once, you can dive in and enjoy LL. The Set as a whole was constructed
+with BT as the base, with many Roles reappearing, so those familiar with BT should find the
+transition quite smooth. Indeed, it could be said that if you’re playing with Table Talk off for the
+first time, this is a better way of doing it.
+It is even easier to acclimatize to the Set by first playing with the expansion’s standalone rules
+with the sample script “Approaching Zero”, from the Observer’s Handbook.
+The Tragedy Set is based on the concepts of “Showdown” and “Betrayal”. The players have
+already passed through many worlds. A world controlled by lies; a world of malice and logic; a
+world of monsters run amok; a world trembling when faced with the vastness of the cosmos. At
+the end of that journey, you return to the place where you first awoke to your powers. As a wave
+of nostalgia washes over you, the Mastermind sneers. Something is wrong with their powers.
+Meanwhile, your souls are worn down and weary. Both sides can see an end to your long, long
+battle. A final confrontation, fought just as before. You prepare to pit all of your intelligence and
+determination against each other.
+But something has changed. Not with you, nor with the Mastermind. Somewhere along your
+vast journey, they saw it. They saw the truth.
+Table Talk and Player Count
+When playing with this Tragedy Set, Table Talk must be set to off during loops. Furthermore,
+games with this Set must have exactly 4 players (1 Mastermind and 3 Protagonists), no more or
+less.
+Extra Cards: The Protagonists’ Secret
+When setting up for the first loop, the Mastermind randomly deals Extra Cards A, B, and C to
+the Protagonists, face-down. The Protagonists may look at their own Extra Card, but no one
+else may look at that card, including the Mastermind. These cards are only dealt out once
+before the first loop, and persist between loops.
+--- PAGE 3 ---
+From now on, the Protagonist with the appropriate card will be referred to as Protagonist A,
+Protagonist B, or Protagonist C.
+Traitors
+Three of the Subplots specify a Protagonist to have their own unique victory condition. For
+example, "Victory Condition A" applies to Protagonist A. The same is true for B and C.
+If the corresponding Subplot is in play, that Protagonist is a Traitor. Their original victory
+condition is replaced by the one specified by the Subplot. A Traitor wins with neither the
+Protagonist team nor with the Mastermind. Likewise, a Traitor who completes their victory
+condition wins independently, and the other players lose.
+As there can be two such Subplots in play, there can be as many as two Traitors in a game.
+Perished and Acquainted
+Some of the rules in this Set reference Perished and Acquainted tokens. As such, when playing
+with this Set, the use of those tokens is mandatory. Details on the rules for those tokens can be
+found in the Observer’s Handbook.
+The Final Guess
+Immediately before the Final Guess, the Mastermind must announce which Protagonists were
+Traitors. (This incidentally also gives information as to which Subplots were in use.) The Final
+Guess is made only by non-Traitor Protagonists. The specific order of events is:
+1. If any of the Protagonists were Traitors, reveal them.
+2. If Protagonist C was a Traitor, they attempt to identify the culprits of each Incident. If they
+do so correctly, they win the game.
+3. If the game still continues, the non-Traitor Protagonists make their Final Guess. If they
+do so correctly, they win the game.
+4. If the game still continues, the Mastermind wins the game.
+Furthermore, in other Tragedy Sets, the Protagonists may choose to skip any remaining loops
+and proceed immediately to the Final Guess. This is not possible in LL.
+Serial Killer Maximum
+In this Set, there is a maximum of 1 Serial Killer. This is in order to make it harder to discern if
+Protagonist A is a Traitor or not.
+--- PAGE 4 ---
+Plot Overview
+The Main Plots are mostly based on those in BT, and so similar cover stories (CS) can be used.
+The distribution of “Key Person (or Factor) death”, “loop end loss”, and “Protagonist death”
+conditions have changed slightly, so it’s best to double-check while you come up with an
+appropriate CS. Be careful as the change from The Sealed Item to The Sealed Conclusion is
+especially large.
+The first 3 Subplots each create a Traitor, and the remaining 4 provide support for the script.
+Some good things to keep in mind are: the Subplots that introduce a Traitor always have a
+Secretkeeper and Wildcard; the number of Secretkeepers is the same as the number of
+Traitors; and if there is a Conspiracy Theorist, that takes up the spot of a potential Traitor.
+Summary Sheet
+A translated summary sheet is available here: Last Liar Summary.png
+--- PAGE 5 ---
+Main Plots
+The Final Plan The Sealed Conclusion
+Roles: Roles:
+Key Person, Brain, Killer Factor, Fragment
+Additional Rules: Additional Rules:
+If there are 1 or more Hope counters on the At the end of the day, if there are 2 or more
+Key Person, Traitors become normal Intrigue counters on the Shrine, you may kill
+Protagonists. If this is true at the end of the the Protagonists.
+final loop, this carries over to the Final When counting Intrigue counters on a
+Guess. location, include Hope and Despair counters
+on characters at that location in the total.
+World of Rebellion The Demon’s Script
+Roles: Roles:
+Key Person, Fragment Watcher, Serial Killer
+Both of these must be Girls
+Additional Rules: Additional Rules:
+At the end of the loop, if there are 2 or more At the end of the loop, if Last Will or The
+Intrigue counters on the Key Person, the Executor has triggered this loop, the
+Protagonists lose. Protagonists lose.
+At the end of the last day, if there are 1 or
+fewer total counters on the Watcher, you
+may kill the Protagonists.
+Giant Time Bomb Yet Again
+Roles:
+Brain, Witch
+Additional Rules:
+At the end of the loop, if there are 2 or more
+Intrigue counters on the Witch’s starting
+location, the Protagonists lose.
+--- PAGE 6 ---
+Subplots
+The Real Monster Keeper of Mythology
+Roles: Roles:
+Serial Killer, Secretkeeper, Wildcard Influencer, Secretkeeper, Wildcard
+Additional Rules: Additional Rules:
+Victory Condition A: During the Day end Victory Condition B: During the Protagonists
+phase, there are 5 or more Perished tokens. abilities phase, there are 6 or more
+Acquainted tokens.
+I Am the True Detective! Crossing World Lines
+Roles: Roles:
+Watcher, Secretkeeper, Wildcard Conspiracy Theorist
+Additional Rules: Additional Rules:
+Victory Condition C: Immediately before the At the start of even numbered loops, the
+Final Guess, Protagonist C correctly identifies
+Mastermind adds "Despair +1" to hand. At the
+the culprit of each Incident.
+start of the final loop, the Protagonists add
+"Hope +1" to hand.
+Unsafe Trigger Social Media Paranoia
+Roles: Roles:
+Factor Serial Killer, Influencer, Conspiracy Theorist
+Additional Rules: Additional Rules:
+[Optional] (1x∞) During the Mastermind ability (None)
+phase, you may place 1 Intrigue on a location
+where there is a (living) Factor.
+The Mythomaniac’s Secret
+Roles:
+Conspiracy Theorist
+Additional Rules:
+The Secretkeeper gains Goodwill Refusal. If
+there is no Secretkeeper during script
+creation, instead add an additional Killer,
+Brain, or Fragment to the script. (It does not
+count as a Role specified by this Plot.)
+--- PAGE 7 ---
+Roles
+Key Person Killer
+Max: None Max: None
+Goodwill Refusal
+Abilities: Abilities:
+[Mandatory] When this character dies, the [Optional] At the end of the day, if there are 2
+Protagonists lose, and the loop immediately or more Intrigue counters on the Key Person,
+ends. and they are at this character’s location, you
+may have that character die.
+[Optional] At the end of the day, if there are 4
+or more Intrigue counters on this character,
+you may kill the Protagonists.
+Plots: Plots:
+The Final Plan The Final Plan
+World of Rebellion The Mythomaniac’s Secret*
+Brain Fragment
+Max: None Max: None
+Goodwill Refusal
+Abilities: Abilities:
+[Optional] During each Mastermind abilities [Mandatory] At the start of the loop, if this
+phase, you may place 1 Intrigue counter on character was dead at the end of the previous
+this character’s location, or on a character at
+loop, the Mastermind adds "Despair +1" to
+that location.
+hand.
+[Mandatory] At the start of the loop, if this
+character was alive and had 2+ Goodwill at
+the end of the previous loop, the Protagonists
+add "Hope +1" to hand.
+Plots: Plots:
+The Final Plan The Sealed Conclusion
+Giant Time Bomb Yet Again World of Rebellion
+The Mythomaniac’s Secret* The Mythomaniac’s Secret*
+Witch Factor
+Max: None Max: None
+Mandatory Goodwill Refusal Goodwill Refusal
+Abilities: Abilities:
+(None) [Mandatory] If there are 2 or more Intrigue
+counters on the School, this character gains
+the Conspiracy Theorist’s ability.
+--- PAGE 8 ---
+[Mandatory] If there are 2 or more Intrigue
+counters on the City, this character gains the
+Key Person’s ability.
+Plots: Plots:
+Giant Time Bomb Yet Again The Sealed Conclusion
+Unsafe Trigger
+Serial Killer Watcher
+Max: 1 (for this Tragedy Set) Max: 1
+Unkillable
+Abilities: Abilities:
+[Mandatory] At the end of the day, if there is [Mandatory] When determining if an Incident
+exactly 1 other character at this character’s whose culprit is at this character’s location
+location, that character dies. triggers, if that (living) character has 1 or
+more Despair counters on them, that Incident
+always triggers regardless of what other
+counters they have.
+Plots: Plots:
+The Demon’s Script The Demon’s Script
+The Real Monster I am the True Detective!
+Social Media Paranoia
+Influencer Conspiracy Theorist
+Max: None Max: 1
+Abilities: Abilities:
+[Mandatory] When this character dies, place [Optional] During each Mastermind abilities
+1 Paranoia counter on each character who phase, you may place 1 Paranoia counter on
+shares this card’s starting location. a character at this character’s location.
+[Mandatory] (1x∞) After resolving this
+character’s Goodwill ability, place 1 Paranoia
+counter and 1 Goodwill counter on each
+character who shares this card’s starting
+location.
+Plots: Plots:
+Keeper of Mythology Crossing World Lines
+Social Media Paranoia Social Media Paranoia
+The Mythomaniac’s Secret
+Secretkeeper Wildcard
+Max: None Max: 1
+Mandatory Goodwill Refusal
+--- PAGE 9 ---
+Unkillable
+Abilities: Abilities:
+[Mandatory] When this character dies, or after [Mandatory] If the current day is a multiple of
+resolving this character’s Goodwill ability, 3, this character gains the Conspiracy
+reveal this character’s Role. Theorist’s, the Brain’s, and the Serial Killer’s
+[Mandatory] When this character’s Role is abilities.
+revealed, if it’s the first or second loop, the [Mandatory] This character must be the
+Mastermind may only play 1 Action card on culprit of an Incident.
+the next day. At the end of that day, or this
+day if it's already the last day, kill the
+Protagonists.
+Plots: Plots:
+The Real Monster The Real Monster
+Keeper of Mythology Keeper of Mythology
+I am the True Detective! I am the True Detective!
+--- PAGE 10 ---
+Incidents
+Murder Increasing Unease
+One other character at the culprit’s location Place 2 Paranoia counters on any character,
+dies, if possible. and 1 Intrigue counter on any other character.
+Missing Person Hospital Incident
+Move the culprit to any location, then place 1 If there are 1 or more Intrigue counters on the
+Intrigue counter on the culprit’s location. Hospital, each character there dies.
+Furthermore, if there are 2 or more Intrigue
+counters on the Hospital, kill the Protagonists.
+The Executor Distortion
+Choose a Protagonist, who chooses a If there are 2 or more Intrigue counters on the
+character. That character dies. culprit’s starting location, kill the Protagonists.
+Otherwise, place 2 Intrigue counters on that
+location.
+Last Will Confession
+The culprit dies. At the start of the next loop, Reveal the culprit and their Role.
+the Protagonists add "Hope +1" to hand.
+Spreading The Light of Hope
+Remove 2 Goodwill counters from any The Leader chooses a character. Place 1
+character, and place 2 Goodwill counters on Hope counter on that character.
+any other character. When determining if this Incident triggers,
+refer to the number of Goodwill counters on
+the culprit instead of the original type of
+counter.
+The Murk of Despair
+Place 1 Despair counter on any character.
+--- PAGE 11 ---
+Script Creation Guide
+Introduction
+This section is meant for Masterminds intent on creating their own scripts with Last Liar (LL),
+and explains some things that are important to know when doing so. It can also be used as a
+reference for how to navigate through games as the Mastermind. As this is aimed at
+Masterminds, it is recommended that players who intend on playing the Protagonist side to not
+read this section to start with. There is a very real risk that doing so will result in being able to
+enjoy the Tragedy Set less.
+This section will use the abbreviations PP (Power Play) and CS (Cover Story) as described in
+the original Mastermind’s Handbook included in the base game. For a detailed explanation of
+those terms, please refer to that handbook.
+(TL Note: In the Z-Man Games English Translation, “Cover Story” was instead “Coverup”, and
+the acronyms were not used.)
+The Mastermind is Weak
+Great and powerful Mastermind, who controls the rules of the world. I regret to inform you that
+your powers have been restrained, and you are not nearly as strong here as you may be used
+to. On this stage, you are weak, and thus the battles ahead of you will be difficult.
+Perhaps that seems an odd way to start this guide, but I wanted to get across the point that LL
+is designed in a way such that the Mastermind can have a tough time winning, and furthermore
+that you can’t simply set up a PP as the focus of your script in the same way you could in other
+Tragedy Sets. Keep this idea strongly in mind as you craft scripts with this Set.
+The main reasons for this are of course the existence of Traitors, and the lack of Table Talk.
+Those who have played with Table Talk off before should be aware of just how much more
+difficult it is for the Protagonists. On top of that, the possibility of a Traitor makes it even less
+likely for them to be able to work together properly. Under those conditions, if the Mastermind
+gives themself a powerful win condition, the chances of a Protagonist victory plummet, and can
+easily lead to unfun game experiences.
+Secretkeepers in the Early Game
+While your win conditions are weak, it is of course still important to avoid losing in early loops.
+Not only is an early Protagonist win anticlimactic for them, it is outright unpleasant for a Traitor
+to lose out of nowhere.
+This is where you make use of the Secretkeeper. By preparing ways to kill the Secretkeeper, or
+ways for their Role to be revealed such as reliably used Goodwill abilities (e.g. Office Worker,
+--- PAGE 12 ---
+Class Rep), you can greatly lower the risk of such an anticlimax. This also allows you to
+encourage the Traitor, or even just potential Traitors, into working towards their own interests.
+Encouraging the Traitor
+Because you are so weak, you’ll need to rely on the chaos caused by the Traitor to win in the
+later loops. To that end, there are two important things to keep in mind. First, hint to the Traitor
+that they could actually be a Traitor. Second, don’t put the Traitor in a position to give up on their
+victory condition. Allow me to explain further.
+Let’s consider the first point. Even if there is a Traitor, if they don’t suspect that they might in fact
+be one, they won’t bother to try to betray the others. In order to hint to a player the possibility of
+their treachery, you should show to the players effects (that could be) from some of the relevant
+Roles (Secretkeeper, Wildcard, Serial Killer, Influencer, and Watcher). Winning the loop using
+the Secretkeeper also furthers this goal. Hinting at a Wildcard is also effective; consider using
+the Conspiracy Theorist’s and/or Brain’s abilities aggressively on the 3rd (or 6th) day. The other
+three Roles are also somewhat effective for this. In particular, the Serial Killer is usually quite
+visible and easy to use. Because of that, it is easy to make it obvious whether or not Protagonist
+A is likely to be a Traitor, for better or for worse.
+Onto the second point. Consider the case where it’s very likely that Protagonist A is a Traitor,
+but it’s the start of the last loop and only 2 Perished tokens have been placed. What will happen
+then?
+It’s practically impossible for Protagonist A to kill 3 more characters while only being able to play
+a single card each day. Seeing that, they are likely to give up on that plan and support the other
+Protagonists on the chance that they weren’t actually a Traitor. With the Protagonists now all
+working together, it becomes difficult to win as the Mastermind. To avoid this, you must make
+sure any possible Traitors feel they still have a chance to complete their victory condition. For
+practical advice, let’s consider each potential Traitor individually.
+Goading Protagonist A
+If you’re trying to make Protagonist A think they might be a Traitor, you’ll want to have at least 3
+Perished tokens in play by the start of the last loop. In general, don’t bother with hiding the
+Serial Killer. You should also give some amount of help in trying to kill off characters. It makes it
+easier on you to give yourself incentives to do so, such as by putting characters with Roles you
+want dead in places where it’s easy to kill them.
+Another thing you can do is add other methods for Protagonists to kill, such as the Alien or
+certain Incidents. Both Protagonists A and B are incentivized to help with the former, and both A
+and C are incentivized to help with the latter.
+--- PAGE 13 ---
+Goading Protagonist B
+If you’re trying to make Protagonist B think they might be a Traitor, you’ll want to have at least 4
+Acquainted tokens in play by the start of the last loop, while also having some characters who
+can realistically still gain one. The Mastermind can’t help much with Goodwill abilities during the
+play of the game, so it’s particularly important to be careful when creating the script.
+Goodwill 2 abilities can be enabled with a single played card, so let’s classify characters with
+them as “extremely realistic”. Characters such as the Class Rep and the Soldier fall in this
+group, and characters such as the Boy Student may as well depending on how many possible
+targets they have for their abilities. The Office Worker’s ability requires 3 Goodwill, but he joins
+this group as an exceptional case.
+The next tier is those with easy to use Goodwill 3 abilities, such as the Teacher and the Pop
+Idol, who fall under the classification of “realistic”. Characters with Goodwill 3 abilities that have
+tighter restrictions, such as the Rich Man’s Daughter or the Shrine Maiden, we’ll call “mostly
+realistic”.
+Using these groupings, consider extremely realistic characters to be worth 1 point, realistic
+characters to be worth 0.6, and mostly realistic characters to be worth 0.3. Including a total of
+around 5-6 points worth of characters is by and large pretty safe. Factoring in the number of
+loops and days per loop would take up too much paper to explain properly, so we leave
+accommodating for those up to you.
+As an additional idea, if you want Goodwill 4+ abilities to be an option for Protagonist B,
+consider removing Forbid Goodwill from the Mastermind using a special rule.
+Goading Protagonist C
+If you’re trying to make Protagonist C think they might be a Traitor, you’ll likely need there to be
+only 1 or 2 Incidents with unclear culprits by the start of the last loop. It's important to get them
+to think that deducing them is possible.
+The most important thing is to have your Incidents to be directly related to you winning the
+game. If the Mastermind is incentivized to trigger Incidents, Protagonist C plans will
+automatically proceed. Also, draw a clear line between Incidents whose culprit is hard to identify
+(such as Increasing Unease) and those whose culprit is easy to identify (such as Missing
+Person). It will be a problem if a culprit is too hard to single out.
+Number of Loops
+Take a look at the suggested loop values in the following table. As you can see, the Main Plots
+are worth relatively little, but the Subplots that add Traitors are worth a full loop. This is because
+--- PAGE 14 ---
+the chaos a Traitor creates is advantageous for the Mastermind, and because the Secretkeeper
+adds more flexibility.
+You should also consider the fact that Table Talk is off. If the Protagonists aren't used to playing
+that way, it might be good to tweak your script such that the total loop value is around 0.5 less
+than what you actually use.
+If you yourself are inexperienced with tuning loop values, setting the number of loops to a static
+4 is generally safe. The number of loops has an effect on the Traitor as well, so it's hard to
+foresee the effects of changing it. To summarize, the safe bet is to aim for around 3.5 total loop
+value, and use 4 loops.
+Main Plot
+The Final Plan +1.8
+The Sealed Conclusion +1.5
+World of Rebellion +1.6 (for 3-4 Girls)
+The Demon's Script +1.2 (+0.5 for each related Incident)
+Giant Time Bomb Yet Again +1.5
+Subplots
+The Real Monster +1.0
+Keeper of Mythology +1.0
+I Am the True Detective! +1.0
+Crossing World Lines +0.5
+Unsafe Trigger +1.0
+Social Media Paranoia +0.6
+The Mythomaniac's Secret +0.0 (+0.8 if no Secretkeeper)
+Incidents
+Hospital Incident +0.4
+Distortion +0.4
+4 Incidents +0.0 (±0.4 for each Incident above/below 4)
+--- PAGE 15 ---
+Days Per Loop
+6 Days -0.2
+5 or Fewer Days -0.6
+Intrigue in Last Liar
+As the Set was based on BT, Intrigue is used in approximately the same ways and has similar
+value. Specifically, it matters for:
+● Girls: World of Rebellion
+● Characters: Key Person, Killer
+● Shrine: The Sealed Conclusion
+● Hospital: Hospital Incident
+● School/City: Factor
+● Locations: Giant Time Bomb Yet Again, Distortion
+The value of Intrigue on the School/City has increased somewhat as Factors are more likely to
+appear, but decreased on characters as there is no Loved One in the Set.
+Further Reading
+If you would like further resources on creating scripts, please check the "Tragedy Looper Script
+Collection". On pages 15-24, you'll find an example and explanation of a full script being
+created. There is also a section on pages 30-32 on Taboos and how to avoid creating one,
+which can ruin a script.
+In both the "Tragedy Looper Script Collection" and "Tragedy Looper Script Collection II" there
+are many high-quality scripts taken from places such as the Worldwide Scriptwriting
+Competitions, which may provide good ideas and inspiration.
+(TL Note: Unfortunately neither of these currently have English translations.)
+Plot Overview
+M: The Final Plan M: The Sealed Conclusion
+Essentially Murder Plan. The higher likelihood Similar to The Sealed Item, but because
+of a Factor compared to BT means that 2 Intrigue on the Shrine now leads to
+Intrigue on the City can make for a good CS. Protagonist death, the possible CSs are very
+PPs can be on the strong side, but if you different. You can bluff the Factor as a Key
+skillfully include access to Hope counters you Person, or the whole Plot as The Demon's
+can create an option for the Protagonists to Script. Leaning into Despair counters often
+--- PAGE 16 ---
+unify and break through. makes for a more interesting script.
+M: World of Rebellion M: The Demon's Script
+Essentially Sign With Me! A Devil now joins Essentially Change of Future, but of lower
+the Goddess. Both are cute. The difficulty is difficulty. Usually you try to win with an
+about the same, so you can play the script Incident while placing Intrigue on Girls and
+out in a similar way to before. Two Roles are locations. We suggest using either the Patient
+now restricted, so include more Girls than in or Black Cat as the Watcher; doing so makes
+BT; we suggest around 3-5. the script more stable and helps with your
+CS.
+M: Giant Time Bomb Yet Again S: The Real Monster
+Essentially Giant Time Bomb. The Brain A betrayal by one who saw the truth in the
+makes it easier to use, and harder for the world of Haunted Stage. It's best used if the
+Protagonists. Viable CSs are Intrigue on Mastermind also wants to make use of the
+Girls, and triggering Last Will or The Serial Killer, and there are other ways for
+Executor. There's no way for the loop to end characters to die, such as Murder. See the
+early, so it's also good for encouraging main part of this guide for details.
+Traitors.
+S: Keeper of Mythology S: I Am the True Detective!
+A betrayal by one who saw the truth in the A betrayal by one who saw the truth in the
+world of Cosmic Mythology. Pay extra world of Mystery Circle. Don't add Incidents
+attention to how easy it is to use the that won't trigger unless the Protagonists
+characters' Goodwill abilities. Think of trigger them. All Incidents should directly
+characters whose abilities all take 4 or more contribute to the Mastermind's win condition.
+Goodwill as difficult. See the main part of this See the main part of this guide for details.
+guide for details.
+S: Crossing World Lines S: Unsafe Trigger
+Continues from its appearance in the Makes its triumphant return from Midnight
+Observer's Handbook. As before, it makes Zone. Like before, it’s stable and easy to use.
+the second loop extremely easy to win, so it Add some other features that care about
+can help with script stability while also driving Intrigue on locations and voilà, you have an
+up the tension. We recommended planning interesting script. This also can serve as a CS
+on having someone die in the first loop to for The Sealed Conclusion.
+bluff a Fragment.
+S: Social Media Paranoia S: The Mythomaniac's Secret
+Makes it less clear who the Traitor is. If you Fundamentally different depending on if
+pair it with any of the Plots that adds a Traitor, there’s a Traitor or not. If there is, it makes
+it makes it possible for any of the hiding the Secretkeeper easier. If not, it adds
+Protagonists to be the real Traitor. Be sure to an additional Role and raises the difficulty. Be
+keep stringing the Traitor along by keeping careful to not make a Taboo when choosing
+their victory condition possible. the Role. Note that this always adds Goodwill
+Refusal.
+--- PAGE 17 ---
+Sample Script Collection
+Thetimehascometoenterthefinaldoor,andtakeyourplaceuponthefinalstage.
+The following pages contain 5 sample scripts, meant for players who wish to jump right in and
+experience Last Liar.
+The rules of LL aren’t particularly difficult to work with. The only extra setup required is dealing
+out the Extra Cards at the start of the game, and Protagonists can generally just play as normal
+until there’s a moderate possibility that they are a Traitor. Which Extra Card they received even
+gives them a direction to work towards.
+While Table Talk off is mandatory, it could be said that this is a better environment than BT to
+use that rule for the first time. For example, if a player makes a play that normally would be seen
+as a mistake, here it can also be seen as a Traitor doing their own thing. The individual
+responsibility of each player is lower, so it’s less likely to create a hostile atmosphere, while still
+allowing for the presence of a hostile Traitor.
+The balance of scripts in LL, however, differs greatly from that of other Tragedy Sets. We
+recommend you experience what that means for yourself by playing the sample scripts included
+here.
+We suggest the first script you play is the first of these scripts, but relative to other Sets, the
+difference in complexity between the first, second, and third scripts isn’t too big, so the latter two
+are also viable options. The fourth and fifth scripts are intended for experienced players, so you
+should only play them if everyone has played with LL at least once before.
+After you’ve gone through the sample scripts, it’s a good time to try creating your own. With your
+understanding of LL’s unique balance, you will surely create a masterpiece that none other
+could. All that’s left is to invite the Protagonists to your stage.
+Notes for the Mastermind
+Script Titles
+You should only reveal the name of the script you’re playing after the game is over, as the
+names of some scripts contain spoilers.
+Table Talk
+Table Talk must be set to off in LL.
+--- PAGE 18 ---
+Number of Loops
+Scripts for LL don’t have options for how many loops they have, and also don’t have difficulty
+ratings.
+Increasing the number of loops makes it easier for the Protagonists to win, but also gives the
+Traitor more time to complete their goal. Because of this, changing the number of loops doesn’t
+serve the purpose of adjusting difficulty well. Difficulty ratings are similar; if the Protagonists
+have a hard time winning it may be because of the Traitor rather than the Mastermind. To that
+end, it’s unclear exactly whom a difficulty rating would be meant for.
+Scripts
+(TL Note: I have instead placed the scripts each in their own separate document as a form of
+protection against accidental spoilers.)
+1. Last Liar Sample Script 1
+2. Last Liar Sample Script 2
+3. Last Liar Sample Script 3
+4. Last Liar Sample Script 4
+5. Last Liar Sample Script 5
+Credits
+Game Design: BakaFire
+Art: NEKOG
+Rulebook: BakaFire
+Playtest: 十六夜, option, gleipnil, 佐藤将大, 鈴木龍道, souma, たらみ,
+たろいも, ヒナタペロ王子, ロキルス, ローヴェレ
+Sample Script Design: See individual script pages
+Printed By: タチキタプリント
+Tragedy Looper Expansion ③ Last Liar
+Publication Date: 2021/12/03, by BakaFire
+Copyright: BakaFire Party
+http://bakafire.main.jp/rooper/sr_top.htm
+Postscript
+Hello, this is BakaFire. I’m always going on about being busy all the time, but I’m finally
+beginning to realize that in life, not being busy isn’t a thing that actually happens. Though I have
+a bit of leeway right now, lurking around the corner is the upcoming Sakura Arms expansion and
+--- PAGE 19 ---
+alt-art card collection that I’ve been working on alongside Tragedy Looper Rei. Just thinking
+about it makes me anxious.
+This box is the first addition to Tragedy Looper in around 5 years. True to the name “Last”, I’m
+working on this with the sense that it will be the final expansion to the series. It’s definitely the
+case that the worthwhile design space is drying up, so if I were to make another, I would need a
+fundamental new idea such as the one I brought to Rei.
+I’m basically asking for it by writing that, aren’t I? Future me will probably end up coming up with
+some great new idea and make Tragedy Looper Returns or whatever. But for now, the series
+will be taking a rest. It would make me so happy if you continued to cheer me on as you enjoy
+your homecoming to this final world.
+May we meet again in Sakura Arms, or in another future work!
+-BakaFire, 2021/09/18, from home
+(TL Note: Sakura Arms is great and you should try it if you haven’t.)
